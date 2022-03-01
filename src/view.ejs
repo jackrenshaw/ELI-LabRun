@@ -1,0 +1,103 @@
+<% var BASE = "https://unsw-eli.herokuapp.com/" %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    function listenForCompletion(lab,part){
+      console.log("Listening for Completion!");
+      ipc.send("getCompletions",{lab:lab,part:part})
+    }
+  </script>
+    <style>
+      .card{
+        max-width: 400px;
+      }
+      .button{
+        margin:20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tabs is-centered">
+  <ul>
+    <%if (labs) if(labs.length) for(var ln=0;ln<labs.length;ln++){ var l = labs[ln]; %>
+      <li><a href="#" onclick='$("section.lab-actions").addClass("is-hidden");$("section.lab").addClass("is-hidden");$("#Lab<%=ln%>").removeClass("is-hidden")' <%if (ln == 0){ %>class="is-active"<%}%>><%= l.Name %></a></li>
+    <% } %>
+  </ul>
+  </div>
+  <div class="container">
+    <%if (labs) if(labs.length) for(var ln=0;ln<labs.length;ln++){ var l = labs[ln]; %>
+    <% if(l.hasOwnProperty('Parts')) for(var pn=0;pn<l.Parts.length;pn++){ var p=l.Parts[pn] %>
+    <section class="section is-hidden lab-actions" id="Action<%=pn%>">
+      <div class="columns">
+        <div class="column is-6">
+          <% if(p.Sections) if(p.Sections.length) if(p.Sections[0].hasOwnProperty('Name')){ %>
+            <a href="<%=BASE%>l/<%=l.Name%>/<%=p.Name%>/<%=p.Sections[0].Name%>" target="_blank" class="button is-primary is-large">Open Lab</a><br>
+          <%}else{%>
+            <a href="#" target="_blank" class="button is-primary is-large" disabled>Open Lab</a><br>
+          <%}%>
+        </div>
+        <div class="column is-6">
+          <a href="#" class="button is-primary is-large">Open Questions</a><br>
+        </div>
+      </div>
+      <hr>
+      <h1 class="title">Available Actions</h1><hr>
+      <% for(var al of actions) if(al.Name == l.Name) for(var ap of al.Parts) if(ap.Name == p.Name){%>
+        <h2 class="subtitle"><%=p.Name%></h2>
+        <% for(var as of ap.Sections){ %>
+          <h3><%= as.Name %></h3>
+          <%for(var q of as.Pre){%>
+            <a href="#" class="button is-primary is-large" disabled><%=q.Name%></a><br>
+          <%}%>
+          <%for(var q of as.Post){%>
+            <a href="#" class="button is-primary is-large" disabled><%=q.Name%></a>
+          <%}%>
+        <hr><% } %>
+      <%}%>
+    </section>
+    <% }} %>
+  <%if (labs) if(labs.length) for(var ln=0;ln<labs.length;ln++){ var l = labs[ln]; %>
+    <section class="section lab <%if(ln>0){%>is-hidden<%}%>" id="Lab<%=ln%>" name="<%= l.Name %>">
+    <% if(l.hasOwnProperty('Parts')) for(var pn=0;pn<l.Parts.length;pn++){ var p=l.Parts[pn] %>
+        <%if (pn%3==0){%><div class="columns"><%}%>
+          <div class="column is-4">
+        <div class="card" id="Part<%=pn%>">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img src="<%=BASE+p.Settings.HeaderImage%>" alt="Placeholder image">
+            </figure>
+          </div>
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+                <p class="title is-4"><%= p.Name %></p>
+                <p class="subtitle is-6">@johnsmith</p>
+              </div>
+            </div>
+        
+            <div class="content">
+              <%= p.Settings.Instructions %><hr>
+              <br><time><small>Available from <% var d = new Date(p.Settings.Available);%><%= d.toDateString() %></small></time>
+              <% if(d < new Date()){  %>
+              <br><a onclick='$("section.lab").addClass("is-hidden");$("#Action<%=pn%>").removeClass("is-hidden");' data-lab="<%l.Name%>" data-part="<%p.Name%>" class='button is-small is-primary listen-ipc'>Select</a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+        <%if (pn%3==2){%></div><%}%>
+        <%}%>
+      </section>
+  <% } %>
+  </div>
+</div>
+  </body>
+  </html>

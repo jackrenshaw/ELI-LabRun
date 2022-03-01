@@ -1,5 +1,52 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const axios = require('axios')
+const ejse = require('ejs-electron')
+var fs = require("fs");
+const actions = JSON.parse(fs.readFileSync(path.join(__dirname, 'actions.json')))
+
+var auth_token = null;
+var labs = null;
+
+const BASE = 'http://localhost:3000/'
+
+function login(form,callback,errorCallback){
+  axios
+  .post(BASE+'auth/login',form)
+  .then(res => {
+    callback(res.data);
+  })
+  .catch(error => {
+    errorCallback(error)
+  })
+}
+
+function pullLabs(callback,error){
+  axios
+  .post(BASE+'l/',{token:auth_token})
+  .then(res => {
+    labs = res.data;
+    console.log(labs)
+    callback()
+  })
+  .catch(error => {
+    console.error(error)
+  })
+}
+
+function getCompletions(page,callback,error){
+  axios
+  .post(BASE+'e/',{token:auth_token})
+  .then(res => {
+    labs = res.data;
+    console.log("Recieved Completions");
+    console.log(labs)
+    callback(labs)
+  })
+  .catch(error => {
+    console.error(error)
+  })
+}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -10,15 +57,42 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js')
+  }
   });
-
-  // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
+
+  var loadView = function(){
+    const ejse = require('ejs-electron')
+    .data({labs:labs,actions:actions})
+    .options('debug', true)
+    mainWindow.loadFile(path.join(__dirname, 'view.ejs'));
+  }
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+  ipcMain.on('set-title', (event, title) => {
+    const webContents = event.sender
+    const win = BrowserWindow.fromWebContents(webContents)
+    win.setTitle(title)
+  })
+  ipcMain.on('getCompletions', (event,page) => {
+    getCompletions(page,function(response){ event.reply('completion-reply', response)},function(){event.reply('completion-reply', 'error')});
+  })
+  ipcMain.on('login', (event,form) => {
+    login(form,function(response){ 
+        auth_token = response;
+        pullLabs(loadView);
+          event.reply('login-reply', 'success')
+      },function(){
+          event.reply('login-reply', 'error')
+      });
+  })
+
 };
 
 // This method will be called when Electron has finished
