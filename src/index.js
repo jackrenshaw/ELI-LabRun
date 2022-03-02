@@ -10,7 +10,7 @@ var labs = null;
 var completions = null;
 const actions = require("./actions.js");
 
-const BASE = 'http://localhost:3000/'
+const BASE = 'https://unsw-eli.herokuapp.com/'
 
 function login(form,callback,errorCallback){
   axios
