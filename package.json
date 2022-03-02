@@ -47,9 +47,13 @@
   "dependencies": {
     "axios": "^0.26.0",
     "bulma": "^0.9.3",
+    "cheerio": "^1.0.0-rc.10",
     "ejs-electron": "^2.1.1",
     "electron-squirrel-startup": "^1.0.0",
-    "jquery": "^3.6.0"
+    "jquery": "^3.6.0",
+    "pug": "^3.0.2",
+    "tmp": "^0.2.1",
+    "vega": "^5.21.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",

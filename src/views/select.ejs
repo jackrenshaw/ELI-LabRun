@@ -22,18 +22,18 @@
     <div class="tabs is-centered">
   <ul>
     <%if (labs) if(labs.length) for(var ln=0;ln<labs.length;ln++){ var l = labs[ln]; %>
-      <li><a href="#" onclick='$("section.lab-actions").addClass("is-hidden");$("section.lab").addClass("is-hidden");$("#Lab<%=ln%>").removeClass("is-hidden")' <%if (ln == 0){ %>class="is-active"<%}%>><%= l.Name %></a></li>
+      <li <%if (ln == 0){ %>class="is-active"<%}%> id="LabLink<%=ln%>"><a href="#" onclick='$("section.lab-actions").addClass("is-hidden");$("section.lab").addClass("is-hidden");$("#Lab<%=ln%>").removeClass("is-hidden");$("div.tabs li").removeClass("is-active");$("#LabLink<%=ln%>").addClass("is-active");'><%= l.Name %></a></li>
     <% } %>
   </ul>
   </div>
   <div class="container">
     <%if (labs) if(labs.length) for(var ln=0;ln<labs.length;ln++){ var l = labs[ln]; %>
     <% if(l.hasOwnProperty('Parts')) for(var pn=0;pn<l.Parts.length;pn++){ var p=l.Parts[pn] %>
-    <section class="section is-hidden lab-actions" id="Action<%=pn%>">
+    <section class="section is-hidden lab-actions" id="Action<%=pn%>" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>">
       <div class="columns">
         <div class="column is-6">
           <% if(p.Sections) if(p.Sections.length) if(p.Sections[0].hasOwnProperty('Name')){ %>
-            <a href="<%=BASE%>l/<%=l.Name%>/<%=p.Name%>/<%=p.Sections[0].Name%>" target="_blank" class="button is-primary is-large">Open Lab</a><br>
+            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" class="button is-primary is-large open-lab">Open Lab</a><br>
           <%}else{%>
             <a href="#" target="_blank" class="button is-primary is-large" disabled>Open Lab</a><br>
           <%}%>
@@ -81,7 +81,7 @@
               <%= p.Settings.Instructions %><hr>
               <br><time><small>Available from <% var d = new Date(p.Settings.Available);%><%= d.toDateString() %></small></time>
               <% if(d < new Date()){  %>
-              <br><a onclick='$("section.lab").addClass("is-hidden");$("#Action<%=pn%>").removeClass("is-hidden");' data-lab="<%l.Name%>" data-part="<%p.Name%>" class='button is-small is-primary listen-ipc'>Select</a>
+              <br><a data-lab="<%=l.Name%>" data-part="<%=p.Name%>" class='button is-small is-primary focus-lab'>Select</a>
               <% } %>
             </div>
           </div>

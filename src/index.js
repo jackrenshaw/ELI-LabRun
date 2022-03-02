@@ -5,10 +5,19 @@ const ejse = require('ejs-electron')
 var fs = require("fs");
 const { post } = require('jquery');
 
+const SPICE = require("./modules/spice");
+SPICE.SpiceCommand = "ngspice";
+SPICE.test(function(){
+  console.log("SPICE Works Locally")
+},function(){
+  console.log("Spice doesn't work locally");
+})
+
 var auth_token = null;
 var labs = null;
 var completions = null;
 const actions = require("./actions.js");
+const { test } = require('./modules/spice');
 
 const BASE = 'https://unsw-eli.herokuapp.com/'
 
@@ -85,9 +94,39 @@ const createWindow = () => {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload/preload.js')
   }
   });
+
+  var openLab = function(page,callback,errorCallback){
+    var found = false;
+    if(page.hasOwnProperty('lab') && page.hasOwnProperty('part'))
+      for(var l of labs)
+        if(l.Name == page.lab)
+          for(var p of l.Parts)
+            if(p.Name == page.part)
+              if(p.hasOwnProperty('Sections'))
+                if(p.Sections)
+                  if(p.Sections.length)
+                    if(p.Sections[0].Name){
+                      const labWindow = new BrowserWindow({
+                        width: 1200,
+                        height: 800,
+                        webPreferences: {
+                          nodeIntegration: true,
+                          preload: path.join(__dirname, 'preload/lab-preload.js')
+                      }
+                      });
+                      labWindow.webContents.openDevTools();
+                      found = true;
+                      var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+p.Sections[0].Name
+                      labWindow.loadURL(reqURL);
+                      callback(reqURL);
+                    }
+  if(!found)
+    errorCallback("Page not Found");
+  }
+
   var loadLogin = function(){
       const ejse = require('ejs-electron')
       .options('debug', true)
@@ -101,19 +140,15 @@ const createWindow = () => {
     .options('debug', true)
     mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
   }
-
-  // Open the DevTools.
   mainWindow.webContents.openDevTools();
-  ipcMain.on('set-title', (event, title) => {
-    const webContents = event.sender
-    const win = BrowserWindow.fromWebContents(webContents)
-    win.setTitle(title)
-  })
   ipcMain.on('getCompletions', (event,page) => {
     getCompletions(page,function(response){ event.reply('completion-reply', response)},function(){event.reply('completion-reply', 'error')});
   })
   ipcMain.on('enactCircuit', (event,token) => {
     enactCircuit(token,function(response){ event.reply('enact-reply', response)},function(){event.reply('enact-reply', 'error')});
+  })
+  ipcMain.on('openLab', (event,page) => {
+    openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
   })
   ipcMain.on('login', (event,form) => {
     login(form,function(response){ 

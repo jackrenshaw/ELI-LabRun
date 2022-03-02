@@ -9,7 +9,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
 document.onreadystatechange = function () {
   if (document.readyState == "complete") {
     const $ = require('jquery');
-    $("a.listen-ipc").click(function(){
+    $("a.focus-lab").click(function(){
+      console.log($(this));
+      console.log($(this).data('lab'));
+      console.log($(this).data('part'));
+      $("section.lab").addClass("is-hidden");
+      $("section.lab-actions[data-lab='"+$(this).data("lab")+"'][data-part='"+$(this).data("part")+"']").removeClass("is-hidden");
       setInterval(function(){
         console.log("Getting Completions");
         ipcRenderer.send('getCompletions',{lab:$(this).data("lab"),part:$(this).data("part")})
@@ -20,6 +25,15 @@ document.onreadystatechange = function () {
           $("#confirm-modal").addClass("is-active");
           $("#confirm-modal").find("button.is-success").data("token",arg.token)
       })
+    })
+    $("a.open-lab").click(function(){
+      console.log($(this));
+      console.log($(this).data('lab'));
+      console.log($(this).data('part'));
+      ipcRenderer.send('openLab',{lab:$(this).data("lab"),part:$(this).data("part")})
+      ipcRenderer.on('openLab-reply', (_event, arg) => {
+        console.log(arg)
+      });
     })
     $("#confirm-modal button.is-success").click(function(){
       console.log("enactCircuit");
@@ -34,9 +48,9 @@ document.onreadystatechange = function () {
       ipcRenderer.send('login',form.serialize())
       ipcRenderer.on('login-reply', (_event, arg) => {
         console.log(arg);
-        if(arg == 'success')
+        if(arg == 'success'){
           $("#login-modal").removeClass("is-active");
-        if(arg == 'error')
+        }if(arg == 'error')
           $("#login-form p.feedback").html("Login Failed!")
       })
       ipcRenderer.on('completion-reply', (_event, arg) => {
