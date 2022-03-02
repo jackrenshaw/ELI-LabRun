@@ -1,3 +1,4 @@
+const { PDFDocument } = require('pdf-lib');
 var Questions = {
   checkSolution: function(question,solution){
     var allCorrect = true;

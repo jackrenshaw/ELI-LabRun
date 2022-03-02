@@ -6,6 +6,8 @@ var fs = require("fs");
 const { post } = require('jquery');
 
 const SPICE = require("./modules/spice");
+const Graph = require("./modules/graph");
+
 SPICE.SpiceCommand = "ngspice";
 SPICE.test(function(){
   console.log("SPICE Works Locally")
@@ -149,6 +151,12 @@ const createWindow = () => {
   })
   ipcMain.on('enactCircuit', (event,params) => {
     enactCircuit(params,function(response){ event.reply('enact-reply', response)},function(){event.reply('enact-reply', 'error')});
+  })
+  ipcMain.on('graph', (event,params) => {
+    Graph("Function",params.signals,params.xlabel,params.ylabel,function(svg){event.reply('graph-reply', svg)},function(error){event.reply('graph-reply', error)});
+  })
+  ipcMain.on('simulate', (event,params) => {
+    Spice.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-reply',error)});
   })
   ipcMain.on('openLab', (event,page) => {
     openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
