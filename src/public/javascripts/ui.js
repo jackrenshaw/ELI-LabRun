@@ -390,21 +390,9 @@ var UI = {
     $("#sidebar .container div[name='SPICE']").append(input+"<br>");
   },
   SimulateCircuit: function(netlist,normalised){
+    window.electronAPI.SimulateCircuit(netlist);
+    //window.electronAPI.EnactCircuit(netlist);
     console.log(netlist)
-    $.post("/simulate",{circuit:netlist},function(data){
-      $("#sidebar .container div[name='SPICE']").append("<hr><h2>Simulation Output</h2>"+data+"<br>");
-      $("#Simulation p.sim-result").html(data);
-      $("#Simulation").modal('show');
-    }).fail(function(err){
-      $("#sidebar .container div[name='SPICE']").append("<hr><h2>Simulation Error</h2>"+err.responseText+"<br>");
-    });
-    $.post("",{circuit:netlist},function(data){          
-      $("#sidebar .container div[name='SPICE']").append("<hr><h2>Enaction Token</h2>"+data+"<br>");
-      $("#Enaction .modal-body").append("<a href='/e/"+data+"'>Enact Circuit</a><hr><h6>Proceed to next Section</h6><a class='btn-lg btn-primary' href='./"+labPage.next+"'>Next Section</a>");
-    }).fail(function(err){
-      $("#sidebar .container div[name='SPICE']").append("<hr><h2>Simulation Error</h2>"+err.responseText+"<br>");
-      
-    });;
   },
   makeSPICE: function(){
     const powersupply = [{
@@ -458,7 +446,7 @@ var UI = {
       params:{
         type:$("#scope-choice input[type='radio']:checked").val(),
         transient:{
-          runtime:$("#scope-transient input[type='text']").val()+$("#scope-transient button").html().replace('s',''),
+          runtime:$("#scope-transient input[type='text']").val(),
           step:$("#scope-transient span.simulation-step").html(),
         },
         sweep:{
@@ -686,7 +674,7 @@ $("connectors port").each(function(){
     horizontal:[$(_port).offset().left,($(_port).offset().left+$(_port).width())],
     vertical:[$(_port).offset().top,($(_port).offset().top+$(_port).height())]
   }];
-  $(this).height("100%")
+  $(this).height("200px")
   $("wire").each(function(){
     var _wire = this;
     const WireSpan = [{
@@ -699,5 +687,5 @@ $("connectors port").each(function(){
   })
 })
 $("connectors div").each(function(){
-  $(this).height("100%")
+  $(this).height("200px")
 })

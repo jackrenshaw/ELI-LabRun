@@ -53,3 +53,270 @@
     </footer>
   </div>
 </div>
+<div class="modal" id="Instructions">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Instructions and Simulation Notes</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <p><% if(section.Instructions){%><%= section.Instructions %><%}%></p>
+        <p><b><% if(section.SimulationNotes){%><%= section.SimulationNotes %><%}%></b></p>
+        <p><%- section.SimulationImage %></p>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success">Confirm</button>
+        <button class="button">Cancel</button>
+      </footer>
+    </div>
+</div>
+<div class="modal" id="Simulation">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Simulation Output</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+      <div class="modal-card-body">
+        <h6>Simulation Output</h6>
+        <p class="sim-result"></p>
+        <h6>Desired Result</h6>
+        <p><%- section.SimulationImage %></p>
+      </div>
+      <footer class="modal-card-foot">
+        <button class="button is-success">Confirm</button>
+        <button class="button">Cancel</button>
+      </footer>
+    </div>
+</div>
+<div class="modal" id="Source">
+  <div class="modal-background"></div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+    $("#Source input[name=voltage1],#Source input[name=voltage2]").click(function(){
+      console.log("Testing");
+      var val = ($(this).val()/10).toString();
+      if(!val.includes(".")) val += '.0';
+      $("#Source table td[name="+$(this).attr('name')+"]").text(val+" V")
+    })
+  });
+    </script>
+     <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Power Supply</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+        <div class="modal-card-body">
+          <table style="width: 100%;text-align: center;"><thead><tr><th>Supply 1</th><th>Supply 2</th></tr></thead><tr class="font-size:48px;"><td name="voltage1">5.0 V</td><td name="voltage2">5.0 V</td></tr></table>
+          <hr/>
+          <label for="voltage1" class="form-label">Voltage 1</label>
+          <input type="range" class="slider is-fullwidth" min="0" max="150" step="1" name="voltage1" value='50'>
+          <label for="voltage2" class="form-label">Voltage 2</label>
+          <input type="range" class="slider is-fullwidth" min="0" max="150" step="1" name="voltage2" value='50'>
+        </div>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Confirm</button>
+          <button class="button">Cancel</button>
+        </footer>
+      </div>
+</div>
+<div class="modal" id="SignalGenerator">
+  <div class="modal-background"></div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+      $("#SignalGenerator input[name=voltage],#SignalGenerator div[name='voltage-multiple'] input[type='radio']").click(function(){
+        var scale = 0.1;
+        var multiple = $("#SignalGenerator div[name='voltage-multiple'] input[type='radio']:checked").val()
+        var val = ($("#SignalGenerator input[name=voltage]").val()*multiple).toString();
+        if(!val.includes(".")) val += '.0';
+        $("#SignalGenerator table td[name=voltage]").text(val+" V")
+      })
+      $("#SignalGenerator input[name=frequency],#SignalGenerator div[name='freq-multiple'] input[type='radio']").click(function(){
+        var multiple = $("#SignalGenerator div[name='freq-multiple'] input[type='radio']:checked").val()
+        var val = $("#SignalGenerator input[name=frequency]").val()*multiple;
+        if(val >1e6) val = val/1e6 + " MHz"
+        else if(val > 1e3) val = val/1e3 +" kHz"
+        else val = val + " Hz"
+        $("#SignalGenerator table td[name=frequency]").text(val)
+      })
+      $("#SignalGenerator .type a").click(function(){
+        $(this).parent().parent().parent().find("a").removeClass("is-info").addClass("is-white");
+        $(this).addClass("is-info").removeClass("is-white")
+      })
+    });
+    </script>
+    <style>
+      #SignalGenerator .type .active{
+        background: cornflowerblue;
+      }
+    </style>
+     <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Signal Generator</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+        <form class="modal-card-body">
+          <h1><table style="width: 100%;text-align: center;"><tr><td name="voltage">0.0 V</td><td name="frequency">0 Hz</td></tr></table></h1>
+          <hr/>
+          <label for="voltage" class="form-label">Voltage</label>
+          <input type="range" class="slider is-fullwidth" min="0" max="100" step="1" name="voltage" value='0'>
+          <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='voltage-multiple'>
+            <input type="radio" class="btn-check" name="btnradio-voltage" id="voltage-multiple-btnradio1" autocomplete="off" value='0.001' checked>
+            <label class="btn btn-outline-primary" for="voltage-multiple-btnradio1">100mV</label>
+          
+            <input type="radio" class="btn-check" name="btnradio-voltage" id="voltage-multiple-btnradio2" autocomplete="off" value='0.01'>
+            <label class="btn btn-outline-primary" for="voltage-multiple-btnradio2">1V</label>
+
+            <input type="radio" class="btn-check" name="btnradio-voltage" id="voltage-multiple-btnradio3" autocomplete="off" value='0.1'>
+            <label class="btn btn-outline-primary" for="voltage-multiple-btnradio3">10V</label>
+          </div>
+        <hr/>
+        <label for="frequency" class="form-label">Frequency</label>
+        <input type="range" class="slider is-fullwidth" min="0" max="1000" step="1" id="frequency" name='frequency' value='0'>
+        <br>
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='freq-multiple'>
+          <input type="radio" class="btn-check" name="btnradio-frequency" id="freq-multiple-btnradio1" autocomplete="off" value='1' checked>
+          <label class="btn btn-outline-primary" for="freq-multiple-btnradio1">1kHz</label>
+        
+          <input type="radio" class="btn-check" name="btnradio-frequency" id="freq-multiple-btnradio2" autocomplete="off" value='10'>
+          <label class="btn btn-outline-primary" for="freq-multiple-btnradio2">10kHz</label>
+        
+          <input type="radio" class="btn-check" name="btnradio-frequency" id="freq-multiple-btnradio3" autocomplete="off" value='100'>
+          <label class="btn btn-outline-primary" for="freq-multiple-btnradio3">100kHz</label>
+
+          <input type="radio" class="btn-check" name="btnradio-frequency" id="freq-multiple-btnradio4" autocomplete="off" value='1000'>
+          <label class="btn btn-outline-primary" for="freq-multiple-btnradio4">1MHz</label>
+        </div>
+        <hr/>
+          <div class="columns type">
+            <div class="column">
+              <a class='button is-large is-white' style="border:1px solid #c0c0c0;" name="sine">
+                <img src='../public/images/sineWave.svg'  style="background-size:50px; height: 50px;width:50px;">
+              </a>
+            </div>
+            <div class="column">
+              <a class='button is-large is-white' style="border:1px solid #c0c0c0;" name="square">
+                <img src='../public/images/squareWave.svg' style="background-size:50px; height: 50px;width:50px;">
+              </a>
+            </div>
+            <div class="column">
+              <a class='button is-large is-white' style="border:1px solid #c0c0c0;" name="triangle">
+                <img src='../public/images/triangleWave.svg' style="background-size:50px; height: 50px;width:50px;">
+              </a>
+            </div>
+            <div class="column">
+              <a class='button is-large is-white' style="border:1px solid #c0c0c0;" name="sawtooth">
+                <img src='../public/images/sawtoothWave.svg' style="background-size:50px; height: 50px;width:50px;">
+              </a>
+            </div>
+          </div>
+        </form>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Confirm</button>
+          <button class="button">Cancel</button>
+        </footer>
+      </div>
+  </div>
+  <div class="modal" id="Oscilloscope">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Oscilloscope</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+        <section class="modal-card-body">
+          <div id="scope-choice" class="flex-row">
+            <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='simulation-type'>
+              <input type="radio" class="btn-check btn-lg" name="btnradio-simulation-type" id="simulation-type-btnradio1" autocomplete="off" value='transient' checked>
+              <label class="btn btn-outline-primary" for="simulation-type-btnradio2">Transient</label>
+            
+              <input type="radio" class="btn-check btn-lg" name="btnradio-simulation-type" id="simulation-type-btnradio2" autocomplete="off" value='sweep'>
+              <label class="btn btn-outline-primary" for="simulation-type-btnradio2">Frequency Sweep</label>
+            </div>
+          </div>
+          <hr>
+          <div id="scope-transient">
+            <script type="text/javascript">
+            $(document).ready(function(){
+              $("#scope-transient input[type='text']").keyup(function(){
+                if(/[0-9]+(\.[0-9]+)?(f|p|n|u|m|k)/g.test($(this).val()))
+                  $(this).addClass("is-valid").removeClass("is-invalid");
+                else
+                  $(this).addClass("is-invalid").removeClass("is-valid");
+              })
+              $("#scope-sweep input[name='steps-per-interval']").click(function(){
+                $("#scope-sweep span.steps-per-interval").html($(this).val());
+              })
+              $("#scope-sweep input[name='sweep-start-frequency'],#scope-sweep input[name='btnradio-frequency-start']").click(function(){
+                $("#scope-sweep span.sweep-start-frequency").html($("#scope-sweep input[name='sweep-start-frequency']").val()+$("#scope-sweep input[name='btnradio-frequency-start']:checked").val());
+              })
+              $("#scope-sweep input[name='sweep-stop-frequency'],#scope-sweep input[name='btnradio-frequency-stop']").click(function(){
+                $("#scope-sweep span.sweep-stop-frequency").html($("#scope-sweep input[name='sweep-stop-frequency']").val()+$("#scope-sweep input[name='btnradio-frequency-stop']:checked").val());
+              })
+
+            });
+            </script>
+          <h6>Transient Parameters</h6>
+          <label for="frequency" class="form-label">Simulation Length</label><br>
+            <input type="text" class="input" aria-label="Text input with dropdown button">
+          <p>Simulation Step: <span class='simulation-step'><% if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%></span></p>
+          </div>
+          <hr>
+          <div id='scope-sweep'>
+          <h6>Frequency Sweep</h6>
+          <label for="frequency" class="form-label">Step Type</label><br>
+          <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='sweep-step-type'>
+            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio1" autocomplete="off" value='1' checked>
+            <label class="btn btn-outline-primary" for="sweep-step-type-btnradio1">Decade</label>
+            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio2" autocomplete="off" value='10'>
+            <label class="btn btn-outline-primary" for="sweep-step-type-btnradio2">Linear</label>
+          </div><br><br>
+          <label for="frequency" class="form-label">Steps per Interval: <span class='steps-per-interval'>1</span></label>
+          <input type="range" class="slider is-fullwidth" min="1" max="10" step="1" id="steps-per-interval" name='steps-per-interval' value='0'>
+          <br><br>
+          <label for="frequency" class="form-label">Start Frequency: <span class='sweep-start-frequency'>1</span></label>
+          <input type="range" class="slider is-fullwidth" min="1" max="10" step="1" id="sweep-start-frequency" name='sweep-start-frequency' value='0'>
+          <br>
+          <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='freq-multiple-start'>
+          
+            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio2" autocomplete="off" value='m' checked>
+            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio2">1mHz</label>
+          
+            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio3" autocomplete="off" value=''>
+            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio3">1Hz</label>
+  
+            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio4" autocomplete="off" value='k'>
+            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio4">1kHz</label>
+
+            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio1" autocomplete="off" value='Meg'>
+            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio1">1MegHz</label>
+          </div><br>
+          <label for="frequency" class="form-label">Stop Frequency: <span class='sweep-stop-frequency'>1</span></label>
+          <input type="range" class="slider is-fullwidth" min="1" max="10" step="1" id="aweep-stop-frequency" name='sweep-stop-frequency' value='0'>
+          <br><br>
+          <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='freq-multiple-stop'>
+            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio1" autocomplete="off" value='' checked>
+            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio1">1Hz</label>
+
+            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio2" autocomplete="off" value='k' checked>
+            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio2">1kHz</label>
+
+            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio3" autocomplete="off" value='Meg'>
+            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio3">1MegHz</label>
+          
+            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio34" autocomplete="off" value='G'>
+            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio34">1GHz</label>
+          </div>
+        </div>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Confirm</button>
+          <button class="button">Cancel</button>
+        </footer>
+      </div>
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#Instructions").addClass('is-active');
+    })
+  </script>

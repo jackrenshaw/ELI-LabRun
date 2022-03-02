@@ -31,31 +31,16 @@
     <% if(l.hasOwnProperty('Parts')) for(var pn=0;pn<l.Parts.length;pn++){ var p=l.Parts[pn] %>
     <section class="section is-hidden lab-actions" id="Action<%=pn%>" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>">
       <div class="columns">
-        <div class="column is-6">
+        <div class="is-3 is-offset-5">
           <% if(p.Sections) if(p.Sections.length) if(p.Sections[0].hasOwnProperty('Name')){ %>
-            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" class="button is-primary is-large open-lab">Open Lab</a><br>
+            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" class="button is-info is-large open-lab">Open Lab</a><br>
           <%}else{%>
-            <a href="#" target="_blank" class="button is-primary is-large" disabled>Open Lab</a><br>
+            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" class="button is-info is-large open-lab" disabled>Lab Unavailable</a><br>
           <%}%>
-        </div>
-        <div class="column is-6">
-          <a href="#" class="button is-primary is-large">Open Questions</a><br>
         </div>
       </div>
       <hr>
-      <h1 class="title">Available Actions</h1><hr>
-      <% for(var al of actions) if(al.Name == l.Name) for(var ap of al.Parts) if(ap.Name == p.Name){%>
-        <h2 class="subtitle"><%=p.Name%></h2>
-        <% for(var as of ap.Sections){ %>
-          <h3><%= as.Name %></h3>
-          <%for(var q of as.Pre){%>
-            <a href="#" class="button is-primary is-large" disabled><%=q.Name%></a><br>
-          <%}%>
-          <%for(var q of as.Post){%>
-            <a href="#" class="button is-primary is-large" disabled><%=q.Name%></a>
-          <%}%>
-        <hr><% } %>
-      <%}%>
+      <h1 class="title">Lab Questions</h1><hr>
     </section>
     <% }} %>
   <%if (labs) if(labs.length) for(var ln=0;ln<labs.length;ln++){ var l = labs[ln]; %>
@@ -81,7 +66,7 @@
               <%= p.Settings.Instructions %><hr>
               <br><time><small>Available from <% var d = new Date(p.Settings.Available);%><%= d.toDateString() %></small></time>
               <% if(d < new Date()){  %>
-              <br><a data-lab="<%=l.Name%>" data-part="<%=p.Name%>" class='button is-small is-primary focus-lab'>Select</a>
+              <br><a data-lab="<%=l.Name%>" data-part="<%=p.Name%>" class='button is-small is-info focus-lab'>Select</a>
               <% } %>
             </div>
           </div>
@@ -93,6 +78,5 @@
   <% } %>
   </div>
 </div>
-<%- include('partial/modals.ejs') %>
   </body>
   </html>

@@ -7,7 +7,9 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
     <title>ELI - UNSW ELEC2133</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="../../node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
+    <script src="../../node_modules/bulma-extensions/dist/js/bulma-extensions.min.js"></script>
     <script src="../public/javascripts/math.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +23,7 @@
             linear-gradient(to bottom, #ddd 1px, transparent 1px);
             width: 100%;
             min-height: 800px;
+            overflow-y: hidden!important;
           }
         board{
       position: absolute;
@@ -183,6 +186,9 @@
       UI.gridPositionsX.push(g-i);
   $("component,ground").draggable();
   UI.select();
+  $(".modal .modal-card-foot button:contains(Cancel),button[aria-label='close']").click(function(){
+    $(".modal").removeClass("is-active");
+  })
 })
 
 </script>
@@ -315,22 +321,22 @@ if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Wi
 <port style='position: absolute;top:600px;left:1150px;background: black;height:100px;width:6px;z-index:10;' name="oscilloscope-negative">
   <label  style="position: relative;left:10px;">Oscilloscope V-</label>
 </port>
-<div style="position: absolute;height:100%;width:0px;border-left:2px dashed #777;left:500px;top:650px;"></div>
+<div style="position: absolute;height:200px;width:0px;border-left:2px dashed #777;left:500px;top:650px;"></div>
 <div style="position: absolute;height:0px;width:100%;border-top:2px dashed #777;left:0px;top:650px;"></div>
-<div style="position: absolute;height: 100%;width:0px;border-left:2px dashed #777;left:900px;top:650px;"></div>
+<div style="position: absolute;height: 200px;width:0px;border-left:2px dashed #777;left:900px;top:650px;"></div>
 </connectors>
 
 <footer data-html2canvas-ignore style="position:fixed;bottom:0px;height:75px;width:100%;background:#eee;border-top:1px solid #c0c0c0;padding:20px;z-index:14;">
   <div class="container content has-text-centered">
     <div class="columns">
       <powersupply class="column is-4 text-center" id="powersupply">
-        <button type="button" class="button is-info" onclick="$('#Source').modal('show');">Power Supply</button>
+        <button type="button" class="button is-info" onclick="$('#Source').addClass('is-active');">Power Supply</button>
       </powersupply>
       <signalgenerator class="column is-4  text-center" id="signalgenerator">
-        <button type="button" class="button is-info" onclick="$('#SignalGenerator').modal('show');">Signal Generator</button>
+        <button type="button" class="button is-info" onclick="$('#SignalGenerator').addClass('is-active');">Signal Generator</button>
       </signalgenerator>
       <oscilloscope class="column is-4  text-center" id="oscilloscope">
-        <button type="button" class="button is-info" onclick="$('#Oscilloscope').modal('show');">Oscilloscope</button>
+        <button type="button" class="button is-info" onclick="$('#Oscilloscope').addClass('is-active');">Oscilloscope</button>
       </oscilloscope>
     </div>
   </div>
