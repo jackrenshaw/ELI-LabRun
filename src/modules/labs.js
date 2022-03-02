@@ -1,7 +1,6 @@
 var fs = require("fs");
 var path = require("path");
 var functions = require("./functions");
-var config = require("../conf");
 var Spice = require("./spice");
 
 var Labs = {

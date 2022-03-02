@@ -1,0 +1,8 @@
+Basic RC circuit
+r1 1 2 1.0
+c1 2 0 1.0
+vin 1 0 dc 0 ac 1
+.control
+ac dec 10 .01 10k 
+print vdb(2) 
+.endc

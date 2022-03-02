@@ -7,14 +7,9 @@ const { post } = require('jquery');
 
 const SPICE = require("./modules/spice");
 const Graph = require("./modules/graph");
+const Labs = require("./modules/labs")
 
-SPICE.SpiceCommand = "ngspice";
-SPICE.test(function(){
-  console.log("SPICE Works Locally")
-},function(){
-  console.log("Spice doesn't work locally");
-})
-
+var labRead = null;
 const isMac = process.platform === 'darwin'
 
 const template = [
@@ -133,7 +128,6 @@ const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
 
 var auth_token = null;
-var labs = null;
 var completions = null;
 const actions = require("./actions.js");
 const { test } = require('./modules/spice');
@@ -151,34 +145,6 @@ function login(form,callback,errorCallback){
   })
 }
 
-function pullLabs(callback,error){
-  axios
-  .post(BASE+'l/',{token:auth_token})
-  .then(res => {
-    labs = res.data;
-    console.log(labs)
-    callback()
-  })
-  .catch(error => {
-    console.error(error)
-  })
-}
-
-function getCompletions(page,callback,errorCallback){
-  axios
-  .post(BASE+'e/',{token:auth_token})
-  .then(res => {
-    completions = res.data;
-    console.log("Recieved Completions");
-    console.log(labs)
-    callback(labs)
-  })
-  .catch(error => {
-    errorCallback(error)
-  })
-}
-
-
 var openGraph = function(){
   const graphWindow = new BrowserWindow({
     width: 1200,
@@ -188,8 +154,8 @@ var openGraph = function(){
       preload: path.join(__dirname, 'preload/graph-preload.js')
   }
   });
-  labWindow.webContents.openDevTools();
-  labWindow.loadFile(path.join(__dirname, 'views/graph.ejs'))
+  graphWindow.webContents.openDevTools();
+  graphWindow.loadFile(path.join(__dirname, 'views/graph.ejs'))
 }
 
 var openSimulation = function(){
@@ -250,7 +216,7 @@ const createWindow = () => {
   var openLab = function(page,callback,errorCallback){
     var found = false;
     if(page.hasOwnProperty('lab') && page.hasOwnProperty('part'))
-      for(var l of labs)
+      for(var l of Labs.Labs)
         if(l.Name == page.lab)
           for(var p of l.Parts)
             if(p.Name == page.part)
@@ -269,23 +235,26 @@ const createWindow = () => {
                       labWindow.webContents.openDevTools();
                       found = true;
                       var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+p.Sections[0].Name
-                      labWindow.loadURL(reqURL);
+                      const ejse = require('ejs-electron')
+                      .data({section:p.Sections[0],part:p,page:{prev:null,next:null}})
+                      .options('debug', true)
+                      labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                       callback(reqURL);
                     }
   if(!found)
     errorCallback("Page not Found");
   }
 
-  var loadLogin = function(){
+  var loading = function(){
       const ejse = require('ejs-electron')
       .options('debug', true)
       mainWindow.loadFile(path.join(__dirname, 'views/index.ejs'));
   }
-  loadLogin();
+  loading();
 
   var loadView = function(){
     const ejse = require('ejs-electron')
-    .data({labs:labs,actions:actions})
+    .data({labs:Labs.Labs,actions:actions})
     .options('debug', true)
     mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
   }
@@ -305,15 +274,15 @@ const createWindow = () => {
   ipcMain.on('openLab', (event,page) => {
     openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
   })
-  ipcMain.on('login', (event,form) => {
-    login(form,function(response){ 
-        auth_token = response;
-        pullLabs(loadView);
-          event.reply('login-reply', 'success')
-      },function(response){
-          event.reply('login-reply', response)
-      });
-  })
+
+  SPICE.SpiceCommand = "ngspice";
+  SPICE.test(async function(){
+    console.log("SPICE Works Locally");
+    await Labs.setLabs("src/labs")
+    setTimeout(loadView, 5000);
+  },function(){
+    console.log("Spice doesn't work locally");
+  })  
 
 };
 

@@ -1,0 +1,15 @@
+*
+R1 0 0 1k
+R2 2 1 2k
+R3 2 0 3k
+R4 0 0 4k
+R5 0 0 5k
+V1 1 0 5
+R6 0 0 6k
+* INSTRUCTIONS: Configure the source to produce 5V DC, and construct a simple voltage divider circuit that produces 3V at the intermediate node. Simulate the circuit to validate your results
+* ACTION FUNCTION: Familiarisation
+.control
+tran 50u 500m
+run
+print v(2) v(1)
+.endc

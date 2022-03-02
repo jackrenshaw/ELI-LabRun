@@ -1,0 +1,12 @@
+*
+R1 2 1 1k
+RAmmeter 2 0 1m
+V1 1 0 5
+* INSTRUCTIONS: Configure the source to produce 5V DC, and construct a simple resistive circuit with the 1k resistor provided. Place the ammeter device in series with the resistor
+* SIMULATION INSTRUCTIONS: Perform a transient simulation of 10 milliseconds. Do not wire the oscilloscope probes, as this will override the Ammeter!
+* ACTION FUNCTION: Familiarisation
+.control
+tran 20u 1m
+run
+print v(2)/1m i(V1)*-1
+.endc

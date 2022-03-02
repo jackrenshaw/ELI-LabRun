@@ -1,0 +1,18 @@
+*
+Q1 N004 N004 0 0 NPN
+Q2 N001 N004 0 0 NPN
+V1 N003 0 1
+R1 N003 N004 220
+V2 N002 0 1
+R2 N002 N001 1
+R3 N002 N001 10
+R4 N002 N001 100
+R5 N002 N001 1k
+R6 N002 N001 1k
+* INSTRUCTIONS: In this familiarisation experiment, you are required to construct a current mirror. Configure source 1 and 2 to provide 1V to the input and output of the current mirror. Select an appropriate biasing resistor to produce approximately 1mA at the input. Rotate the remaining resistors and simulate the circuit to observe the robustness of the current mirror to changes in loads. 
+* ACTION FUNCTION: Transient
+.control
+tran 50u 500m
+run
+print v(N002)
+.endc

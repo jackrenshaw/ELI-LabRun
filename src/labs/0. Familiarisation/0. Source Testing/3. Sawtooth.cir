@@ -1,0 +1,10 @@
+*
+R1 1 0 1k
+V1 1 0 PULSE(-1 1 0 1m 0m 0m 1m 0)
+* INSTRUCTIONS: Configure the source to produce 5V DC, and construct a simple voltage divider circuit that produces 3V at the intermediate node. Simulate the circuit to validate your results
+* ACTION FUNCTION: Familiarisation
+.control
+tran 1u 4m
+run
+print v(1)
+.endc

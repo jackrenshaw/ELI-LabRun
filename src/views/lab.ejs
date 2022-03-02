@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>ELI - UNSW ELEC2133</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="../public/javascripts/math.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
+        <style>
+          body{
+            background-size: 20px 20px;
+            background-image:
+            linear-gradient(to right, #ddd 1px, transparent 1px),
+            linear-gradient(to bottom, #ddd 1px, transparent 1px);
+            width: 100%;
+            min-height: 800px;
+          }
+        board{
+      position: absolute;
+      top: 0px;
+      padding-top:100px;
+    }
+    
+          .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+          }
+    
+          @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+              font-size: 3.5rem;
+            }
+          }
+          .draggable{
+            cursor: move;
+          }
+          .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+          }
+    
+          @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+              font-size: 3.5rem;
+            }
+          }
+    .rotated-90 {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg); /* IE 9 */
+      -moz-transform: rotate(0deg); /* Firefox */
+      -webkit-transform: rotate(0deg); /* Safari and Chrome */
+      -o-transform: rotate(0deg); /* Opera */
+    }
+    .rotated-90 {
+      transform: rotate(90deg);
+      -ms-transform: rotate(90deg); /* IE 9 */
+      -moz-transform: rotate(90deg); /* Firefox */
+      -webkit-transform: rotate(90deg); /* Safari and Chrome */
+      -o-transform: rotate(90deg); /* Opera */
+    }
+    .rotated-180 {
+      transform: rotate(180deg);
+      -ms-transform: rotate(180deg); /* IE 9 */
+      -moz-transform: rotate(180deg); /* Firefox */
+      -webkit-transform: rotate(180deg); /* Safari and Chrome */
+      -o-transform: rotate(180deg); /* Opera */
+    }
+    .rotated-270 {
+      transform: rotate(270deg);
+      -ms-transform: rotate(270deg); /* IE 9 */
+      -moz-transform: rotate(270deg); /* Firefox */
+      -webkit-transform: rotate(270deg); /* Safari and Chrome */
+      -o-transform: rotate(270deg); /* Opera */
+    }
+    .mirrorX{
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+    }
+    .mirrorY{
+      -webkit-transform: scaleY(-1);
+      transform: scaleY(-1);
+    }
+    wire{
+      background:#000;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .resistor{
+      background-image: url(images/res.png);
+      background-repeat: no-repeat;
+      background-size: 100px 20px;
+      width: 100px;
+      height:30px;
+      display: inline-block;
+    }
+    .capacitor{
+      background-image: url(images/cap.png);
+      background-repeat: no-repeat;
+      background-size: 100px 50px;
+      width: 100px;
+      height:50px;
+      display: inline-block;
+    }
+    .inductor{
+      background-image: url(images/ind.png);
+      background-repeat: no-repeat;
+      background-size: 100px 20px;
+      width: 100px;
+      height:30px;
+      display: inline-block;
+    }
+    .opamp{
+      background-image: url(images/opamp.png);
+      background-repeat: no-repeat;
+      background-size: 100px;
+      width: 100px;
+      height:100px;
+      display: inline-block;
+    }
+    connector{
+      height:10px;
+      width:10px;background: black;
+      position: relative;
+      display:inline-block;
+    }
+    footer .btn{
+      border-radius: 0rem!important;
+    }
+    ground{
+      position:absolute;
+      background-size:50px 100px;
+      background-image:url(../public/images/ground.svg);
+      width:50px;
+      height:100px;
+      top:100px;
+      left:0px;
+      z-index: 10;
+    }
+    ground port{
+      position: absolute;
+      width: 6px;
+      height:50px;
+      left:20px;
+      top:10px;
+      background:red;
+    }
+    ground .InterPortSpace{
+      width:0px;
+      height:0px;
+      left:100px;
+      top:100px;
+      position: absolute;
+    }
+        </style>
+
+<script src="../public/javascripts/jquery.min.js"></script>
+<script src="../public/javascripts/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-esm-min.js"></script>
+<script type="text/javascript" src="../public/javascripts/ui.js" defer></script>
+<script type="text/javascript" src="../public/javascripts/spice.js" defer></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+  UI.SimulationParams = JSON.parse(`<%- JSON.stringify(section.SimulationParams)%>`.replace(/\n/g,'\\n'));
+  UI.SimulationParams.raw = UI.SimulationParams.raw.replace(/\\n/g,'\n');
+  UI.Subcircuit = `<%=section.Subcircuit%>`; 
+  for(var g of UI.portPositionsX)
+    for(var i=-15;i<16;i++)
+      UI.gridPositionsX.push(g-i);
+  $("component,ground").draggable();
+  UI.select();
+})
+
+</script>
+    <!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
+
+<script src="../../node_modules/html2canvas/dist/html2canvas.min.js"></script>
+
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="../public/stylesheets/jquery-ui.min.css">
+</head>
+<body>
+  <nav class="navbar is-info" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="#">
+        <h1>UNSW ELI</h1>
+      </a>
+  
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item">
+          <span class="material-icons">arrow_back</span>
+        </a>
+        <a class="navbar-item">
+          <span class="material-icons">arrow_forward</span>
+        </a>
+        <a class="navbar-item">
+        <span class="material-icons">
+          info
+          </span>
+          </a>
+          <a class="navbar-item">
+            <span class="material-icons">
+            navigation
+            </span>
+          </a>
+          <a class="navbar-item">
+            <span class="material-icons">
+              pan_tool
+              </span>
+            </a>
+            <a class="navbar-item">
+              <span class="material-icons">
+                edit
+                </span>
+              </a>
+              <a class="navbar-item">
+                <span class="material-icons">
+                  clear
+                  </span>
+                </a>
+    </div>
+  </nav>
+<style>
+  body{
+    overflow: hidden;
+  }
+</style>
+<%- include ('partial/simport.ejs') %>
+</head>
+  <body> 
+<main id='main'>
+<% 
+var top = 100;
+var left = 50;
+var showWireFrame = false;
+if(part.hasOwnProperty("Framework")){%>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      UI.FrameWork = true;
+    })
+  </script>
+<%-part.Framework%>
+<%}else{%>
+  <ground style="position:absolute;left:0px;top: 200px;">
+    <div class='InterPortSpace'></div>
+    <port bind-position='{"top":-3,"left":20}'></port>
+    </ground>
+<%if(section) if(section.hasOwnProperty("Components")) for(var c of section.Components)
+if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
+<component spice-name="<%=c.Name%>" spice-class="<%=c.Class%>" spice-type="<%=c.Type%>" spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;">
+<% if(c.Value && c.Name){ %>
+<label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
+<%}else if(c.Value){ %>
+<label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %></label>
+<%}else if(c.Class){ %>
+<label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Class %></label>
+<%}%>
+<% if(c.hasOwnProperty('InterPortSpace')) for(var n of c.InterPortSpace)
+ if(n.hasOwnProperty("top") && n.hasOwnProperty("left") && n.hasOwnProperty("width") && n.hasOwnProperty("height")){ %>
+<div class='InterPortSpace' style='position:absolute;top:<%=n.top%>px;left:<%=n.left%>px;height:<%=n.height%>px;width:<%=n.width%>px;'></div>
+<%}%>
+<% for(var p of c.Ports){%>
+<port name="<%=p.id%>" bind-position="<%=JSON.stringify(p.bindPosition)%>" spice-position="<%=p.position%>" style='background:red;position:absolute;top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px'></port>
+<%}%>
+</component>
+<%left = left + c.Width;%>
+<%}}%>
+</main>
+<%- include ('partial/modals.ejs') %>
+<connectors>
+<port style='position: absolute;top:600px;left:75px;background: red;height:130px;width:6px;z-index:10;' name="powersupply-1positive">
+  <label style="position: relative;left:10px;">Power Supply 1+</label>
+</port>
+<port style='position: absolute;top:600px;left:175px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-1negative">
+  <label  style="position: relative;left:10px;">Power Supply 1-</label>
+</port>
+<port style='position: absolute;top:600px;left:275px;background: red;height: 130px;width:6px;z-index:10;' name="powersupply-2positive">
+  <label  style="position: relative;left:10px;">Power Supply 2+</label>
+</port>
+<port style='position: absolute;top:600px;left:375px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-2negative">
+  <label  style="position: relative;left:10px;">Power Supply 2-</label>
+</port>
+<port style='position: absolute;top:600px;left:600px;background: red;height:130px;width:6px;z-index:10;' name="signalgenerator-positive">
+  <label  style="position: relative;left:10px;">Signal Generator V+</label>
+</port>
+<port style='position: absolute;top:600px;left:700px;background: black;height:100px;width:6px;z-index:10;' name="signalgenerator-negative">
+  <label  style="position: relative;left:10px;">Signal Generator V-</label>
+</port>
+<port style='position: absolute;top:600px;left:1000px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-positive">
+  <label  style="position: relative;left:10px;">Oscilloscope V+</label>
+</port>
+<port style='position: absolute;top:600px;left:1150px;background: black;height:100px;width:6px;z-index:10;' name="oscilloscope-negative">
+  <label  style="position: relative;left:10px;">Oscilloscope V-</label>
+</port>
+<div style="position: absolute;height:100%;width:0px;border-left:2px dashed #777;left:500px;top:650px;"></div>
+<div style="position: absolute;height:0px;width:100%;border-top:2px dashed #777;left:0px;top:650px;"></div>
+<div style="position: absolute;height: 100%;width:0px;border-left:2px dashed #777;left:900px;top:650px;"></div>
+</connectors>
+
+<footer data-html2canvas-ignore style="position:fixed;bottom:0px;height:75px;width:100%;background:#eee;border-top:1px solid #c0c0c0;padding:20px;z-index:14;">
+  <div class="container content has-text-centered">
+    <div class="columns">
+      <powersupply class="column is-4 text-center" id="powersupply">
+        <button type="button" class="button is-info" onclick="$('#Source').modal('show');">Power Supply</button>
+      </powersupply>
+      <signalgenerator class="column is-4  text-center" id="signalgenerator">
+        <button type="button" class="button is-info" onclick="$('#SignalGenerator').modal('show');">Signal Generator</button>
+      </signalgenerator>
+      <oscilloscope class="column is-4  text-center" id="oscilloscope">
+        <button type="button" class="button is-info" onclick="$('#Oscilloscope').modal('show');">Oscilloscope</button>
+      </oscilloscope>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

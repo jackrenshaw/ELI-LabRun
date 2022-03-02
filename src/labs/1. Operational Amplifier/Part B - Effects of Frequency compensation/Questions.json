@@ -1,0 +1,87 @@
+[{
+  "Position":"pre",
+  "Required":true,
+  "Questions":[{
+    "Title":"Testing",
+    "Instructions":"Testing Number Input",
+    "Type":"Number",
+    "Answer":100,
+    "ErrorBar":1e-3,
+    "PDF":{
+      "page":4,
+      "size":10,
+      "x":20,
+      "y":200
+    }
+  },{
+    "Title":"Circuit Gain at 1kHz",
+    "Instructions":"Check that your 1 kHz sinusoidal input voltage amplitude is below100mV and the output voltage is also sinusoidal (not slew ratelimited). Measure the gain.",
+    "Type":"Table",
+    "Labels":{
+      "horizontal":["Vi (peak-to-peak)","Vo (peak-to-peak)","Gain (vi/vo)"],
+      "vertical":[]
+    },
+    "Answer":[[2.0,1.0,100]],
+    "ErrorBar":1e-3,
+    "PDF":[[{
+      "page":4,
+      "size":10,
+      "x":180,
+      "y":375
+    },{
+      "page":4,
+      "size":10,
+      "x":315,
+      "y":375
+    },{
+      "page":4,
+      "size":10,
+      "x":450,
+      "y":375
+    }]]
+  },{
+    "Title":"Plot the Curve",
+    "Instructions":"Plot the Curve",
+    "Type":"Graph",
+    "Answer":null,
+    "ErrorBar":null
+  }]
+},{
+  "Position":"post",
+  "Required":true,
+  "PDF":{
+    "page":6,
+    "size":10,
+    "x":20,
+    "y":200
+  },
+  "Questions":[{
+    "Title":"Testing",
+    "Instructions":"Testing Instruction",
+    "type":"number",
+    "Answer":100,
+    "ErrorBar":1e-3,
+    "PDF":{
+      "page":7,
+      "size":10,
+      "x":20,
+      "y":200
+    }
+  }]
+},{
+  "Section":"1. Introduction",
+  "Position":"post",
+  "Required":true,
+  "Questions":[{
+    "Title":"Testing",
+    "Instructions":"Testing Instruction",
+    "type":"number",
+    "Answer":100,
+    "PDF":{
+      "page":7,
+      "size":10,
+      "x":20,
+      "y":200
+    }
+  }]
+}]

@@ -1,0 +1,136 @@
+<style>
+  /* The sidebar menu */
+.sidebar {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1031; /* Stay on top */
+  top: 0;
+  right: 0;
+  background-color: #fff; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.1s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+/* Position and style the close button (top right corner) */
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+  text-decoration: none!important;
+  color:#333!important;
+}
+
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
+#debug{
+          background: #ddd;
+          border: 1px solid #c0c0c0;
+          position: absolute;
+          top: 100px;
+          right:0px;
+          width: 50px;
+          height: 50px;
+          padding: 5px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+</style>
+<div id="sidebar" class="sidebar" data-html2canvas-ignore>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" href="#output-circuit" name="circuit">Circuit</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#output-output" name="SPICE">Translation Output</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#output-netlist">SPICE Netlist</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#output-nodal">Nodal View</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#output-simulation">Simulation</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#output-signal">Signal Comparison</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#output-result">Result</a>
+    </li>
+  </ul>
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <div class='container'>
+    <div name="SPICE"></div>
+  </div>
+</div>
+<div id='debug' onclick="openNav()" data-html2canvas-ignore>
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+  <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+</svg></div>
+<script type="text/javascript">
+  $(".dropdown-toggle").click(function(){
+    if($(this).parent().find('.dropdown-menu').is(':hidden')) 
+      $(this).parent().find('.dropdown-menu').show(); 
+    else 
+      $(this).parent().find('.dropdown-menu').hide()
+  })
+  $("#sidebar").click(function(){$(".dropdown-menu").hide()});
+  /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+function openNav() {
+  $("#sidebar .container div[name='SPICE']").html("");
+  $("#sidebar").css("padding","20px");
+  $("#sidebar").css("width","100%");
+  html2canvas(document.querySelector("body")).then(canvas1 => {
+    //$("#sidebar .container div[name='SPICE']").append("<br><h2>Circuit Image</h2><p>You can right click on this image to save it</p>");
+    //$("#sidebar .container div[name='SPICE']").append(canvas1);
+    //$("#sidebar .container div[name='SPICE']").append("<hr>");
+
+    $("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");
+  $("#sidebar .container div[name='SPICE']").append("<br><h2>Conversion Output</h2>");
+  UI.makeSPICE();
+  $("a[href='#output-netlist'],a[href='#output-nodal']").removeClass("disabled");
+  $("#sidebar .container div[name='SPICE']").append("<hr><h2 id='output-netlist'>SPICE Output</h2><i>You can run this in a command line simulator like ngSPICE</i><br>"+UI.SPICE.SPICE.replace(/\n/g,'<br>')+"<hr>");
+  $("#sidebar .container div[name='SPICE']").append("<h2>Detailed Output</h2><h4>"+UI.SPICE.nodes.length+" nodes</h4><h4>"+UI.SPICE.components.length+" components</h4><hr>");
+  for(var n of UI.SPICE.nodes){
+
+  }
+  $("#sidebar .container div[name='SPICE']").append("<h2 id='output-nodal'>Nodes</h4>")
+    UI.showNodes();
+    html2canvas(document.querySelector("body")).then(canvas2 => {
+      //$("#sidebar .container div[name='SPICE']").append(canvas2);
+      //$("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");;
+      UI.hideNodes()
+    });
+  });
+
+}
+
+/* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+function closeNav() {
+  document.getElementById("sidebar").style.padding = "0";
+  document.getElementById("sidebar").style.width = "0";
+}
+
+
+$("#sidebar ul a[name='showNodes']").click(function(){
+  $("#sidebar .container div").each(function(){
+    $(this).hide();
+  })
+  $("#sidebar .container div[name='showNodes']").show();
+  UI.showNodes();
+  html2canvas(document.querySelector("body")).then(canvas => {
+    $("#sidebar .container div[name='showNodes']").html(canvas);
+    $("#sidebar .container div[name='showNodes'] canvas").css("width","90%").css("height","90%");
+  });
+})
+</script>

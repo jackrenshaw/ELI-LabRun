@@ -1,0 +1,18 @@
+*
+V1 N001 0 1
+R2 0 0 10k
+R3 0 0 100k
+R4 0 0 1000k
+C2 0 0 1n
+C3 0 0 100m
+C1 N002 0 100u
+R1 N002 N001 1k
+RAmmeter 0 0 1m
+.ic v(N002)=0V
+* INSTRUCTIONS: In this experiment, you are required to construct and simulate a simple RC circuit with time constant equal to 100ms. The circuit should be connected to Power Supply 1, with a 1V DC input voltage applies across the circuit. The negative power supply input should be ground. Not all components provided will be of use to you; you must select the most appropriate components to meet the design criteria. After constructing the circuit, perform a simulation on the circuit to validate your results. A sample scope output has been provided - this scope traces the voltage across the capacitor from t=0; Before this time, the source was off and the capacitor was fully discharged.
+* ACTION FUNCTION: Transient
+.control
+tran 50u 500m
+run
+print v(N002)
+.endc

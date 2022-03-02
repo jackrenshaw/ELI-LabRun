@@ -1,0 +1,13 @@
+*
+V§SigGen N003 0 SINE(0 1 1k)
+R1 N001 N003 1k
+R2 N002 N001 10k
+VSupply1 V+ 0 15
+VSupply2 0 V- 15
+XU2 0 N001 V+ V- N002 LT1001
+.tran 20m
+.lib opamp.sub
+* INSTRUCTIONS: Configure the Signal Generator to produce a 1kHz Sine Wave at 1V (with no DC or phase offset). Using the components provided, construct an inverting amplifier that produces a 10V, 1kHz Sine Wave at the output. Validate your design through simulation.\nThe OPAMP available in this laboratory is identical to the LM101A; the datasheet is available in Appendix B of the Laboratory Manual
+.lib LTC.lib
+.backanno
+.endc

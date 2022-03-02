@@ -1,0 +1,12 @@
+*
+R1 2 1 1k
+RAmmeter 2 0 1m
+V1 1 0 5
+* INSTRUCTIONS: Configure the source to produce 5V DC, and construct a parallel resistive circuit with the 1k and 2k resistors provided. Place the ammeter device in series with the resistor. Swap the resistors, and observe the change in results.
+* SIMULATION INSTRUCTIONS: Configure the source to produce 5V DC, and construct a simple voltage divider circuit that produces 3V at the intermediate node. Simulate the circuit to validate your results
+* ACTION FUNCTION: Familiarisation
+.control
+tran 20u 1m
+run
+print v(2)/1m i(V1)*-1
+.endc

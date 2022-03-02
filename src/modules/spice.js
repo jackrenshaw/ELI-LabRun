@@ -12,8 +12,8 @@ var Spice = {
     simple:{
         R:{
             Name:'Resistor',
-            Image:'/images/resistor-physical.svg',
-            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(/images/resistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Image:'../public/images/resistor-physical.svg',
+            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(../public/images/resistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{
@@ -54,8 +54,8 @@ var Spice = {
             },
         C:{
             Name:'Capacitor',
-            Image:'Images/cap-physical.svg',
-            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(/images/cap-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Image:'../public/Images/cap-physical.svg',
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/cap-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{
@@ -139,8 +139,8 @@ var Spice = {
                     left:15,
                     width:18
                 }],
-                Image:'/images/transistor-physical.svg',
-                CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(/images/transistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+                Image:'../public/images/transistor-physical.svg',
+                CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/transistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
                 Height:100,
                 Width:100,
                 Class:{
@@ -172,8 +172,8 @@ var Spice = {
         },
         Ammeter:{
             Name:'Resistor',
-            Image:'/images/ammeter.svg',
-            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Image:'../public/images/ammeter.svg',
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{
@@ -213,8 +213,8 @@ var Spice = {
         },
         X:{
                 Name:'Subcircuit',
-                CSS:`position:absolute;background-size:200px;background-image:url(/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
-                Image:'/images/8pin-DIP.svg',
+                CSS:`position:absolute;background-size:200px;background-image:url(../public/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
+                Image:'../public/images/8pin-DIP.svg',
                 Height:200,
                 Width:200,
                 InterPortSpace:[{

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg enable-background="new 0 0 95.375 256.535" viewBox="0 0 95.375 256.535" xmlns="http://www.w3.org/2000/svg">
+ <path d="m.046,90.72c15.948,14.508 31.572,21.6 47.556,21.672 15.948-.072 31.536-7.164 47.593-21.672h-95.149z" fill-rule="evenodd" stroke="#000" stroke-miterlimit="10" stroke-width=".036"/>
+ <path d="m.046,90.72v-13.32h95.004l.145,13.32h-95.149z" fill-rule="evenodd" stroke="#000" stroke-miterlimit="10" stroke-width=".036"/>
+ <path d="m.046,86.04v-70.668c0-8.496 6.624-15.372 14.725-15.372h65.7c8.135,0 14.725,6.876 14.725,15.372v70.668h-95.15z" fill="#616161" fill-rule="evenodd"/>
+ <path d="m72.551 86.04h22.824v-70.668c0-8.496-6.66-15.372-14.832-15.372h-7.992v86.04z" fill="#212121" fill-rule="evenodd"/>
+ <path d="m54.262 0h19.584v86.148h-19.584v-86.148z" fill="#404040" fill-rule="evenodd"/>
+ <path d="m22.294 94.392v142.81l5.328-8.242v-134.57h-5.328z" fill="#808080" fill-rule="evenodd"/>
+ <path d="m43.787 94.392v162.14l5.329-9.359v-152.78h-5.329z" fill="#808080" fill-rule="evenodd"/>
+ <path d="m66.143 94.392v142.81l5.328-8.242v-134.57h-5.328z" fill="#808080" fill-rule="evenodd"/>
+</svg>
