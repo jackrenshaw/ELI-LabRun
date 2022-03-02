@@ -158,8 +158,8 @@ const createWindow = () => {
         auth_token = response;
         pullLabs(loadView);
           event.reply('login-reply', 'success')
-      },function(){
-          event.reply('login-reply', 'error')
+      },function(response){
+          event.reply('login-reply', response)
       });
   })
 
