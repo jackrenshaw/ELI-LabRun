@@ -1,0 +1,55 @@
+<div class="modal" id="login-modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Login to UNSW-ELI</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <form action="https://unsw-eli.herokuapp.com/auth/login" method="POST" id="login-form">
+      <div class="field">
+        <p class="control has-icons-left has-icons-right">
+          <input class="input" type="email" placeholder="Email" name="Email">
+          <span class="icon is-small is-left">
+            <i class="fas fa-envelope"></i>
+          </span>
+          <span class="icon is-small is-right">
+            <i class="fas fa-check"></i>
+          </span>
+        </p>
+      </div>
+      <div class="field">
+        <p class="control has-icons-left">
+          <input class="input" type="password" placeholder="Password" name="Password">
+          <span class="icon is-small is-left">
+            <i class="fas fa-lock"></i>
+          </span>
+        </p>
+      </div>
+      <p class="feedback"></p>
+      <div class="field">
+        <p class="control">
+          <input type="hidden" name="sendToken" value="true">
+          <input type="submit" value="Login" class="button is-success">
+        </p>
+      </div>
+    </form>
+    </section>
+  </div>
+</div>
+<div class="modal" id="confirm-modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Confirm Circuit Changes</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      Please confirm that you would like implement the circuit design in hardware
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success">Confirm</button>
+      <button class="button">Cancel</button>
+    </footer>
+  </div>
+</div>

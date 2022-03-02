@@ -10,14 +10,24 @@ document.onreadystatechange = function () {
   if (document.readyState == "complete") {
     const $ = require('jquery');
     $("a.listen-ipc").click(function(){
-      console.log("Connecting with the IPC")
-      console.log($(this).data());
-      ipcRenderer.send('getCompletions',{lab:$(this).data("lab"),part:$(this).data("part")})
+      setInterval(function(){
+        console.log("Getting Completions");
+        ipcRenderer.send('getCompletions',{lab:$(this).data("lab"),part:$(this).data("part")})
+      },5000);
       ipcRenderer.on('completion-reply', (_event, arg) => {
-        console.log(arg);
+        console.log(arg)
+        if(arg.hasOwnProperty('token'))
+          $("#confirm-modal").addClass("is-active");
+          $("#confirm-modal").find("button.is-success").data("token",arg.token)
       })
     })
-    $("#login-modal").addClass("is-active");
+    $("#confirm-modal button.is-success").click(function(){
+      console.log("enactCircuit");
+      ipcRenderer.send('enactCircuit',{token:$(this).data('token')})
+      ipcRenderer.on('enact-reply', (_event, arg) => {
+        console.log(arg)
+      })
+    })
     $("#login-form").submit(function(e) {
       e.preventDefault();
       var form = $(this);

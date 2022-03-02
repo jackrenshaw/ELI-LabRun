@@ -3,10 +3,12 @@ const path = require('path');
 const axios = require('axios')
 const ejse = require('ejs-electron')
 var fs = require("fs");
-const actions = JSON.parse(fs.readFileSync(path.join(__dirname, 'actions.json')))
+const { post } = require('jquery');
 
 var auth_token = null;
 var labs = null;
+var completions = null;
+const actions = require("./actions.js");
 
 const BASE = 'http://localhost:3000/'
 
@@ -34,18 +36,40 @@ function pullLabs(callback,error){
   })
 }
 
-function getCompletions(page,callback,error){
+function getCompletions(page,callback,errorCallback){
   axios
   .post(BASE+'e/',{token:auth_token})
   .then(res => {
-    labs = res.data;
+    completions = res.data;
     console.log("Recieved Completions");
     console.log(labs)
     callback(labs)
   })
   .catch(error => {
-    console.error(error)
+    errorCallback(error)
   })
+}
+
+function enactCircuit(token,callback,errorCallback){
+  console.log(token);
+  var found = false;
+  if(completions)
+    if(completions.hasOwnProperty('token'))
+      if(completions.token == token)
+        for(var al of actions)
+          if(al.Name == completions.page.lab)
+            for(var ap of al.Parts)
+              if(ap.Name == completions.page.part)
+                for(var as of ap.Sections)
+                  if(as.Name == completions.page.section)
+                    if(as.hasOwnProperty('Post'))
+                      if(as.Post.length)
+                        if(as.Post[0].hasOwnProperty('func')){
+                          found = true;
+                          as.Post[0].func(callback,errorCallback);
+                        }
+  if(!found)
+    errorCallback('Invalid Token/Action');
 }
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -64,13 +88,18 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js')
   }
   });
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  var loadLogin = function(){
+      const ejse = require('ejs-electron')
+      .options('debug', true)
+      mainWindow.loadFile(path.join(__dirname, 'views/index.ejs'));
+  }
+  loadLogin();
 
   var loadView = function(){
     const ejse = require('ejs-electron')
     .data({labs:labs,actions:actions})
     .options('debug', true)
-    mainWindow.loadFile(path.join(__dirname, 'view.ejs'));
+    mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
   }
 
   // Open the DevTools.
@@ -82,6 +111,9 @@ const createWindow = () => {
   })
   ipcMain.on('getCompletions', (event,page) => {
     getCompletions(page,function(response){ event.reply('completion-reply', response)},function(){event.reply('completion-reply', 'error')});
+  })
+  ipcMain.on('enactCircuit', (event,token) => {
+    enactCircuit(token,function(response){ event.reply('enact-reply', response)},function(){event.reply('enact-reply', 'error')});
   })
   ipcMain.on('login', (event,form) => {
     login(form,function(response){ 

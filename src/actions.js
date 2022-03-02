@@ -1,11 +1,14 @@
-[{
+var Actions = [{
   "Name":"0. Familiarisation",
   "Parts":[{
     "Name":"0. Source Testing",
     "Sections":[{
       "Name":"1. Sine",
       "Pre":[{
-        "Name":"Turn on Signal Generator"
+        "Name":"Turn on Signal Generator",
+        "func":function(callback,errorCallback){
+          console.log('hello world')
+        }
       }],
       "Post":[{
         "Name":"Turn off Signal Generator"
@@ -27,3 +30,4 @@
     }]
   }] 
 }]
+module.exports = Actions;
