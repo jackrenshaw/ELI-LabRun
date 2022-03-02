@@ -10,7 +10,13 @@ document.onreadystatechange = function () {
   if (document.readyState == "complete") {
     const $ = require('jquery');
     $("button[data-action='implement']").click(function(){
-      console.log("Hello World");
+      var params = {
+        lab:$(this).data("lab"),
+        part:$(this).data("part"),
+        section:$(this).data("section"),
+        value:$(this).data("value")
+      }
+      ipcRenderer.send('enactCircuit',params)
     })
   }
 }

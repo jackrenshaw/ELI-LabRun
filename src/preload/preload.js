@@ -15,16 +15,6 @@ document.onreadystatechange = function () {
       console.log($(this).data('part'));
       $("section.lab").addClass("is-hidden");
       $("section.lab-actions[data-lab='"+$(this).data("lab")+"'][data-part='"+$(this).data("part")+"']").removeClass("is-hidden");
-      setInterval(function(){
-        console.log("Getting Completions");
-        ipcRenderer.send('getCompletions',{lab:$(this).data("lab"),part:$(this).data("part")})
-      },5000);
-      ipcRenderer.on('completion-reply', (_event, arg) => {
-        console.log(arg)
-        if(arg.hasOwnProperty('token'))
-          $("#confirm-modal").addClass("is-active");
-          $("#confirm-modal").find("button.is-success").data("token",arg.token)
-      })
     })
     $("a.open-lab").click(function(){
       console.log($(this));

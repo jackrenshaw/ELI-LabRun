@@ -59,26 +59,29 @@ function getCompletions(page,callback,errorCallback){
   })
 }
 
-function enactCircuit(token,callback,errorCallback){
-  console.log(token);
+//This needs more validation (for params at a minimum)
+//We also need to validate the actions object at some point
+function enactCircuit(params,callback,errorCallback){
   var found = false;
-  if(completions)
-    if(completions.hasOwnProperty('token'))
-      if(completions.token == token)
-        for(var al of actions)
-          if(al.Name == completions.page.lab)
-            for(var ap of al.Parts)
-              if(ap.Name == completions.page.part)
-                for(var as of ap.Sections)
-                  if(as.Name == completions.page.section)
-                    if(as.hasOwnProperty('Post'))
-                      if(as.Post.length)
-                        if(as.Post[0].hasOwnProperty('func')){
-                          found = true;
-                          as.Post[0].func(callback,errorCallback);
-                        }
-  if(!found)
-    errorCallback('Invalid Token/Action');
+  console.log(params);
+  for(var l of actions)
+    if(l.Name == params.lab){
+      console.log("in lab")
+      for(var p of l.Parts)
+        if(p.Name == params.part){
+          console.log("in part")
+          for(var s of p.Sections)
+            if(s.Name == params.section){
+              console.log("in Section")
+              found = true;
+              s.Post[0].func(params.value,callback,errorCallback);
+            }
+        }
+    }
+  if(!found){
+    console.log("No Action Available :(");
+    errorCallback("No Action Available");
+  }
 }
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -144,8 +147,8 @@ const createWindow = () => {
   ipcMain.on('getCompletions', (event,page) => {
     getCompletions(page,function(response){ event.reply('completion-reply', response)},function(){event.reply('completion-reply', 'error')});
   })
-  ipcMain.on('enactCircuit', (event,token) => {
-    enactCircuit(token,function(response){ event.reply('enact-reply', response)},function(){event.reply('enact-reply', 'error')});
+  ipcMain.on('enactCircuit', (event,params) => {
+    enactCircuit(params,function(response){ event.reply('enact-reply', response)},function(){event.reply('enact-reply', 'error')});
   })
   ipcMain.on('openLab', (event,page) => {
     openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
