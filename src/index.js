@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const axios = require('axios')
 const ejse = require('ejs-electron')
@@ -14,6 +14,123 @@ SPICE.test(function(){
 },function(){
   console.log("Spice doesn't work locally");
 })
+
+const isMac = process.platform === 'darwin'
+
+const template = [
+  // { role: 'appMenu' }
+  ...(isMac ? [{
+    label: app.name,
+    submenu: [
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideOthers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  }] : []),
+  // { role: 'fileMenu' }
+  {
+    label: 'File',
+    submenu: [
+      {label: 'New',
+      submenu: [
+        {
+          label: 'New Simulation',
+          click: async () => {
+            openSimulation();
+          }
+        },
+        {
+          label: 'New Graphing Window',
+          click: async () => {
+            openGraph();
+          }
+        },
+      ]},
+      isMac ? { role: 'close' } : { role: 'quit' },
+    ]
+  },
+  // { role: 'editMenu' }
+  {
+    label: 'Edit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      ...(isMac ? [
+        { role: 'pasteAndMatchStyle' },
+        { role: 'delete' },
+        { role: 'selectAll' },
+        { type: 'separator' },
+        {
+          label: 'Speech',
+          submenu: [
+            { role: 'startSpeaking' },
+            { role: 'stopSpeaking' }
+          ]
+        }
+      ] : [
+        { role: 'delete' },
+        { type: 'separator' },
+        { role: 'selectAll' }
+      ])
+    ]
+  },
+  // { role: 'viewMenu' }
+  {
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  },
+  // { role: 'windowMenu' }
+  {
+    label: 'Window',
+    submenu: [
+      { role: 'minimize' },
+      { role: 'zoom' },
+      ...(isMac ? [
+        { type: 'separator' },
+        { role: 'front' },
+        { type: 'separator' },
+        { role: 'window' }
+      ] : [
+        { role: 'close' }
+      ])
+    ]
+  },
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'Learn More',
+        click: async () => {
+          const { shell } = require('electron')
+          await shell.openExternal('https://electronjs.org')
+        }
+      }
+    ]
+  }
+]
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
 
 var auth_token = null;
 var labs = null;
@@ -59,6 +176,33 @@ function getCompletions(page,callback,errorCallback){
   .catch(error => {
     errorCallback(error)
   })
+}
+
+
+var openGraph = function(){
+  const graphWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload/graph-preload.js')
+  }
+  });
+  labWindow.webContents.openDevTools();
+  labWindow.loadFile(path.join(__dirname, 'views/graph.ejs'))
+}
+
+var openSimulation = function(){
+  const simWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload/sim-preload.js')
+  }
+  });
+  simWindow.webContents.openDevTools();
+  simWindow.loadFile(path.join(__dirname, 'views/sim.ejs'))
 }
 
 //This needs more validation (for params at a minimum)

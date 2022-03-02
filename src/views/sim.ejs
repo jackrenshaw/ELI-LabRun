@@ -1,0 +1,12 @@
+<%- include ('partial/labHeader.ejs') %>
+<div class="container">
+  <form action='/simulate' method='POST'>
+    <div class="form-group">
+      <label for="exampleFormControlTextarea1">SPICE Circuit</label>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" name="circuit"><%if(circuit){%><%= circuit %><%}%></textarea>
+    </div><br>
+    <center><input type="submit" class='btn btn-primary' value='Simulate'></center>
+  </form>
+  <%if(error){%><b>Error: Simulation Failed!</b><%}%>
+  <%if(image){%><%- image %><%}%>
+  </div>
