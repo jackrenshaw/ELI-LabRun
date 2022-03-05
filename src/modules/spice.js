@@ -391,8 +391,59 @@ var Spice = {
         nodes = [];
 
     },
-    ValidateCircuit(netlist){
-        return true;
+    ValidateCircuit(netlist1,netlist2,simulation1,simulation2,callback,errorCallback){
+        var c = [{
+            components:netlist1.match(/^(R|C|L|XU)[A-z0-9]( [A-z0-9]){2,8} [0-9]+(f|p|n|u|m|k)?$/mg),
+            sources:netlist1.match(/^V[A-z0-9]( [A-z0-9]){2} [0-9]+(f|p|n|u|m|k)?$/gm)
+        },{
+            components:netlist2.match(/^(R|C|L|XU)[A-z0-9]( [A-z0-9]){2,8} [0-9]+(f|p|n|u|m|k)?$/gm),
+            sources:netlist2.match(/^V(1|2|3)( [A-z0-9]){2} [0-9]+(f|p|n|u|m|k)?$/gm)
+        }]
+        console.log(c);
+        //eliminate null components (all ports are grounded)
+        if(c[0].components)
+            for(var i=0;i<c[0].components.length;i++)
+                if(/^(R|C|L|XU)[A-z0-9]( 0){2,8} [0-9]+(f|p|n|u|m|k)?$/gm.test(c[0].components[i]))
+                    delete c[0].components[i]
+        if(c[1].components)
+            for(var i=0;i<c[1].components.length;i++)
+                if(/^(R|C|L|XU)[A-z0-9]( 0){2,8} [0-9]+(f|p|n|u|m|k)?$/gm.test(c[1].components[i]))
+                    delete c[1].components[i]
+        if(c[0].sources && c[1].sources)
+            if(c[0].sources.length == c[1].sources.length){
+                var match = true;
+                for(var i=0;i<c[0].sources.length;i++)
+                    if(c[0].sources[i] != c[1].sources[i])
+                        match = false;
+            }
+        if(c[0].components && c[1].components && match)
+            if(c[0].components.length == c[1].components.length){
+                var componentsMatch = true;
+                for(var i=0;i<c[0].components.length;i++) if(c[0].components[i]){
+                    var componentMatches = false;
+                    var type1 = c[0].components[i].substring(0,1);
+                    var val1 = c[0].components[i].split(" ");
+                    var containsGround1 = false;
+                    if(c[0].components[i].includes(' 0 '))
+                        containsGround1 = true;
+                    for(var j=0;j<c[1].components.length;j++) if(c[0].components[j]){
+                        var type2 = c[1].components[j].substring(0,1);
+                        var val2 = c[1].components[j].split(" ");
+                        var containsGround2 = false;
+                        if(c[1].components[j].includes(' 0 '))
+                            containsGround2 = true;
+                        if(type1 == type2 && val1 == val2 && containsGround1 == containsGround2)
+                            match = true;
+                    }
+                    if(!componentMatches)
+                        componentsMatch = false;
+                }
+            }
+        
+        if(match)
+            callback("Components Match")
+        else
+            errorCallback("Failed basic component matching");
     },
     test(callback,error){
         const expectedOutput = 2.5;

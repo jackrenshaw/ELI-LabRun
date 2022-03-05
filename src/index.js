@@ -130,7 +130,7 @@ Menu.setApplicationMenu(menu)
 var auth_token = null;
 var completions = null;
 const actions = require("./actions.js");
-const { test } = require('./modules/spice');
+const { test, ValidateCircuit } = require('./modules/spice');
 
 const BASE = 'https://unsw-eli.herokuapp.com/'
 
@@ -173,10 +173,16 @@ var openSimulation = function(){
 
 //This needs more validation (for params at a minimum)
 //We also need to validate the actions object at some point
-function enactCircuit(params,callback,errorCallback){
+function implementCircuit(params,callback,errorCallback){
+  console.log("Implementing the Circuit");
+  callback("hello world")
+}
+
+function circuitValidate(params,callback,errorCallback){
+  console.log("validating the circuit");
   var found = false;
   console.log(params);
-  for(var l of actions)
+  for(var l of Labs.Labs)
     if(l.Name == params.lab){
       console.log("in lab")
       for(var p of l.Parts)
@@ -184,15 +190,15 @@ function enactCircuit(params,callback,errorCallback){
           console.log("in part")
           for(var s of p.Sections)
             if(s.Name == params.section){
-              console.log("in Section")
+              console.log("in section");
+              SPICE.ValidateCircuit(params.circuit,s.Solution,null,null,callback,errorCallback)
               found = true;
-              s.Post[0].func(params.value,callback,errorCallback);
             }
         }
     }
   if(!found){
-    console.log("No Action Available :(");
-    errorCallback("No Action Available");
+    console.log("Lab Doesn't Exist");
+    errorCallback("The Laboratory Provided Doesn't Exist");
   }
 }
 
@@ -262,14 +268,17 @@ const createWindow = () => {
   ipcMain.on('getCompletions', (event,page) => {
     getCompletions(page,function(response){ event.reply('completion-reply', response)},function(){event.reply('completion-reply', 'error')});
   })
-  ipcMain.on('enactCircuit', (event,params) => {
-    enactCircuit(params,function(response){ event.reply('enact-reply', response)},function(){event.reply('enact-reply', 'error')});
-  })
   ipcMain.on('graph', (event,params) => {
     Graph("Function",params.signals,params.xlabel,params.ylabel,function(svg){event.reply('graph-reply', svg)},function(error){event.reply('graph-reply', error)});
   })
   ipcMain.on('simulate', (event,params) => {
     SPICE.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-reply',error)});
+  })
+  ipcMain.on('validate', (event,params) => {
+    circuitValidate(params,function(token){ event.reply('validate-reply', token)},function(){event.reply('implement-reply', 'error')});
+  })
+  ipcMain.on('implement', (event,params) => {
+    implementCircuit(params,function(response){ event.reply('implement-reply', response)},function(){event.reply('implement-reply', 'error')});
   })
   ipcMain.on('openLab', (event,page) => {
     openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
