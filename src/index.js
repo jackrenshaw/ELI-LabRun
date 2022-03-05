@@ -284,7 +284,7 @@ const createWindow = () => {
     openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
   })
 
-  SPICE.SpiceCommand = "ngspice";
+  SPICE.SpiceCommand = ".\bin\ngspice_con.exe";
   SPICE.test(async function(){
     console.log("SPICE Works Locally");
     await Labs.setLabs("src/labs")
