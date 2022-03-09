@@ -3,12 +3,16 @@ const { contextBridge, ipcRenderer } = require('electron')
 contextBridge.exposeInMainWorld('electronAPI', {
   setTitle: (title) => ipcRenderer.send('set-title', title),
   login: (form) => ipcRenderer.send('login',form),
-  getCompletions: (page) => ipcRenderer.send('getCompletions',page)
+  getCompletions: (page) => ipcRenderer.send('getCompletions',page),
+  startup: () => ipcRenderer.send('startup','begin')
 })
 
 document.onreadystatechange = function () {
   if (document.readyState == "complete") {
     const $ = require('jquery');
+    ipcRenderer.on('startup-reply', (_event, arg) => {
+      $(".container center").append(arg);
+    });
     $("a.focus-lab").click(function(){
       console.log($(this));
       console.log($(this).data('lab'));
@@ -20,7 +24,7 @@ document.onreadystatechange = function () {
       console.log($(this));
       console.log($(this).data('lab'));
       console.log($(this).data('part'));
-      ipcRenderer.send('openLab',{lab:$(this).data("lab"),part:$(this).data("part")})
+      ipcRenderer.send('openLab',{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")})
       ipcRenderer.on('openLab-reply', (_event, arg) => {
         console.log(arg)
       });

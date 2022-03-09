@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
   SimulateCircuit: (netlist) => ipcRenderer.send('simulate', {circuit:netlist}),
-  ValidateCircuit: (netlist,lab,part,section) => ipcRenderer.send('validate', {circuit:netlist,lab:lab,part:part,section:section}),
+  ValidateCircuit: (netlist,page) => ipcRenderer.send('validate', {circuit:netlist,lab:page.lab,part:page.part,section:page.section}),
   ImplementCircuit: (params) => ipcRenderer.send('implement',params)
 })
 
@@ -20,6 +20,10 @@ document.onreadystatechange = function () {
     })
     ipcRenderer.on('validate-reply', (_event, arg) => {
       console.log(arg)
+      if(arg.hasOwnProperty('token'))
+        $("#Simulation .modal-card p.validation-result").html("Simulation Successful!:"+arg.token);
+      else
+        $("#Simulation .modal-card p.validation-result").html("Simulation Error!:"+JSON.stringify(arg));
     })
     $("button[data-action='implement']").click(function(){
       var params = {

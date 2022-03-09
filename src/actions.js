@@ -1,5 +1,7 @@
 const axios = require('axios')
 
+var Tokens = {};
+
 var Actions = [{
   "Name":"0. Familiarisation",
   "Parts":[{
@@ -42,4 +44,6 @@ var Actions = [{
     }]
   }] 
 }]
-module.exports = Actions;
+
+module.exports.Actions = Actions;
+module.exports.Tokens = Tokens

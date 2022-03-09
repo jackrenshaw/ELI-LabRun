@@ -48,8 +48,7 @@
       Please confirm that you would like implement the circuit design in hardware
     </section>
     <footer class="modal-card-foot">
-      <button class="button is-success">Confirm</button>
-      <button class="button">Cancel</button>
+      <button class="button is-info">Confirm</button>
     </footer>
   </div>
 </div>
@@ -66,8 +65,7 @@
         <p><%- section.SimulationImage %></p>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success">Confirm</button>
-        <button class="button">Cancel</button>
+        <button class="button is-info">Close</button>
       </footer>
     </div>
 </div>
@@ -81,12 +79,11 @@
       <div class="modal-card-body">
         <h6>Simulation Output</h6>
         <p class="sim-result"></p>
-        <h6>Desired Result</h6>
-        <p><%- section.SimulationImage %></p>
+        <h6>Validation Notes</h6>
+        <p class="validation-result"></p>
       </div>
       <footer class="modal-card-foot">
-        <button class="button is-success">Confirm</button>
-        <button class="button">Cancel</button>
+        <button class="button is-info">Confirm</button>
       </footer>
     </div>
 </div>
@@ -116,8 +113,7 @@
           <input type="range" class="slider is-fullwidth" min="0" max="150" step="1" name="voltage2" value='50'>
         </div>
         <footer class="modal-card-foot">
-          <button class="button is-success">Confirm</button>
-          <button class="button">Cancel</button>
+          <button class="button is-info">Close</button>
         </footer>
       </div>
 </div>
@@ -213,8 +209,7 @@
           </div>
         </form>
         <footer class="modal-card-foot">
-          <button class="button is-success">Confirm</button>
-          <button class="button">Cancel</button>
+          <button class="button is-info">Close</button>
         </footer>
       </div>
   </div>
@@ -260,7 +255,7 @@
           <h6>Transient Parameters</h6>
           <label for="frequency" class="form-label">Simulation Length</label><br>
             <input type="text" class="input" aria-label="Text input with dropdown button">
-          <p>Simulation Step: <span class='simulation-step'><% if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%></span></p>
+          <p>Simulation Step: <span class='simulation-step'><% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%></span></p>
           </div>
           <hr>
           <div id='scope-sweep'>
@@ -309,9 +304,9 @@
             <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio34">1GHz</label>
           </div>
         </div>
+        </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Confirm</button>
-          <button class="button">Cancel</button>
+          <button class="button is-info">Close</button>
         </footer>
       </div>
   </div>

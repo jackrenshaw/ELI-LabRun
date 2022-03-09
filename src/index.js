@@ -7,131 +7,12 @@ const { post } = require('jquery');
 
 const SPICE = require("./modules/spice");
 const Graph = require("./modules/graph");
-const Labs = require("./modules/labs")
+const Labs = require("./modules/labs");
+const Functions = require("./modules/functions")
+const Actions = require("./actions.js");
 
-var labRead = null;
+SPICE.SpiceCommand = "ngspice";
 const isMac = process.platform === 'darwin'
-
-const template = [
-  // { role: 'appMenu' }
-  ...(isMac ? [{
-    label: app.name,
-    submenu: [
-      { role: 'about' },
-      { type: 'separator' },
-      { role: 'services' },
-      { type: 'separator' },
-      { role: 'hide' },
-      { role: 'hideOthers' },
-      { role: 'unhide' },
-      { type: 'separator' },
-      { role: 'quit' }
-    ]
-  }] : []),
-  // { role: 'fileMenu' }
-  {
-    label: 'File',
-    submenu: [
-      {label: 'New',
-      submenu: [
-        {
-          label: 'New Simulation',
-          click: async () => {
-            openSimulation();
-          }
-        },
-        {
-          label: 'New Graphing Window',
-          click: async () => {
-            openGraph();
-          }
-        },
-      ]},
-      isMac ? { role: 'close' } : { role: 'quit' },
-    ]
-  },
-  // { role: 'editMenu' }
-  {
-    label: 'Edit',
-    submenu: [
-      { role: 'undo' },
-      { role: 'redo' },
-      { type: 'separator' },
-      { role: 'cut' },
-      { role: 'copy' },
-      { role: 'paste' },
-      ...(isMac ? [
-        { role: 'pasteAndMatchStyle' },
-        { role: 'delete' },
-        { role: 'selectAll' },
-        { type: 'separator' },
-        {
-          label: 'Speech',
-          submenu: [
-            { role: 'startSpeaking' },
-            { role: 'stopSpeaking' }
-          ]
-        }
-      ] : [
-        { role: 'delete' },
-        { type: 'separator' },
-        { role: 'selectAll' }
-      ])
-    ]
-  },
-  // { role: 'viewMenu' }
-  {
-    label: 'View',
-    submenu: [
-      { role: 'reload' },
-      { role: 'forceReload' },
-      { role: 'toggleDevTools' },
-      { type: 'separator' },
-      { role: 'resetZoom' },
-      { role: 'zoomIn' },
-      { role: 'zoomOut' },
-      { type: 'separator' },
-      { role: 'togglefullscreen' }
-    ]
-  },
-  // { role: 'windowMenu' }
-  {
-    label: 'Window',
-    submenu: [
-      { role: 'minimize' },
-      { role: 'zoom' },
-      ...(isMac ? [
-        { type: 'separator' },
-        { role: 'front' },
-        { type: 'separator' },
-        { role: 'window' }
-      ] : [
-        { role: 'close' }
-      ])
-    ]
-  },
-  {
-    role: 'help',
-    submenu: [
-      {
-        label: 'Learn More',
-        click: async () => {
-          const { shell } = require('electron')
-          await shell.openExternal('https://electronjs.org')
-        }
-      }
-    ]
-  }
-]
-
-const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
-
-var auth_token = null;
-var completions = null;
-const actions = require("./actions.js");
-const { test, ValidateCircuit } = require('./modules/spice');
-
 const BASE = 'https://unsw-eli.herokuapp.com/'
 
 function login(form,callback,errorCallback){
@@ -143,6 +24,18 @@ function login(form,callback,errorCallback){
   .catch(error => {
     errorCallback(error)
   })
+}
+
+function startup(event,callback){
+  SPICE.test(async function(){
+    event.reply('startup-reply', "SPICE Works Locally<br>")
+    Labs.setLabs("src/labs",function(debugLine){
+      event.reply('startup-reply', (debugLine+"<br>"))
+    })
+    setTimeout(callback, 5000);
+  },function(){
+    event.reply('startup-reply', "SPICE doesn't work Locally. ELI can not run!")
+  }) 
 }
 
 var openGraph = function(){
@@ -191,7 +84,15 @@ function circuitValidate(params,callback,errorCallback){
           for(var s of p.Sections)
             if(s.Name == params.section){
               console.log("in section");
-              SPICE.ValidateCircuit(params.circuit,s.Solution,null,null,callback,errorCallback)
+              console.log("validating circuit");
+              validCircuit = function(res){
+                console.log("Circuit is valid, producing action token");
+                const token = Functions.generateActionToken();
+                Actions.Tokens[token] = {page:params}
+                callback({token:token,res:res})
+                console.log(Actions.Tokens)
+              }
+              SPICE.ValidateCircuit(params.circuit,s.Solution,null,null,validCircuit,errorCallback)
               found = true;
             }
         }
@@ -220,17 +121,19 @@ const createWindow = () => {
   });
 
   var openLab = function(page,callback,errorCallback){
+    console.log(page);
     var found = false;
-    if(page.hasOwnProperty('lab') && page.hasOwnProperty('part'))
+    if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section'))
       for(var l of Labs.Labs)
         if(l.Name == page.lab)
           for(var p of l.Parts)
             if(p.Name == page.part)
-              if(p.hasOwnProperty('Sections'))
-                if(p.Sections)
-                  if(p.Sections.length)
-                    if(p.Sections[0].Name){
-                      const labWindow = new BrowserWindow({
+                for(var s of p.Sections){
+                  console.log(s.Name);
+                  if(s.Name == page.section){
+                    console.log("Found Lab!");
+                    found = true;
+                    const labWindow = new BrowserWindow({
                         width: 1200,
                         height: 800,
                         webPreferences: {
@@ -239,16 +142,18 @@ const createWindow = () => {
                       }
                       });
                       labWindow.webContents.openDevTools();
-                      found = true;
-                      var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+p.Sections[0].Name
+                      var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+s.Name
                       const ejse = require('ejs-electron')
-                      .data({section:p.Sections[0],part:p,page:{prev:null,next:null}})
+                      .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:null,next:null}})
                       .options('debug', true)
                       labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                       callback(reqURL);
                     }
-  if(!found)
+                  }
+  if(!found){
+    console.log("Lab doesn't exist?")
     errorCallback("Page not Found");
+  }
   }
 
   var loading = function(){
@@ -259,8 +164,9 @@ const createWindow = () => {
   loading();
 
   var loadView = function(){
+    fs.writeFileSync("src/labs/labs.json",JSON.stringify(Labs.Labs))
     const ejse = require('ejs-electron')
-    .data({labs:Labs.Labs,actions:actions})
+    .data({labs:Labs.Labs,actions:Actions.Actions})
     .options('debug', true)
     mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
   }
@@ -275,7 +181,10 @@ const createWindow = () => {
     SPICE.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-reply',error)});
   })
   ipcMain.on('validate', (event,params) => {
-    circuitValidate(params,function(token){ event.reply('validate-reply', token)},function(){event.reply('implement-reply', 'error')});
+    circuitValidate(params,
+      function(token){ event.reply('validate-reply', token)},
+      function(error){console.log(error); event.reply('validate-reply', error)}
+    );
   })
   ipcMain.on('implement', (event,params) => {
     implementCircuit(params,function(response){ event.reply('implement-reply', response)},function(){event.reply('implement-reply', 'error')});
@@ -284,14 +193,9 @@ const createWindow = () => {
     openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
   })
 
-  SPICE.SpiceCommand = ".\bin\ngspice_con.exe";
-  SPICE.test(async function(){
-    console.log("SPICE Works Locally");
-    await Labs.setLabs("src/labs")
-    setTimeout(loadView, 5000);
-  },function(){
-    console.log("Spice doesn't work locally");
-  })  
+  ipcMain.on('startup', (event,page) => {
+    startup(event,loadView);
+  })
 
 };
 

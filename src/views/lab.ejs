@@ -30,7 +30,9 @@
       top: 0px;
       padding-top:100px;
     }
-    
+      #Simulation .modal-card,#Instructions .modal-card{
+        width:900px;
+      }    
           .bd-placeholder-img {
             font-size: 1.125rem;
             text-anchor: middle;
@@ -178,6 +180,7 @@
 <script type="text/javascript" src="../public/javascripts/spice.js" defer></script>
 <script type="text/javascript">
   $(document).ready(function(){
+  UI.Page = JSON.parse('<%-JSON.stringify(page)%>');
   UI.SimulationParams = JSON.parse(`<%- JSON.stringify(section.SimulationParams)%>`.replace(/\n/g,'\\n'));
   UI.SimulationParams.raw = UI.SimulationParams.raw.replace(/\\n/g,'\n');
   UI.Subcircuit = `<%=section.Subcircuit%>`; 
@@ -186,9 +189,12 @@
       UI.gridPositionsX.push(g-i);
   $("component,ground").draggable();
   UI.select();
-  $(".modal .modal-card-foot button:contains(Cancel),button[aria-label='close']").click(function(){
+  $(".modal .modal-card-foot button:contains(Close),button[aria-label='close'],div.modal-background").click(function(){
     $(".modal").removeClass("is-active");
   })
+  $(document).on('keyup', function(e) {
+    if (e.key == "Escape")    $(".modal").removeClass("is-active");
+  });
 })
 
 </script>
@@ -222,7 +228,12 @@
         <a class="navbar-item">
           <span class="material-icons">arrow_forward</span>
         </a>
-        <a class="navbar-item">
+        <a class="navbar-item" onclick="UI.Override()">
+          <span class="material-icons">
+            Key
+            </span>
+          </a>
+        <a class="navbar-item" onclick="UI.Info();">
         <span class="material-icons">
           info
           </span>
@@ -261,22 +272,25 @@
 <% 
 var top = 100;
 var left = 50;
-var showWireFrame = false;
-if(part.hasOwnProperty("Framework")){%>
+var showFramework = false;
+if(part.hasOwnProperty('Framework'))
+  if(part.Framework)
+    showFramework = true;
+if(showFramework){%>
   <script type="text/javascript">
     $(document).ready(function(){
       UI.FrameWork = true;
     })
   </script>
 <%-part.Framework%>
-<%}else{%>
+<%}%>
   <ground style="position:absolute;left:0px;top: 200px;">
     <div class='InterPortSpace'></div>
-    <port bind-position='{"top":-3,"left":20}'></port>
+    <port data-bind-position='{"top":-3,"left":20}'></port>
     </ground>
 <%if(section) if(section.hasOwnProperty("Components")) for(var c of section.Components)
 if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
-<component spice-name="<%=c.Name%>" spice-class="<%=c.Class%>" spice-type="<%=c.Type%>" spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;">
+<component data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;">
 <% if(c.Value && c.Name){ %>
 <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
 <%}else if(c.Value){ %>
@@ -289,11 +303,11 @@ if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Wi
 <div class='InterPortSpace' style='position:absolute;top:<%=n.top%>px;left:<%=n.left%>px;height:<%=n.height%>px;width:<%=n.width%>px;'></div>
 <%}%>
 <% for(var p of c.Ports){%>
-<port name="<%=p.id%>" bind-position="<%=JSON.stringify(p.bindPosition)%>" spice-position="<%=p.position%>" style='background:red;position:absolute;top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px'></port>
+<port name="<%=p.id%>" <%if(p.hasOwnProperty('bindPosition')){%>data-bind-position='<%-JSON.stringify(p.bindPosition)%>'<%}%> data-spice-node="<%=p.node%>" data-spice-position="<%=p.position%>" style='top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px;<%if(p.hasOwnProperty('CSS')){%><%=p.CSS%><%}else{%>position:absolute;background:red;<%}%>'><% if(p.hasOwnProperty('labelPosition')) if(p.labelPosition) if(p.labelPosition.hasOwnProperty('top') && p.labelPosition.hasOwnProperty('left')){%><label style='position:relative;left:<%=p.labelPosition.left;%>px;top:<%=p.labelPosition.top;%>px'><%=p.id%></label><%}%></port>
 <%}%>
 </component>
 <%left = left + c.Width;%>
-<%}}%>
+<%}%>
 </main>
 <%- include ('partial/modals.ejs') %>
 <connectors>

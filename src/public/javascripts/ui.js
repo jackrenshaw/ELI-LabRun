@@ -3,12 +3,14 @@
 
 */
 var UI = {
+  Page:null,
   FrameWork: $("meta[name='wireframe']").attr("content"),
   portPositionsX: [75,175,275,375,600,700,1000,1150], // X positions of left side of ports (signal generator, supply, oscilloscope)
   gridPositionsX: [],//X position of 
   selectedComponent:null,
   selectedWire:null,
   SPICE:null,
+  nodes:[],
   clear: function(){
     //clear all bindings, start from a blank slate
     $("component,ground").draggable('disable');
@@ -109,12 +111,12 @@ var UI = {
     $("wire,port").css("cursor","crosshair");
     $("body").css("cursor","default");
     //To start wiring, the student must click on a port or a wire
-    $("port,wire,bind").click(function(event){ if($(this).attr("spice-node") || !UI.FrameWork){
+    $("port,wire,bind").click(function(event){ if($(this).data("spice-node") || !UI.FrameWork){
       $("port,wire,bind,body").unbind("click");
-      console.log($(this).attr("spice-node"));
+      console.log($(this).data("spice-node"));
       var spiceNode = "";
       if(UI.FrameWork)
-        spiceNode = " spice-node=\""+$(this).attr("spice-node")+"\"";
+        spiceNode = " spice-node=\""+$(this).data("spice-node")+"\"";
       console.log(spiceNode);
       $("body").css("cursor","crosshair");
       var wireid = $('wire').length;
@@ -172,7 +174,7 @@ var UI = {
             void(0);
         }
         $("body,port,wire").click(function(){
-          if(($(this).attr("spice-node") == $("#wire"+wireid).attr("spice-node")) || !$(this).attr("spice-node")){
+          if(($(this).data("spice-node") == $("#wire"+wireid).data("spice-node")) || !$(this).data("spice-node")){
             $(document).unbind("click");
             $("body,port,wire").unbind("click");
             $(document).unbind("mousemove");
@@ -231,11 +233,11 @@ var UI = {
             horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
             vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
           }];
-          if(UI.inSpan(Port,wirespan) && !wired){
+          if(UI.inSpan(Port,wirespan) && !wired && $(_port).data("bind-position")){
             wired = true;
-            if($(_wire).attr("spice-node"))
-              $(_port).attr("spice-node",$(_wire).attr("spice-node"))
-            var bindPosition = JSON.parse($(_port).attr("bind-position"));
+            if($(_wire).data("spice-node"))
+              $(_port).data("spice-node",$(_wire).data("spice-node"))
+            var bindPosition = $(_port).data("bind-position");
             if($(_wire).height() == 6 && portHeight == 6){
               var heightDiff = $(_port).offset().top - $(_wire).offset().top;
               $(_comp).css("top",($(_comp).offset().top-heightDiff));
@@ -259,13 +261,13 @@ var UI = {
             }
           }else if(UI.inSpan(Port,wirespan) && wired){
             if($(_wire).height() == 6 && portHeight == 6)
-              UI.AddBind(Port,JSON.parse($(_port).attr("bind-position")))
+              UI.AddBind(Port,$(_port).data("bind-position"))
             else if($(_wire).width() == 6 && portWidth == 6)
-              UI.AddBind(Port,JSON.parse($(_port).attr("bind-position")))
+              UI.AddBind(Port,$(_port).data("bind-position"))
             else if($(_wire).height() == 6 && portWidth == 6)
-              UI.AddBind(Port,JSON.parse($(_port).attr("bind-position")))
+              UI.AddBind(Port,$(_port).data("bind-position"))
             else if($(_wire).width() == 6 && portHeight == 6)
-              UI.AddBind(Port,JSON.parse((_port).attr("bind-position")))
+              UI.AddBind(Port,(_port).data("bind-position"))
           }
         })
       }})
@@ -391,10 +393,13 @@ var UI = {
   },
   SimulateCircuit: function(netlist,normalised){
     window.electronAPI.SimulateCircuit(netlist);
+    window.electronAPI.ValidateCircuit(netlist,UI.Page);
     //window.electronAPI.EnactCircuit(netlist);
     console.log(netlist)
   },
   makeSPICE: function(){
+    UI.nodes = [];
+    UI.components = [];
     const powersupply = [{
       voltage:parseFloat($("input[name='voltage1']").val())/10,
       positive:{
@@ -478,49 +483,37 @@ var UI = {
     if(signalgenerator.freqMultiple == "kHz")
       signalgenerator.frequency = signalgenerator.frequency*1000;
     $("#SignalGenerator .type a").each(function(){
-      if($(this).hasClass("btn-primary"))
+      if($(this).hasClass("is-info"))
         signalgenerator.waveType = $(this).attr("name");
     })
     if(UI.FrameWork){
       var scopenodes = {positive:null,negative:null};
-      var nodes = [];
-      var components = [];
       $("wire").each(function(){
-        if($(this).attr("spice-node")){
-          var nodeExists = false;
-          if(nodes.length)
-            for(var n=0;n<nodes.length;n++)
-              if(nodes[n].hasOwnProperty("name"))
-                if(nodes[n].name == $(this).attr("spice-node")){
-                  nodes[n].span.push({
-                    horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
-                    vertical:[$(this).offset().top,($(this).offset().top+$(this).height())],
-                  });
-                  nodeExists = true;
-                }
-        if($(this).attr("spice-scope"))
-          if($(this).attr("spice-scope") == '+')
-            scopenodes.positive = $(this).attr("spice-node");
-          else if($(this).attr("spice-scope") == '-')
-            scopenodes.negative = $(this).attr("spice-node");
+        var nodeExists = false;
+        var node = $(this).data("spice-node");
+        if(!UI.nodes.hasOwnProperty(node))
+          UI.nodes[node] = {name:node,span:[]}
+        if(node || node == 0){
+          UI.nodes[node].span.push({
+            horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
+            vertical:[$(this).offset().top,($(this).offset().top+$(this).height())],
+          });
+
+        if($(this).data("spice-scope"))
+          if($(this).data("spice-scope") == '+')
+            scopenodes.positive = $(this).data("spice-node");
+          else if($(this).data("spice-scope") == '-')
+            scopenodes.negative = $(this).data("spice-node");
         }
-        if(!nodeExists)
-          nodes.push({
-            name:$(this).attr("spice-node"),
-            span:[{
-              horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
-              vertical:[$(this).offset().top,($(this).offset().top+$(this).height())],
-            }]
-          })
       });
         $("component").each(function(){
           var component = {
-            name:$(this).attr("spice-name"),
+            name:$(this).data("spice-name"),
             position:$(this).offset(),
             width:$(this).width(),
             height:$(this).height(),
-            type:$(this).attr("spice-type"),
-            value:$(this).attr("spice-value"),
+            type:$(this).data("spice-type"),
+            value:$(this).data("spice-value"),
             span:[{
               horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
               vertical:[$(this).offset().top,($(this).offset().top+$(this).height())],
@@ -532,6 +525,7 @@ var UI = {
             component.ports.push({
               name:$(this).attr("name"),
               position:$(this).offset(),
+              SpicePosition:parseInt($(this).data("spice-position")),
               width:$(this).width(),
               height:$(this).height(),
               span:[{
@@ -541,18 +535,18 @@ var UI = {
               nodes:[]
             });
           });
-          components.push(component);
+          UI.components.push(component);
         });
-      console.log(oscilloscope.positive.span)
-      console.log(oscilloscope.negative.span)
-      for(var n of nodes){
-        console.log(n.span);
+      for(var n of UI.nodes){
         if(UI.inSpan(n.span,oscilloscope.positive.span))
           scopenodes.positive = n.name
         if(UI.inSpan(n.span,oscilloscope.negative.span))
           scopenodes.negative = n.name
       }
-      this.SPICE = new SPICE(powersupply,signalgenerator,oscilloscope,ground,nodes,components,null,null,null,scopenodes,UI.Subcircuit,UI.SimulationParams,UI.debugFunction,UI.SimulateCircuit);
+      var nodes = [];
+      for(var n in UI.nodes)
+        nodes.push(UI.nodes[n]);
+      this.SPICE = new SPICE(powersupply,signalgenerator,oscilloscope,ground,nodes,UI.components,null,null,null,scopenodes,UI.Subcircuit,UI.SimulationParams,UI.debugFunction,UI.SimulateCircuit);
     }else{
     var wires = [];
     var parts = [];
@@ -560,7 +554,7 @@ var UI = {
     $("wire,port").each(function(){
       var id = null;
       if($(this)[0].localName == "port") 
-        id = $(this).parent().attr("spice-name")+"-"+$(this).attr("spice-name");
+        id = $(this).parent().data("spice-name")+"-"+$(this).data("spice-name");
       else if($(this)[0].localName == "wire") 
         id = $(this).attr("id");
       if($(this).parent()[0].localName == "component" || $(this).parent()[0].localName == "ground" || $(this)[0].localName == "wire" || $(this).parent()[0].localName == "connectors")
@@ -590,16 +584,16 @@ var UI = {
       });
     $("component").each(function(){
       var component = {
-        name:$(this).attr("spice-name"),
+        name:$(this).data("spice-name"),
         position:$(this).offset(),
         width:$(this).width(),
         height:$(this).height(),
-        type:$(this).attr("type"),
+        type:$(this).data("spice-type"),
         ports:[]
       };
       $(this).find("port").each(function(){
         component.ports.push({
-          name:$(this).attr("spice-name"),
+          name:$(this).data("spice-name"),
           position:$(this).offset(),
           width:$(this).width(),
           height:$(this).height(),
@@ -682,8 +676,8 @@ $("connectors port").each(function(){
       vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
     }];
     if(UI.inSpan(PortSpan,WireSpan))
-      if($(_wire).attr("spice-node"))
-        $(_port).attr("spice-node",$(_wire).attr("spice-node"));
+      if($(_wire).data("spice-node"))
+        $(_port).data("spice-node",$(_wire).data("spice-node"));
   })
 })
 $("connectors div").each(function(){

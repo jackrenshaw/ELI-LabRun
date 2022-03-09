@@ -30,18 +30,13 @@ The procedure, in the broadest terms, is:
 */
 class SPICE{
   constructor(powersupply,signalgenerator,oscilloscope,ground,nodes,components,wires,binds,parts,scopenodes,subcircuit,simulationParams,debugFunction,complete){
+    console.log(nodes);
     this.powersupply = powersupply;
     this.signalgenerator = signalgenerator;
     this.oscilloscope = oscilloscope;
     this.ground = ground;
     this.scopenodes = scopenodes;
     this.ammeters = [];
-    console.log(this.powersupply);
-    console.log(this.signalgenerator);
-    console.log(this.oscilloscope);
-    console.log(this.scopenodes);
-    console.log(this.ground);
-    console.log(components);
     this.connectionnodes = {
       ps1_positiveNode:null,
       ps1_negativeNode:null,
@@ -86,8 +81,6 @@ class SPICE{
       for(var n of this.nodes)
         if(n.name == '0')
           if(!this.inSpan(this.ground.span,n.span)){
-            console.log(this.ground.span)
-            console.log(n.span);
             this.dbg("<b>Error:</b> Ground is not placed correctly.")
             throw 'Ground Placement Error'
           }
@@ -404,9 +397,9 @@ labelNodes(){
       }
       console.log(pulseParams)
       if(this.signalgenerator.waveType == "sine")
-        this.SPICE += "V3 "+this.connectionnodes.siggen_positivenode+" "+this.connectionnodes.siggen_negativenode+" SINE(0,"+this.signalgenerator.voltage+","+this.signalgenerator.frequency+")\n";
+        this.SPICE += "V3 "+this.connectionnodes.siggen_positivenode+" "+this.connectionnodes.siggen_negativenode+" SINE(0 "+this.signalgenerator.voltage+" "+this.signalgenerator.frequency+")\n";
       else 
-        this.SPICE += "V3 "+this.connectionnodes.siggen_positivenode+" "+this.connectionnodes.siggen_negativenode+" PULSE("+pulseParams.V1+","+pulseParams.V2+","+pulseParams.Td+","+pulseParams.Tr+","+pulseParams.Tf+","+pulseParams.Pw+","+pulseParams.Per+","+pulseParams.Phase+")\n";
+        this.SPICE += "V3 "+this.connectionnodes.siggen_positivenode+" "+this.connectionnodes.siggen_negativenode+" PULSE("+pulseParams.V1+" "+pulseParams.V2+" "+pulseParams.Td+" "+pulseParams.Tr+" "+pulseParams.Tf+" "+pulseParams.Pw+" "+pulseParams.Per+" "+pulseParams.Phase+")\n";
     }
   }
 

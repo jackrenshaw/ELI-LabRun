@@ -33,7 +33,7 @@
       <div class="columns">
         <div class="is-3 is-offset-5">
           <% if(p.Sections) if(p.Sections.length) if(p.Sections[0].hasOwnProperty('Name')){ %>
-            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" class="button is-info is-large open-lab">Open Lab</a><br>
+            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" data-section="<%=p.Sections[0].Name%>" class="button is-info is-large open-lab">Open Lab</a><br>
           <%}else{%>
             <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" class="button is-info is-large open-lab" disabled>Lab Unavailable</a><br>
           <%}%>
@@ -58,14 +58,13 @@
             <div class="media">
               <div class="media-content">
                 <p class="title is-4"><%= p.Name %></p>
-                <p class="subtitle is-6">@johnsmith</p>
               </div>
             </div>
         
             <div class="content">
               <%= p.Settings.Instructions %><hr>
               <br><time><small>Available from <% var d = new Date(p.Settings.Available);%><%= d.toDateString() %></small></time>
-              <% if(d < new Date()){  %>
+              <% if(d < new Date() && p.Sections) if(p.Sections.length){  %>
               <br><a data-lab="<%=l.Name%>" data-part="<%=p.Name%>" class='button is-small is-info focus-lab'>Select</a>
               <% } %>
             </div>
