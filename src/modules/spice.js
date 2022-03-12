@@ -189,10 +189,53 @@ var Spice = {
                 Value:null,
         },
         D:{
-                Name:'Diode',
-                Ports:['P','N'],
-                Class:3,
-                Value:null
+            Name:'Diode',
+            Image:'../public/Images/smd-diode.svg',
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/smd-diode.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Height:100,
+            Width:100,
+            Directional:false,
+            InterPortSpace:[{
+                top:76,
+                height:20,
+                left:43,
+                width:15
+            }],
+            InterPortSpace:[{
+                top:47,
+                height:6,
+                left:30,
+                width:35
+            }],
+            Ports:[{
+                id:1,
+                top:47,
+                left:2,
+                height:6,
+                width:28,
+                position:1,
+                bindPosition:{
+                    left:-3,
+                    top:0
+                }
+            },{
+                id:2,
+                top:47,
+                left:65,
+                height:6,
+                width:32,
+                position:2,
+                bindPosition:{
+                    left:29,
+                    top:0
+                }
+            }],
+            Label:{
+                    "top":-20,
+                    "left":17
+                },
+            Class:null,
+            Value:3
         },
         J:{
                 Name:'JFET',
@@ -316,6 +359,59 @@ var Spice = {
                     "top":70,
                     "left":50
                 },
+            },{
+                Name:'LM741',
+                CSS:`position:absolute;background-size:200px;background-image:url(../public/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
+                Image:'../public/images/8pin-DIP.svg',
+                Height:200,
+                Width:200,
+                InterPortSpace:[{
+                    top:47,
+                    height:6,
+                    left:30,
+                    width:35
+                }],
+                Ports:[{
+                    id:'II',
+                    top:89,
+                    left:31,
+                    height:14,
+                    width:20,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'NII',
+                    top:55,
+                    left:31,
+                    height:14,
+                    width:20,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'V+',
+                    top:55,
+                    left:150,
+                    height:14,
+                    width:20,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'V-',
+                    top:125,
+                    left:31,
+                    height:14,
+                    width:20,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'O',
+                    top:89,
+                    left:150,
+                    height:14,
+                    width:20,
+                    CSS:"background:black;position:absolute;"
+                }],
+                Value:null,
+                Label:{
+                    "top":70,
+                    "left":50
+                },
             }]
         },
     SPICE_to_Components: function(netlist){
@@ -334,9 +430,11 @@ var Spice = {
             if(c.substring(0,8) == ('RAmmeter'))
                 type = 'Ammeter'
             if(type == 'X'  && this.simple.hasOwnProperty('X') && this.simple.X  && !inSubcircuit){
-                console.log("Subcircuit?")
-                for(var t of this.simple.X)
-                    if(t.Name == params.pop()){
+                console.log(c)
+                for(var t of this.simple.X){
+                    console.log(t.Name+"="+params.slice(-1))
+                    if(t.Name == params.slice(-1)){
+                        console.log("found it:"+t.Name)
                         var Component = {
                             Name:c.substring(0,c.indexOf(' ')),
                             Type:t.Name,
@@ -357,6 +455,7 @@ var Spice = {
                             Component.Ports[p].node = c.split(" ")[(p+1)];
                         components.push(Component)
                     }
+                }
             }else if(this.simple.hasOwnProperty(type) && !inSubcircuit){
                 var Component = {
                     Name:c.substring(0,c.indexOf(' ')),
@@ -555,12 +654,9 @@ var Spice = {
         this.SpiceSimulate(netlist,testData,error);
     },
     SpiceSimulate(netlist,callback,errorFunction){
-        console.log(netlist)
         tmp.file(function _tempFileCreated(err, path, fd, cleanupCallback) {
-            console.log(path);
             if(err) errorFunction(err);
             fs.writeFileSync(path,netlist);
-            console.log(fs.readFileSync(path))
             const ls = spawn(Spice.SpiceCommand, [path]);
             var scopeData = [];
             var rawData = "";
@@ -581,7 +677,6 @@ var Spice = {
               if(labels)
                 if(labels.length)
                     labels = labels[0].match(/[A-z0-9\(\)\/,]+/g,'');
-              console.log(labels)
               var scopeData = [];
               if(scopes) if(scopes.length){
                 var sampleStep = 1;

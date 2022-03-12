@@ -254,7 +254,7 @@
             </script>
           <h6>Transient Parameters</h6>
           <label for="frequency" class="form-label">Simulation Length</label><br>
-            <input type="text" class="input" aria-label="Text input with dropdown button">
+            <input type="text" class="input" aria-label="Text input with dropdown button" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.time %><%}%>">
           <p>Simulation Step: <span class='simulation-step'><% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%></span></p>
           </div>
           <hr>

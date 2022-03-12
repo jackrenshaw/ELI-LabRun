@@ -3,7 +3,8 @@ const { contextBridge, ipcRenderer } = require('electron')
 contextBridge.exposeInMainWorld('electronAPI', {
   SimulateCircuit: (netlist) => ipcRenderer.send('simulate', {circuit:netlist}),
   ValidateCircuit: (netlist,page) => ipcRenderer.send('validate', {circuit:netlist,lab:page.lab,part:page.part,section:page.section}),
-  ImplementCircuit: (params) => ipcRenderer.send('implement',params)
+  ImplementCircuit: (params) => ipcRenderer.send('implement',params),
+  ChangeLab: (page) => ipcRenderer.send('')
 })
 
 
@@ -33,6 +34,11 @@ document.onreadystatechange = function () {
         value:$(this).data("value")
       }
       ipcRenderer.send('enactCircuit',params)
+    })
+    $("a[data-action='changelab']").click(function(){
+      console.log($(this).data("page"))
+      ipcRenderer.send('openLab',$(this).data("page"));
+      window.close();
     })
   }
 }

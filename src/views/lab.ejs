@@ -222,15 +222,15 @@
   
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
-        <a class="navbar-item">
+        <a class="navbar-item" data-action="changelab" <%if(page.prev){%>data-page='<%-JSON.stringify(page.prev)%>'<%}else{%>disabled<%}%>>
           <span class="material-icons">arrow_back</span>
         </a>
-        <a class="navbar-item">
+        <a class="navbar-item" data-action="changelab" <%if(page.next){%>data-page='<%-JSON.stringify(page.next)%>'<%}else{%>disabled<%}%>>
           <span class="material-icons">arrow_forward</span>
         </a>
-        <a class="navbar-item" onclick="UI.Override()">
+        <a class="navbar-item" onclick="$('#Override').addClass('is-active');">
           <span class="material-icons">
-            Key
+            key
             </span>
           </a>
         <a class="navbar-item" onclick="UI.Info();">
@@ -350,7 +350,7 @@ if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Wi
         <button type="button" class="button is-info" onclick="$('#SignalGenerator').addClass('is-active');">Signal Generator</button>
       </signalgenerator>
       <oscilloscope class="column is-4  text-center" id="oscilloscope">
-        <button type="button" class="button is-info" onclick="$('#Oscilloscope').addClass('is-active');">Oscilloscope</button>
+        <button type="button" class="button is-info" onclick="//$('#Oscilloscope').addClass('is-active');" disabled>Oscilloscope</button>
       </oscilloscope>
     </div>
   </div>

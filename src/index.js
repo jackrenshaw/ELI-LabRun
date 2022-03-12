@@ -128,9 +128,15 @@ const createWindow = () => {
         if(l.Name == page.lab)
           for(var p of l.Parts)
             if(p.Name == page.part)
-                for(var s of p.Sections){
-                  console.log(s.Name);
+                for(var si=0;si<p.Sections.length;si++){
+                  var s = p.Sections[si];
                   if(s.Name == page.section){
+                    var prev = null;
+                    var next = null;
+                    if(si>0)
+                      prev = {lab:l.Name,part:p.Name,section:p.Sections[si-1].Name};
+                    if(si<(p.Sections.length-1))
+                      next = {lab:l.Name,part:p.Name,section:p.Sections[si+1].Name};
                     console.log("Found Lab!");
                     found = true;
                     const labWindow = new BrowserWindow({
@@ -144,7 +150,7 @@ const createWindow = () => {
                       labWindow.webContents.openDevTools();
                       var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+s.Name
                       const ejse = require('ejs-electron')
-                      .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:null,next:null}})
+                      .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next}})
                       .options('debug', true)
                       labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                       callback(reqURL);

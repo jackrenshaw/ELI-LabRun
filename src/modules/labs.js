@@ -17,7 +17,6 @@ var Labs = {
             labs = fs.readdirSync(inp);
         else if(fs.lstatSync(inp).isFile() && inp.includes('.json'))
             labs = JSON.parse(fs.readFileSync(inp));
-        console.log(labs)
         if(labs) for(var l of labs) if(l.substring(0,1) != "." && fs.lstatSync(inp+"/"+l).isDirectory()){
             verbose(l);
             var Lab = {Name:l,Settings:{Header:"",Spiel:"",Instructions:""},Parts:[]}
