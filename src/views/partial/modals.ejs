@@ -309,13 +309,13 @@
             <label class="btn btn-outline-primary" for="sweep-step-type-btnradio2">Linear</label>
           </div><br><br>
           <label for="frequency" class="form-label">Steps per Interval: <span class='steps-per-interval'>1</span></label>
-          <input type="text" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%>">
+          <input class="input is-medium" type="text" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%>">
           <br>
           <label for="frequency" class="form-label">Start Frequency: <span class='sweep-start-frequency'>1</span></label>
-          <input type="text" id="sweep-start-frequency" name='sweep-start-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.start %><%}%>">
+          <input class="input is-medium" type="text" id="sweep-start-frequency" name='sweep-start-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.start %><%}%>">
           <br>
           <label for="frequency" class="form-label">Stop Frequency: <span class='sweep-stop-frequency'>1</span></label>
-          <input type="text" id="sweep-stop-frequency" name='sweep-stop-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.stop %><%}%>">
+          <input class="input is-medium" type="text" id="sweep-stop-frequency" name='sweep-stop-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.stop %><%}%>">
           <br>
         </div>
         <%}%>

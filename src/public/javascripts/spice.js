@@ -67,12 +67,14 @@ class SPICE{
       var scopeValid = false;
       if(oscilloscope.hasOwnProperty('params'))
         if(oscilloscope.params.hasOwnProperty('type'))
-          if(['transient','sweep'].includes(oscilloscope.params.type))
+          if(['transient','ac'].includes(oscilloscope.params.type))
             if(oscilloscope.params.type == 'transient'){
               if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.transient.runtime) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.transient.step))
                 scopeValid = true;
-            }else if(oscilloscope.params.type == 'sweep'){
-
+            }else if(oscilloscope.params.type == 'ac'){
+              console.log(oscilloscope.params)
+              if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.start) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.stop) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.step) && ["linear","decade"].includes(oscilloscope.params.sweep.type))
+                scopeValid = true;
             }
       if(!scopeValid){
         this.dbg("<b>Error:</b> The Oscilloscope is not configured correctly. Please check your settings")
