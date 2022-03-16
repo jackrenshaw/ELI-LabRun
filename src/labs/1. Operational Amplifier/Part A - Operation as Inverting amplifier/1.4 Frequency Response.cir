@@ -1,4 +1,4 @@
-*
+Frequency Response
 .SUBCKT LT1008 3 2 7 4 6 1 8
 * USE C=30 PF IN MAIN CIRCUIT (CA TO CB).
 * INPUT
@@ -38,18 +38,18 @@ DSUB 4 7 DM2
 .MODEL DM1 D(IS=4.276E-12)
 .MODEL DM2 D(IS=8e-16)
 .ENDS LT1008
-XU1 0 N006 N003 N007 N004 N002 N001 LT1008
-V1 0 N007 15
-V2 N003 0 15
-V3 N005 0 dc 0 ac 1
-R1 N004 N006 1k
-R2 N006 N005 1k
+XU1 0 6 3 7 4 1 2 LT1008
+V1 3 0 15
+V2 0 7 15
+V3 5 0 ac 1 dc 0
+R1 4 6 1k
+R2 6 5 1k
 C1 0 0 30p
 * INSTRUCTIONS: Determine the 3dB Bandwidth, of this circuit, and then the frequency at which the gain falls to 0dB. Finally, plot the phase frequency response
 * SIMULATION NOTES: Perform a frequency sweep of the circuit given. This will require configuring the virtual oscilloscope. Run the sweep up to 1MHz with decade time steps and 1 step per decade.
 * CODE: 111A
 .control
-ac dec 10 0.1 10k
+ac dec 10 0.1 100T
 run
-print v(N004) v(N005)
+print 20*log10(v(4))
 .endc

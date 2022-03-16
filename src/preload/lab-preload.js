@@ -21,9 +21,10 @@ document.onreadystatechange = function () {
     })
     ipcRenderer.on('validate-reply', (_event, arg) => {
       console.log(arg)
-      if(arg.hasOwnProperty('token'))
+      if(arg.hasOwnProperty('token')){
         $("#Simulation .modal-card p.validation-result").html("Simulation Successful!:"+arg.token);
-      else
+        $("button[data-action='implement']").data(arg.token);
+      }else
         $("#Simulation .modal-card p.validation-result").html("Simulation Error!:"+JSON.stringify(arg));
     })
     $("button[data-action='implement']").click(function(){
@@ -31,14 +32,17 @@ document.onreadystatechange = function () {
         lab:$(this).data("lab"),
         part:$(this).data("part"),
         section:$(this).data("section"),
-        value:$(this).data("value")
+        value:$(this).data("value"),
+        token:$(this).data("token")
       }
       ipcRenderer.send('enactCircuit',params)
     })
     $("a[data-action='changelab']").click(function(){
       console.log($(this).data("page"))
-      ipcRenderer.send('openLab',$(this).data("page"));
-      window.close();
+      if($(this).data("page")){
+        ipcRenderer.send('openLab',$(this).data("page"));
+        window.close();
+      }
     })
   }
 }

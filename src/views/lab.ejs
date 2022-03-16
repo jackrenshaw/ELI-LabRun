@@ -30,6 +30,10 @@
       top: 0px;
       padding-top:100px;
     }
+    .disabled-icon{
+      opacity: 0.5!important;
+      cursor: disabled!important;
+    }
       #Simulation .modal-card,#Instructions .modal-card{
         width:900px;
       }    
@@ -169,6 +173,19 @@
       top:100px;
       position: absolute;
     }
+    footer.main-footer{
+      position:fixed;
+      bottom:0px;
+      height:75px;
+      width:100%;
+      background:#fff;
+      padding:20px;
+      z-index:14;
+      box-shadow: 0 6px 16px 14px rgb(0 0 0 / 12%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+    }
+    navbar{
+      box-shadow: 0 6px 10px 0 rgb(0 0 0 / 12%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+    }
         </style>
 
 <script src="../public/javascripts/jquery.min.js"></script>
@@ -207,7 +224,7 @@
 <link rel="stylesheet" href="../public/stylesheets/jquery-ui.min.css">
 </head>
 <body>
-  <nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="#">
         <h1>UNSW ELI</h1>
@@ -222,10 +239,10 @@
   
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
-        <a class="navbar-item" data-action="changelab" <%if(page.prev){%>data-page='<%-JSON.stringify(page.prev)%>'<%}else{%>disabled<%}%>>
+        <a class="navbar-item <%if(!page.prev){%>disabled-icon<%}%>" data-action="changelab" <%if(page.prev){%>data-page='<%-JSON.stringify(page.prev)%>'<%}else{%>disabled<%}%>>
           <span class="material-icons">arrow_back</span>
         </a>
-        <a class="navbar-item" data-action="changelab" <%if(page.next){%>data-page='<%-JSON.stringify(page.next)%>'<%}else{%>disabled<%}%>>
+        <a class="navbar-item <%if(!page.next){%>disabled-icon<%}%>" data-action="changelab" <%if(page.next){%>data-page='<%-JSON.stringify(page.next)%>'<%}else{%>disabled<%}%>>
           <span class="material-icons">arrow_forward</span>
         </a>
         <a class="navbar-item" onclick="$('#Override').addClass('is-active');">
@@ -233,7 +250,7 @@
             key
             </span>
           </a>
-        <a class="navbar-item" onclick="UI.Info();">
+        <a class="navbar-item" onclick='$("#Instructions").addClass("is-active");'>
         <span class="material-icons">
           info
           </span>
@@ -290,7 +307,7 @@ if(showFramework){%>
     </ground>
 <%if(section) if(section.hasOwnProperty("Components")) for(var c of section.Components)
 if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
-<component data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;">
+<component data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>data-spice-maxvalue="<%=c.Value%>" ondblclick="UI.VariableResistorChange(this);"<%}%>>
 <% if(c.Value && c.Name){ %>
 <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
 <%}else if(c.Value){ %>
@@ -340,17 +357,17 @@ if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Wi
 <div style="position: absolute;height: 200px;width:0px;border-left:2px dashed #777;left:900px;top:650px;"></div>
 </connectors>
 
-<footer data-html2canvas-ignore style="position:fixed;bottom:0px;height:75px;width:100%;background:#eee;border-top:1px solid #c0c0c0;padding:20px;z-index:14;">
+<footer class="main-footer" data-html2canvas-ignore>
   <div class="container content has-text-centered">
     <div class="columns">
       <powersupply class="column is-4 text-center" id="powersupply">
-        <button type="button" class="button is-info" onclick="$('#Source').addClass('is-active');">Power Supply</button>
+        <button type="button" class="button is-dark" onclick="$('#Source').addClass('is-active');">Power Supply</button>
       </powersupply>
       <signalgenerator class="column is-4  text-center" id="signalgenerator">
-        <button type="button" class="button is-info" onclick="$('#SignalGenerator').addClass('is-active');">Signal Generator</button>
+        <button type="button" class="button is-dark" onclick="$('#SignalGenerator').addClass('is-active');">Signal Generator</button>
       </signalgenerator>
       <oscilloscope class="column is-4  text-center" id="oscilloscope">
-        <button type="button" class="button is-info" onclick="//$('#Oscilloscope').addClass('is-active');" disabled>Oscilloscope</button>
+        <button type="button" class="button is-dark" onclick="$('#Oscilloscope').addClass('is-active');">Oscilloscope</button>
       </oscilloscope>
     </div>
   </div>

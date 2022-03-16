@@ -124,6 +124,7 @@ XU2 0 0 0 0 0 0 0 LT1008
 Q1 0 0 0 QM1
 R1 0 0 1K
 C1 0 0 1k
+RVariable 0 0 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 D1 SW OUT Diode
 .model Diode D(Ron=.1 Roff=1Meg Vfwd=.4)

@@ -38,18 +38,18 @@ DSUB 4 7 DM2
 .MODEL DM1 D(IS=4.276E-12)
 .MODEL DM2 D(IS=8e-16)
 .ENDS LT1008
-XU1 0 N006 N003 N007 N004 N002 N001 LT1008
-V1 0 N007 15
-V2 N003 0 15
-V3 N005 0 SINE(0 0.2 1Meg)
-R1 N004 N006 1k
-R2 N006 N005 1k
+XU1 0 6 3 7 4 1 2 LT1008
+V1 3 0 15
+V2 0 7 15
+V3 5 0 SINE(0 100 1M)
+R1 4 6 1k
+R2 6 5 1k
 C1 0 0 30p
 * INSTRUCTIONS: Decrease the input amplitude to 200mV at 1kHz, then vary the frequency until the output begins to look like a triangular waveform. Estimate the slew rate of the op-amp from the slope of the ramp. Explain what is happening to the waveform?
 * SIMULATION NOTES: Perform a number of simulations. The slew rate of the OPAMP of the simulation will not be the same  as the LM301A. Think about why this might be the case. Set the input frequency to 1MHz and voltage to 200mV to proceed
 * CODE: 111A
 .control
-tran 5n 2u
+tran 1n 1u
 run
-print v(N004) v(N005)
+print v(4) v(5)
 .endc

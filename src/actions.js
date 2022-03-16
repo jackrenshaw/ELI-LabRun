@@ -45,5 +45,10 @@ var Actions = [{
   }] 
 }]
 
+function Enact(page,callback){
+  console.log(page)
+  callback("success");
+}
 module.exports.Actions = Actions;
 module.exports.Tokens = Tokens
+module.exports.Enact = Enact

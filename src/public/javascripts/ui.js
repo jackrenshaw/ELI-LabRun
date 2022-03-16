@@ -58,6 +58,23 @@ var UI = {
       $(this).css("background-color","rgba(var(--bs-primary-rgb),var(--bs-bg-opacity))!important")
     })
   },
+  VariableResistorChange(_vresist){
+    console.log("Changing Variable Resistance Value");
+    const suffix = $(_vresist).data("spice-maxvalue").replace(/[0-9\.]/,'');
+    const maxVal = $(_vresist).data("spice-maxvalue").replace(/[^0-9\.]/,'');
+    $("#VariableResistor h5").html($(_vresist).data("spice-maxvalue"));
+    $("#VariableResistor").addClass("is-active");
+    $("input[name='vresistance']").click(function(){
+      console.log("Changing Value?");
+      const newVal = ($(this).val()*maxVal)/100+suffix;
+      $(_vresist).data("spice-value",newVal);
+      $("#VariableResistor h5").html(newVal);
+    })
+    $(this).data("spice-value","10k");
+  },
+  SaveVariableResistance(){
+    $("input[name='vresistance']").off('click');
+  },
   RotateListen: function(){
     $(document).on("keypress", function(e) { 
       if(e.key == "®" && UI.selectedComponent)
@@ -449,7 +466,7 @@ var UI = {
     };
     const oscilloscope = {
       params:{
-        type:$("#scope-choice input[type='radio']:checked").val(),
+        type:UI.SimulationParams.type,
         transient:{
           runtime:$("#scope-transient input[type='text']").val(),
           step:$("#scope-transient span.simulation-step").html(),

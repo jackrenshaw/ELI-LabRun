@@ -21,8 +21,8 @@
       <div class="field">
         <p class="control has-icons-left">
           <input class="input" type="password" placeholder="Password" name="Password">
-          <span class="icon is-small is-left">
-            <i class="fas fa-lock"></i>
+          <span class="icon is-small is-left material-icons">
+              key
           </span>
         </p>
       </div>
@@ -64,6 +64,56 @@
         <p><b><% if(section.SimulationNotes){%><%= section.SimulationNotes %><%}%></b></p>
         <p><%- section.SimulationImage %></p>
       </section>
+      <footer class="modal-card-foot">
+        <button class="button is-info">Close</button>
+      </footer>
+    </div>
+</div>
+<div class="modal" id="VariableResistor">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Instructions and Simulation Notes</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <label for="vresistance" class="form-label">Resistance Value</label>
+      <center><h5 class="title"></h5></center>
+      <input type="range" class="slider is-fullwidth" min="0" max="100" step="1" name="vresistance" value='100'>
+    </section>
+      <footer class="modal-card-foot">
+        <button class="button is-info" onclick="SaveVariableResistance();">Close</button>
+      </footer>
+    </div>
+</div>
+<div class="modal" id="Override">
+  <script type="text/javascript">
+    $(document).ready(function(){
+    $("#Override input[type='password']").keyup(function(){
+      console.log($(this).val())
+      $("#Override .implement-button button").data("password",$(this).val())
+    })
+  })
+  </script>
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Manually Implement Circuit</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="field">
+        <p class="control has-icons-left">
+          <input class="input" type="password" placeholder="Password">
+          <span class="icon is-small is-left">
+            <span class="material-icons">key</span>
+          </span>
+        </p>
+      </div>
+      <div class="implement-button">
+        <button data-action='implement' class='button is-info' data-lab="<%=page.lab%>"  data-lab="<%=page.part%>"  data-lab="<%=page.section%>"  data-password="">Implement Circuit</button>
+      </div>
+    </section>
       <footer class="modal-card-foot">
         <button class="button is-info">Close</button>
       </footer>
@@ -221,18 +271,7 @@
         <button class="delete" aria-label="close"></button>
       </header>
         <section class="modal-card-body">
-          <div id="scope-choice" class="flex-row">
-            <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='simulation-type'>
-              <input type="radio" class="btn-check btn-lg" name="btnradio-simulation-type" id="simulation-type-btnradio1" autocomplete="off" value='transient' checked>
-              <label class="btn btn-outline-primary" for="simulation-type-btnradio2">Transient</label>
-            
-              <input type="radio" class="btn-check btn-lg" name="btnradio-simulation-type" id="simulation-type-btnradio2" autocomplete="off" value='sweep'>
-              <label class="btn btn-outline-primary" for="simulation-type-btnradio2">Frequency Sweep</label>
-            </div>
-          </div>
-          <hr>
-          <div id="scope-transient">
-            <script type="text/javascript">
+          <script type="text/javascript">
             $(document).ready(function(){
               $("#scope-transient input[type='text']").keyup(function(){
                 if(/[0-9]+(\.[0-9]+)?(f|p|n|u|m|k)/g.test($(this).val()))
@@ -252,58 +291,34 @@
 
             });
             </script>
+          <%if(section.SimulationParams.type == 'transient'){%>
+          <div id="scope-transient">
           <h6>Transient Parameters</h6>
           <label for="frequency" class="form-label">Simulation Length</label><br>
-            <input type="text" class="input" aria-label="Text input with dropdown button" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.time %><%}%>">
+            <input type="text" class="input" aria-label="Text input with dropdown button" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('time')){ %><%= section.SimulationParams.parameters.time %><%}%>">
           <p>Simulation Step: <span class='simulation-step'><% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%></span></p>
           </div>
-          <hr>
+          <%}else if(section.SimulationParams.type == 'ac'){%>
           <div id='scope-sweep'>
           <h6>Frequency Sweep</h6>
           <label for="frequency" class="form-label">Step Type</label><br>
           <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='sweep-step-type'>
-            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio1" autocomplete="off" value='1' checked>
+            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio1" autocomplete="off" value='1' <% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('type')) if(section.SimulationParams.parameters.type == 'dec'){ %>checked<%}%>>
             <label class="btn btn-outline-primary" for="sweep-step-type-btnradio1">Decade</label>
-            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio2" autocomplete="off" value='10'>
+            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio2" autocomplete="off" value='10' <% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('type')) if(section.SimulationParams.parameters.type == 'lin'){ %>checked<%}%>
             <label class="btn btn-outline-primary" for="sweep-step-type-btnradio2">Linear</label>
           </div><br><br>
           <label for="frequency" class="form-label">Steps per Interval: <span class='steps-per-interval'>1</span></label>
-          <input type="range" class="slider is-fullwidth" min="1" max="10" step="1" id="steps-per-interval" name='steps-per-interval' value='0'>
-          <br><br>
-          <label for="frequency" class="form-label">Start Frequency: <span class='sweep-start-frequency'>1</span></label>
-          <input type="range" class="slider is-fullwidth" min="1" max="10" step="1" id="sweep-start-frequency" name='sweep-start-frequency' value='0'>
+          <input type="text" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%>">
           <br>
-          <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='freq-multiple-start'>
-          
-            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio2" autocomplete="off" value='m' checked>
-            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio2">1mHz</label>
-          
-            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio3" autocomplete="off" value=''>
-            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio3">1Hz</label>
-  
-            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio4" autocomplete="off" value='k'>
-            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio4">1kHz</label>
-
-            <input type="radio" class="btn-check" name="btnradio-frequency-start" id="freq-multiple-start-btnradio1" autocomplete="off" value='Meg'>
-            <label class="btn btn-outline-primary" for="freq-multiple-start-btnradio1">1MegHz</label>
-          </div><br>
+          <label for="frequency" class="form-label">Start Frequency: <span class='sweep-start-frequency'>1</span></label>
+          <input type="text" id="sweep-start-frequency" name='sweep-start-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.start %><%}%>">
+          <br>
           <label for="frequency" class="form-label">Stop Frequency: <span class='sweep-stop-frequency'>1</span></label>
-          <input type="range" class="slider is-fullwidth" min="1" max="10" step="1" id="aweep-stop-frequency" name='sweep-stop-frequency' value='0'>
-          <br><br>
-          <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='freq-multiple-stop'>
-            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio1" autocomplete="off" value='' checked>
-            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio1">1Hz</label>
-
-            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio2" autocomplete="off" value='k' checked>
-            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio2">1kHz</label>
-
-            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio3" autocomplete="off" value='Meg'>
-            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio3">1MegHz</label>
-          
-            <input type="radio" class="btn-check" name="btnradio-frequency-stop" id="freq-multiple-stop-btnradio34" autocomplete="off" value='G'>
-            <label class="btn btn-outline-primary" for="freq-multiple-stop-btnradio34">1GHz</label>
-          </div>
+          <input type="text" id="sweep-stop-frequency" name='sweep-stop-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.stop %><%}%>">
+          <br>
         </div>
+        <%}%>
         </section>
         <footer class="modal-card-foot">
           <button class="button is-info">Close</button>

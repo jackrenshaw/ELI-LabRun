@@ -243,10 +243,10 @@ var Spice = {
                 Class:4,
                 Value:null,
         },
-        Ammeter:{
-            Name:'Resistor',
-            Image:'../public/images/ammeter.svg',
-            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+        VariableResistor:{
+            Name:'VariableResistor',
+            Image:'../public/images/vres.svg',
+            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(../public/images/vres.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{
@@ -257,10 +257,10 @@ var Spice = {
             }],
             Ports:[{
                 id:'+',
-                top:48,
-                left:24,
-                height:4,
-                width:10,
+                top:72,
+                left:32,
+                height:22,
+                width:7,
                 position:1,
                 bindPosition:{
                     left:-3,
@@ -269,13 +269,14 @@ var Spice = {
                 labelPosition:{
                     left:-13,
                     top:-11
-                }
+                },
+                CSS:"background:black;position:absolute;"
             },{
                 id:'-',
-                top:48,
-                left:67,
-                height:4,
-                width:10,
+                top:72,
+                left:60,
+                height:22,
+                width:7,
                 position:2,
                 bindPosition:{
                     left:29,
@@ -284,7 +285,8 @@ var Spice = {
                 labelPosition:{
                     left:12,
                     top:-11
-                }
+                },
+                CSS:"background:black;position:absolute;"
             }],
             Label:{
                 "top":-5,
@@ -429,6 +431,8 @@ var Spice = {
             const params = c.split(" ");
             if(c.substring(0,8) == ('RAmmeter'))
                 type = 'Ammeter'
+            else if(c.substring(0,9) == ('RVariable'))
+                type = 'VariableResistor'
             if(type == 'X'  && this.simple.hasOwnProperty('X') && this.simple.X  && !inSubcircuit){
                 console.log(c)
                 for(var t of this.simple.X){
@@ -515,20 +519,20 @@ var Spice = {
         if(params){
             var simType = null;
             var parameters = {}
-            if(/tran( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){2}/g.test(params[0])){
+            if(/tran( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){2}/g.test(params[0])){
                 simType = 'transient';
                 parameters = {
-                    step:params[0].match(/tran( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){2}/g)[0].split(' ')[1],
-                    time:params[0].match(/tran( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){2}/g)[0].split(' ')[2]
+                    step:params[0].match(/tran( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){2}/g)[0].split(' ')[1],
+                    time:params[0].match(/tran( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){2}/g)[0].split(' ')[2]
                 }
             }
-            else if(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){3}/g.test(params[0])){
+            else if(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){3}/g.test(params[0])){
                 simType = 'ac';
                 parameters = {
-                    type:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){3}/g)[0].split(' ')[1],
-                    step:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){3}/g)[0].split(' ')[2],
-                    start:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){3}/g)[0].split(' ')[3],
-                    stop:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?){3}/g)[0].split(' ')[4],
+                    type:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){3}/g)[0].split(' ')[1],
+                    step:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){3}/g)[0].split(' ')[2],
+                    start:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){3}/g)[0].split(' ')[3],
+                    stop:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){3}/g)[0].split(' ')[4],
                 }
             }
             return {
@@ -560,16 +564,16 @@ var Spice = {
                     return parseInt(terms[i])*Spice.Shorthand[multFactor[0]]
         return input
     },
-    ValidateCircuit(netlist1,netlist2,simulation1,simulation2,callback,errorCallback){
+    ValidateCircuit(netlist1,netlist2,callback,errorCallback){
         var match = true;
         var feedback = "";
         console.log("Performing Circuit Validation")
         var c = [{
-            components:netlist1.match(/^(R|C|L|(XU))[A-z0-9]( [A-z0-9]){2,8} (([0-9]+(f|p|n|u|m|k)?)|([A-z0-9]+))$/gm),
+            components:netlist1.match(/^(R|C|L|(XU))[A-z0-9]( [A-z0-9]){2,8} (([0-9]+(f|p|n|u|m|k|Meg|G|T)?)|([A-z0-9]+))$/gm),
             sources:netlist1.match(/^V[A-z0-9]( [A-z0-9]){2} (([0-9]+(f|p|n|u|m|k)?)|((SINE|EXP|PULSE)\([A-z0-9 .]+\)))$/gm)
         },{
-            components:netlist2.match(/^(R|C|L|(XU))[A-z0-9]( [A-z0-9]){2,8} (([0-9]+(f|p|n|u|m|k)?)|([A-z0-9]+))$/gm),
-            sources:netlist2.match(/^V[A-z0-9]( [A-z0-9]){2} (([0-9]+(f|p|n|u|m|k)?)|((SINE|EXP|PULSE)\([A-z0-9 .]+\)))$/gm)
+            components:netlist2.match(/^(R|C|L|(XU))[A-z0-9]( [A-z0-9]){2,8} (([0-9]+(f|p|n|u|m|k|Meg|G|T)?)|([A-z0-9]+))$/gm),
+            sources:netlist2.match(/^V[A-z0-9]( [A-z0-9]){2} (([0-9]+(f|p|n|u|m|k|Meg|G|T)?)|((SINE|EXP|PULSE)\([A-z0-9 .]+\)))$/gm)
         }]
         //eliminate null components (all ports are grounded)
         if(c[0].components)
@@ -673,10 +677,12 @@ var Spice = {
             });
             ls.on('close', (code) => {
               var scopes = rawData.match(Spice.SpiceRegex);
-              var labels = rawData.match(Spice.LabelRegex)
+              var labels = rawData.match(Spice.LabelRegex);
               if(labels)
                 if(labels.length)
-                    labels = labels[0].match(/[A-z0-9\(\)\/,]+/g,'');
+                    labels = labels[0].match(/[A-z0-9\*\(\)\/,]+/g,'');
+              console.log(netlist.split('\n')[0]);
+              console.log(labels)
               var scopeData = [];
               if(scopes) if(scopes.length){
                 var sampleStep = 1;
@@ -684,14 +690,14 @@ var Spice = {
                     sampleStep = Math.round(scopes.length/1000);
                 for(var s=0;s<scopes.length;s=s+sampleStep){
                     var e = scopes[s].split("\t");
-                    if(e)
-                        if(e.length){
-                            if(e.length == 4)
+                    if(e && labels)
+                        if(e.length && labels.length){
+                            if(labels.length == 3)
                                 scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:"Output"})
-                            else if(e.length == 5){
+                            else if(labels.length == 4){
                                 scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:"Output"})
                                 scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[3]),c:"Input"})
-                            }else if(e.length > 5 && labels.length == (e.length-2)){
+                            }else if(labels.length > 4 && labels.length == (e.length-2)){
                                 for(var i=2;i<(e.length-2);i++)
                                     scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:(i-2)})
                             }
@@ -701,7 +707,7 @@ var Spice = {
             if(scopeData.length)
                 callback(scopeData)
             else
-                errorFunction(rawData)
+                errorFunction(null)
             });
         });
     },
@@ -766,7 +772,7 @@ var Spice = {
                 SignalStats.Input.Normalised_Error = SignalStats.Input.Total_Error/SignalStats.Input.Divisor
                 SignalStats.Output.Normalised_Error = SignalStats.Output.Total_Error/SignalStats.Output.Divisor
                 console.log(SignalStats);
-                if(SignalStats.Input.Normalised_Error < 1 && SignalStats.Output.Normalised_Error)
+                if(SignalStats.Input.Normalised_Error < 1 && SignalStats.Output.Normalised_Error < 1)
                     callback(SignalStats);
                 else
                     errorFunction(SignalStats)
@@ -806,9 +812,7 @@ var Spice = {
             }
             else if(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?)+/g.test(netlist)){
                 if(netlist.includes("ac dec")){
-                    for(var i=0;i<scopeData.length;i++)
-                        scopeData[i].x = Math.log10(scopeData[i].x);
-                    graph("Circuit Output",scopeData,"Log(Frequency)","Voltage",callback,errorFunction);
+                    graph("Circuit Output",scopeData,"Frequency","Voltage",callback,errorFunction);
                 }else if(netlist.includes("ac lin"))
                     graph("Circuit Output",scopeData,"Frequency","Voltage",callback,errorFunction);
                 

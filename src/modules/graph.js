@@ -32,9 +32,6 @@ function makeSVG(title,data,xLabel,yLabel,callback,errorFunction){
   if(validateData(data)){
     console.log("Valid Data");
   var sampledX = pickn(data,10,1);
-  if(xLabel.includes('Log('))
-    for(var i=0;i<sampledX.length;i++)
-      sampledX[i].x = Math.pow(10,sampledX[i].x)
   var scale = [Math.min.apply(Math, data.map(function(o) { return o.y; })),Math.max.apply(Math, data.map(function(o) { return o.y; }))*1.25];
   for(var i=0;i<sampledX.length;i++)
     sampledX[i].x = Math.round(sampledX[i].x*1000)/1000;

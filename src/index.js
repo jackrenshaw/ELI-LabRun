@@ -38,37 +38,28 @@ function startup(event,callback){
   }) 
 }
 
-var openGraph = function(){
+var openGraphSim = function(){
   const graphWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, 'preload/graph-preload.js')
+      preload: path.join(__dirname, 'preload/graphsim-preload.js')
   }
   });
   graphWindow.webContents.openDevTools();
-  graphWindow.loadFile(path.join(__dirname, 'views/graph.ejs'))
-}
-
-var openSimulation = function(){
-  const simWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: true,
-      preload: path.join(__dirname, 'preload/sim-preload.js')
-  }
-  });
-  simWindow.webContents.openDevTools();
-  simWindow.loadFile(path.join(__dirname, 'views/sim.ejs'))
+  graphWindow.loadFile(path.join(__dirname, 'views/graphsim.ejs'))
 }
 
 //This needs more validation (for params at a minimum)
 //We also need to validate the actions object at some point
 function implementCircuit(params,callback,errorCallback){
-  console.log("Implementing the Circuit");
-  callback("hello world")
+  if(params.token == "password")
+    Actions.Enact(params,callback,errorCallback)
+  else if(Actions.Tokens.hasOwnProperty(params.token))
+    Actions.Enact(params,callback,errorCallback)
+  else
+    errorCallback("invalid token")
 }
 
 function circuitValidate(params,callback,errorCallback){
@@ -92,7 +83,7 @@ function circuitValidate(params,callback,errorCallback){
                 callback({token:token,res:res})
                 console.log(Actions.Tokens)
               }
-              SPICE.ValidateCircuit(params.circuit,s.Solution,null,null,validCircuit,errorCallback)
+              SPICE.ValidateCircuit(params.circuit,s.Solution,validCircuit,errorCallback)
               found = true;
             }
         }
@@ -119,6 +110,8 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload/preload.js')
   }
   });
+  
+  openGraphSim();
 
   var openLab = function(page,callback,errorCallback){
     console.log(page);
@@ -140,8 +133,8 @@ const createWindow = () => {
                     console.log("Found Lab!");
                     found = true;
                     const labWindow = new BrowserWindow({
-                        width: 1200,
-                        height: 800,
+                        width: 1500,
+                        height: 900,
                         webPreferences: {
                           nodeIntegration: true,
                           preload: path.join(__dirname, 'preload/lab-preload.js')
@@ -187,10 +180,10 @@ const createWindow = () => {
     SPICE.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-reply',error)});
   })
   ipcMain.on('validate', (event,params) => {
-    circuitValidate(params,
-      function(token){ event.reply('validate-reply', token)},
-      function(error){console.log(error); event.reply('validate-reply', error)}
-    );
+      circuitValidate(params,
+        function(token){ event.reply('validate-reply', token)},
+        function(error){console.log(error); event.reply('validate-reply', error)}
+      );
   })
   ipcMain.on('implement', (event,params) => {
     implementCircuit(params,function(response){ event.reply('implement-reply', response)},function(){event.reply('implement-reply', 'error')});
