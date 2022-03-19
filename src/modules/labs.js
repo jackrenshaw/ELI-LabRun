@@ -9,6 +9,20 @@ var Labs = {
     StudentView: function(){
         return JSON.parse(JSON.stringify(this.Labs).replace(/"Solution":"[^"]+"/g,'"Solution":""'));
     },
+    getSaved: function(lab,part){
+        const labs = fs.readdirSync("save");
+        console.log(labs);
+        for(var s of labs)
+            if(s == lab){
+                const parts = fs.readdirSync("save/"+s);
+                console.log(parts);
+                for(var p of parts)
+                    if(p == part){
+                        return fs.readdirSync("save/"+s+"/"+p);
+                    }
+
+            }
+    },
     setLabs: async function(inp,verbose){
         verbose("Parsing Lab Files")
         Labs.Labs = [];
@@ -24,7 +38,7 @@ var Labs = {
                 Lab.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/settings.json"));
             const parts = fs.readdirSync(inp+"/"+l);
             for(var p of parts) if(p.substring(0,1) != "." && p != "Framework" && fs.lstatSync(inp+"/"+l+"/"+p).isDirectory()){
-                var Part = {Name:p,Sections:[],Settings:{Header:"",Spiel:"",Instructions:""},Framework:null,"Questions":null,"Manual":null}
+                var Part = {Name:p,Sections:[],Implementations:[],Settings:{Header:"",Spiel:"",Instructions:""},Framework:null,"Questions":null,"Manual":null}
                 if(fs.existsSync(inp+"/"+l+"/"+p+"/settings.json"))
                     Part.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/"+p+"/settings.json"));
                 const FrameworkFile = inp+"/"+l+"/"+p+"/Framework.html";
@@ -37,7 +51,7 @@ var Labs = {
                     if(fs.existsSync(ManualFile))
                         Part.Manual = ManualFile;
                 const sections = fs.readdirSync(inp+"/"+l+"/"+p)
-                for(var s of sections) if(s.substring(0,1) != "." && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[. A-z0-9]{1,20}.(cir)/g.test(s)){
+                for(var s of sections) if(s.substring(0,1) != "." && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
                     const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[]}
                     Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
                     var code = s.split(".");
@@ -46,16 +60,21 @@ var Labs = {
                     Section.Components = Spice.SPICE_to_Components(Section.Solution);
                     Section.Instructions = Spice.SPICE_to_Instructions(Section.Solution);
                     Section.SimulationNotes = Spice.SPICE_to_SimulationNotes(Section.Solution);
-                    Section.ActionFunction = Spice.SPICE_to_Action_Function(Section.Solution);
+                    Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);
                     Section.SimulationParams = Spice.SPICE_SimulationParameters(Section.Solution);
                     Section.Subcircuit = Spice.SPICE_Subcircuit(Section.Solution);
                     Part.Sections.push(Section);
+                }
+                for(var s of sections) if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
+                    const Section = {};
+                    Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
+                    Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);
+                    Part.Implementations.push(Section);
                 }
                 Lab.Parts.push(Part);
             }
             Labs.Labs.push(Lab)
         }
-        console.log("Done Reading Labs");
     }
 }
 

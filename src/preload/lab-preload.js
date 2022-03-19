@@ -4,14 +4,22 @@ contextBridge.exposeInMainWorld('electronAPI', {
   SimulateCircuit: (netlist) => ipcRenderer.send('simulate', {circuit:netlist}),
   ValidateCircuit: (netlist,page) => ipcRenderer.send('validate', {circuit:netlist,lab:page.lab,part:page.part,section:page.section}),
   ImplementCircuit: (params) => ipcRenderer.send('implement',params),
-  ChangeLab: (page) => ipcRenderer.send('')
+  ChangeLab: (page) => ipcRenderer.send(''),
 })
-
-
 
 document.onreadystatechange = function () {
   if (document.readyState == "complete") {
     const $ = require('jquery');
+    function generatePreload(){
+      var preload = {
+        voltage1:$("#Source input[name='voltage1']").val(),
+        voltage2:$("#Source input[name='voltage2']").val(),
+        siggen_frequency:$("#SignalGenerator td[name='voltage']").html(),
+        siggen_voltage:$("#SignalGenerator td[name='frequency']").html(),
+        board:$("main").html()
+      }
+      return preload;
+    }    
     ipcRenderer.on('simulate-reply', (_event, arg) => {
       $("#Simulation p.sim-result").html(arg);
       $("#Simulation").addClass("is-active");
@@ -39,8 +47,26 @@ document.onreadystatechange = function () {
     })
     $("a[data-action='changelab']").click(function(){
       console.log($(this).data("page"))
+      const preload = generatePreload();
+      console.log(preload);
       if($(this).data("page")){
-        ipcRenderer.send('openLab',$(this).data("page"));
+        ipcRenderer.send('openLab',{page:$(this).data("page"),preload:preload});
+        window.close();
+      }
+    })
+    $("a[data-action='save']").click(function(){
+      const preload = generatePreload();
+      if($(this).data("page")){
+        ipcRenderer.send('save',{page:$(this).data("page"),preload:preload});
+        window.close();
+      }
+    })
+    $("a[data-action='load']").click(function(){
+      console.log($(this).data("page"))
+      const preload = generatePreload();
+      console.log(preload);
+      if($(this).data("page")){
+        ipcRenderer.send('openLab',{page:$(this).data("page"),preload:preload});
         window.close();
       }
     })

@@ -52,6 +52,45 @@
     </footer>
   </div>
 </div>
+<div class="modal" id="SaveLocal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Save/Load a Previous Circuit</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="columns is-vcentered">
+        <div class="column has-text-centered">
+          <a href="#" data-action="save" class="button is-success" data-page='<%-JSON.stringify(page)%>'>Save Circuit</a>
+        </div>
+        <div class="column has-text-centered">
+          <a href="#" data-action="save"  class="button is-info" data-page='<%-JSON.stringify(page)%>'>Load Last</a>
+        </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-info">Confirm</button>
+    </footer>
+  </div>
+</div>
+<div class="modal" id="SyncGlobal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Sync a Cloud Circuit</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="columns is-vcentered">
+        <a href="" data-action="save" class="button is-info">Pull Circuit</a>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-info">Confirm</button>
+    </footer>
+  </div>
+</div>
 <div class="modal" id="Instructions">
   <div class="modal-background"></div>
   <div class="modal-card">
@@ -63,6 +102,7 @@
       <p><% if(section.Instructions){%><%= section.Instructions %><%}%></p>
         <p><b><% if(section.SimulationNotes){%><%= section.SimulationNotes %><%}%></b></p>
         <p><%- section.SimulationImage %></p>
+        <p><b>NI-6008 pinout for this Lab: <% if(section.Output){%><%=section.Output%><%}%></b></p>
       </section>
       <footer class="modal-card-foot">
         <button class="button is-info">Close</button>
@@ -102,6 +142,7 @@
       <button class="delete" aria-label="close"></button>
     </header>
     <section class="modal-card-body">
+      <p><b>NI-6008 pinout for this Lab: <% if(section.Output){%><%=section.Output%><%}%></b></p>
       <div class="field">
         <p class="control has-icons-left">
           <input class="input" type="password" placeholder="Password">
@@ -143,7 +184,7 @@
     $(document).ready(function(){
     $("#Source input[name=voltage1],#Source input[name=voltage2]").click(function(){
       console.log("Testing");
-      var val = ($(this).val()/10).toString();
+      var val = ($(this).val()).toString();
       if(!val.includes(".")) val += '.0';
       $("#Source table td[name="+$(this).attr('name')+"]").text(val+" V")
     })
@@ -155,12 +196,12 @@
         <button class="delete" aria-label="close"></button>
       </header>
         <div class="modal-card-body">
-          <table style="width: 100%;text-align: center;"><thead><tr><th>Supply 1</th><th>Supply 2</th></tr></thead><tr class="font-size:48px;"><td name="voltage1">5.0 V</td><td name="voltage2">5.0 V</td></tr></table>
+          <table style="width: 100%;text-align: center;"><thead><tr><th>Supply 1</th><th>Supply 2</th></tr></thead><tr class="font-size:48px;"><td name="voltage1"><%if(preload){%><%=preload.voltage1%><%}else{%>5.0<%}%> V</td><td name="voltage2"><%if(preload){%><%=preload.voltage2%><%}else{%>5.0<%}%> V</td></tr></table>
           <hr/>
           <label for="voltage1" class="form-label">Voltage 1</label>
-          <input type="range" class="slider is-fullwidth" min="0" max="150" step="1" name="voltage1" value='50'>
+          <input type="range" class="slider is-fullwidth" min="0" max="15" step="0.1" name="voltage1" value='<%if(preload){%><%=preload.voltage1%><%}else{%>5.0<%}%>'>
           <label for="voltage2" class="form-label">Voltage 2</label>
-          <input type="range" class="slider is-fullwidth" min="0" max="150" step="1" name="voltage2" value='50'>
+          <input type="range" class="slider is-fullwidth" min="0" max="15" step="0.1" name="voltage2" value='<%if(preload){%><%=preload.voltage2%><%}else{%>5.0<%}%>'>
         </div>
         <footer class="modal-card-foot">
           <button class="button is-info">Close</button>
@@ -203,7 +244,7 @@
         <button class="delete" aria-label="close"></button>
       </header>
         <form class="modal-card-body">
-          <h1><table style="width: 100%;text-align: center;"><tr><td name="voltage">0.0 V</td><td name="frequency">0 Hz</td></tr></table></h1>
+          <h1><table style="width: 100%;text-align: center;"><tr><td name="voltage"><%if(preload){%><%=preload.siggen_voltage%><%}else{%>0 V<%}%></td><td name="frequency"><%if(preload){%><%=preload.siggen_frequency%><%}else{%>0 Hz<%}%></td></tr></table></h1>
           <hr/>
           <label for="voltage" class="form-label">Voltage</label>
           <input type="range" class="slider is-fullwidth" min="0" max="100" step="1" name="voltage" value='0'>

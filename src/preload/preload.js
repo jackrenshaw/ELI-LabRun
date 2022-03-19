@@ -21,10 +21,7 @@ document.onreadystatechange = function () {
       $("section.lab-actions[data-lab='"+$(this).data("lab")+"'][data-part='"+$(this).data("part")+"']").removeClass("is-hidden");
     })
     $("a.open-lab").click(function(){
-      console.log($(this));
-      console.log($(this).data('lab'));
-      console.log($(this).data('part'));
-      ipcRenderer.send('openLab',{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")})
+      ipcRenderer.send('openLab',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null})
       ipcRenderer.on('openLab-reply', (_event, arg) => {
         console.log(arg)
       });

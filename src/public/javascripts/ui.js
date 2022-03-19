@@ -409,6 +409,7 @@ var UI = {
     $("#sidebar .container div[name='SPICE']").append(input+"<br>");
   },
   SimulateCircuit: function(netlist,normalised){
+    console.log("Simualting and Validating Circuit");
     window.electronAPI.SimulateCircuit(netlist);
     window.electronAPI.ValidateCircuit(netlist,UI.Page);
     //window.electronAPI.EnactCircuit(netlist);
@@ -418,7 +419,7 @@ var UI = {
     UI.nodes = [];
     UI.components = [];
     const powersupply = [{
-      voltage:parseFloat($("input[name='voltage1']").val())/10,
+      voltage:parseFloat($("#Source td[name='voltage1']").html()),
       positive:{
         span:[{
           vertical:[$("port[name='powersupply-1positive").offset().top,($("port[name='powersupply-1positive").offset().top+$("port[name='powersupply-1positive").height())],
@@ -432,7 +433,7 @@ var UI = {
         }]
       }
     },{
-      voltage:parseFloat($("input[name='voltage2']").val())/10,
+      voltage:parseFloat($("#Source td[name='voltage1']").html()),
       positive:{
         span:[{
           vertical:[$("port[name='powersupply-2positive").offset().top,($("port[name='powersupply-2positive").offset().top+$("port[name='powersupply-2positive").height())],

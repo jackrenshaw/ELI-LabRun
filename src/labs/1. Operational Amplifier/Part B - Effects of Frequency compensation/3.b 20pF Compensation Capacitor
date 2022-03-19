@@ -1,4 +1,4 @@
-*
+Frequency Response
 .SUBCKT LT1008 3 2 7 4 6 1 8
 * USE C=30 PF IN MAIN CIRCUIT (CA TO CB).
 * INPUT
@@ -41,15 +41,15 @@ DSUB 4 7 DM2
 XU1 0 6 3 7 4 1 2 LT1008
 V1 3 0 15
 V2 0 7 15
-V3 5 0 SINE(0 100 1M)
+V3 5 0 ac 1 dc 0
 R1 4 6 1k
 R2 6 5 1k
 C1 0 0 30p
-* INSTRUCTIONS: Decrease the input amplitude to 200mV at 1kHz, then vary the frequency until the output begins to look like a triangular waveform. Estimate the slew rate of the op-amp from the slope of the ramp. Explain what is happening to the waveform?
-* SIMULATION NOTES: Perform a number of simulations. The slew rate of the OPAMP of the simulation will not be the same  as the LM301A. Think about why this might be the case. Set the input frequency to 1MHz and voltage to 200mV to proceed
-* OUTPUT: 5 0 0 0 5 0 0 5
+* INSTRUCTIONS: Determine the 3dB Bandwidth, of this circuit, and then the frequency at which the gain falls to 0dB. Finally, plot the phase frequency response
+* SIMULATION NOTES: Perform a frequency sweep of the circuit given. This will require configuring the virtual oscilloscope. Run the sweep up to 1MHz with decade time steps and 1 step per decade.
+* CODE: 111A
 .control
-tran 1n 1u
+ac dec 10 0.1 100T
 run
-print v(4) v(5)
+print 20*log10(v(4))
 .endc

@@ -68,24 +68,41 @@ function circuitValidate(params,callback,errorCallback){
   console.log(params);
   for(var l of Labs.Labs)
     if(l.Name == params.lab){
-      console.log("in lab")
       for(var p of l.Parts)
         if(p.Name == params.part){
-          console.log("in part")
-          for(var s of p.Sections)
-            if(s.Name == params.section){
-              console.log("in section");
-              console.log("validating circuit");
+          if(params.section){
+            console.log("Validating a circuit with a section")
+            for(var s of p.Sections){
+              if(s.Name == params.section){
+                validCircuit = function(res){
+                  console.log("Circuit is valid, producing action token");
+                  const token = Functions.generateActionToken();
+                  Actions.Tokens[token] = {page:params,output:s.Output}
+                  callback({token:token,output:s.Output,res:res})
+                  console.log(Actions.Tokens)
+                }
+                SPICE.ValidateCircuit(params.circuit,s.Solution,validCircuit,errorCallback)
+                found = true;
+            }}
+          }else{
+            console.log("validating a circuit without a section")
+            var t=0;
+            for(var i=0;i<p.Implementations.length;i++){
+              allError = function(res){
+                t++;
+                if(t == i)
+                  errorCallback("No Valid Lab Found");
+              }
               validCircuit = function(res){
                 console.log("Circuit is valid, producing action token");
                 const token = Functions.generateActionToken();
-                Actions.Tokens[token] = {page:params}
-                callback({token:token,res:res})
+                Actions.Tokens[token] = {page:params,output:p.Implementations[i].Output}
+                callback({token:token,output:p.Implementations[i].Output,res:res})
                 console.log(Actions.Tokens)
               }
-              SPICE.ValidateCircuit(params.circuit,s.Solution,validCircuit,errorCallback)
-              found = true;
-            }
+              SPICE.ValidateCircuit(params.circuit,s.Solution,validCircuit,allError)
+            } 
+          }
         }
     }
   if(!found){
@@ -113,8 +130,9 @@ const createWindow = () => {
   
   openGraphSim();
 
-  var openLab = function(page,callback,errorCallback){
+  var openLab = function(page,preload,callback,errorCallback){
     console.log(page);
+    console.log(preload);
     var found = false;
     if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section'))
       for(var l of Labs.Labs)
@@ -143,7 +161,7 @@ const createWindow = () => {
                       labWindow.webContents.openDevTools();
                       var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+s.Name
                       const ejse = require('ejs-electron')
-                      .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next}})
+                      .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
                       .options('debug', true)
                       labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                       callback(reqURL);
@@ -176,20 +194,34 @@ const createWindow = () => {
   ipcMain.on('graph', (event,params) => {
     Graph("Function",params.signals,params.xlabel,params.ylabel,function(svg){event.reply('graph-reply', svg)},function(error){event.reply('graph-reply', error)});
   })
+  ipcMain.on('save',(event,params) =>{
+    console.log(params)
+    fs.mkdir("save/"+params.page.lab,{ recursive: true },function(){
+      fs.writeFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+Date.now()+".json",JSON.stringify(params.preload));
+      event.reply('save-reply','success')
+    })
+  })
+  ipcMain.on('load',(event,params) =>{
+    console.log(params)
+    openLab(params.page,JSON.parse(fs.readFileSync("save/"+params.page.lab+"/"+params.page.part+".json")),function(response){ event.reply('load-reply', response)},function(){event.reply('load-reply', 'error')})
+  })
   ipcMain.on('simulate', (event,params) => {
+    console.log("Simualting Circuit");
     SPICE.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-reply',error)});
   })
   ipcMain.on('validate', (event,params) => {
       circuitValidate(params,
-        function(token){ event.reply('validate-reply', token)},
+        function(token){ console.log("success");event.reply('validate-reply', token)},
         function(error){console.log(error); event.reply('validate-reply', error)}
       );
   })
   ipcMain.on('implement', (event,params) => {
     implementCircuit(params,function(response){ event.reply('implement-reply', response)},function(){event.reply('implement-reply', 'error')});
   })
-  ipcMain.on('openLab', (event,page) => {
-    openLab(page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
+  ipcMain.on('openLab', (event,params) => {
+    console.log("Opening a new lab");
+    console.log(params.preload);
+    openLab(params.page,params.preload,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
   })
 
   ipcMain.on('startup', (event,page) => {

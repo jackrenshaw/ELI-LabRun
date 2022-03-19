@@ -275,6 +275,16 @@
                   clear
                   </span>
                 </a>
+                <a class="navbar-item" onclick="$('#SaveLocal').addClass('is-active');">
+                  <span class="material-icons">
+                    save
+                    </span>
+                  </a>
+                  <a class="navbar-item" onclick="$('#SyncGlobal').addClass('is-active');">
+                    <span class="material-icons">
+                      cloud_sync
+                      </span>
+                    </a>
     </div>
   </nav>
 <style>
@@ -286,7 +296,12 @@
 </head>
   <body> 
 <main id='main'>
-<% 
+<%
+var preloadset = false;
+if(preload) if(preload.board){%>
+<%-preload.board%>
+<%preloadset = true%>
+<%}if(!preloadset){
 var top = 100;
 var left = 50;
 var showFramework = false;
@@ -324,6 +339,7 @@ if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Wi
 <%}%>
 </component>
 <%left = left + c.Width;%>
+<%}%>
 <%}%>
 </main>
 <%- include ('partial/modals.ejs') %>

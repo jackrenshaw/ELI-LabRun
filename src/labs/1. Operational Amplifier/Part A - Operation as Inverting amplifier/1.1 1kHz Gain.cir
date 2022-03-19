@@ -47,7 +47,7 @@ R2 6 5 1k
 C1 0 0 30p
 * INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.
 * SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
-* CODE: 111A
+* OUTPUT: 5 0 0 0 5 0 0 5
 .control
 tran 5u 2m
 run

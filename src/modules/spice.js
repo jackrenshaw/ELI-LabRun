@@ -492,6 +492,14 @@ var Spice = {
             else return "No Specific Instructions Provided";
         else return "No Specific Instructions Provided";
     },
+    SPICE_to_OUTPUT: function(netlist){
+        const output = netlist.match(/\* OUTPUT:.+/g)
+        if(output) 
+            if(output.length) 
+                return output[0].replace(/\\n/g,'\n').replace(/\* ?OUTPUT:/g,"").trim();
+            else return null;
+        else return null;
+    },
     SPICE_to_SimulationNotes: function(netlist){
         const instructions = netlist.match(/\* SIMULATION NOTES:.+/g)
         if(instructions) 
@@ -707,13 +715,17 @@ var Spice = {
             if(scopeData.length)
                 callback(scopeData)
             else
-                errorFunction(null)
+                errorFunction("ngSPICE Simulation returned no data - check your circuit");
             });
         });
     },
     Output_Comparison(netlist1,netlist2,callback,errorFunction){
+        console.log("Within Output Comparison Function");
+        console.log(netlist1);
+        console.log(netlist2);
         Spice.SpiceSimulate(netlist1,function(scopeData1){
             Spice.SpiceSimulate(netlist2,function(scopeData2){
+                console.log("Performing Signal Comparison");
                 var signals = [{
                     input:[],
                     output:[],
@@ -772,12 +784,19 @@ var Spice = {
                 SignalStats.Input.Normalised_Error = SignalStats.Input.Total_Error/SignalStats.Input.Divisor
                 SignalStats.Output.Normalised_Error = SignalStats.Output.Total_Error/SignalStats.Output.Divisor
                 console.log(SignalStats);
-                if(SignalStats.Input.Normalised_Error < 1 && SignalStats.Output.Normalised_Error < 1)
+                if(SignalStats.Input.Normalised_Error < 1 && SignalStats.Output.Normalised_Error < 1){
+                    console.log("Valid Circuit");
                     callback(SignalStats);
-                else
+                }else{
+                    console.log("invalid Circuit");
                     errorFunction(SignalStats)
+                }
+            },function(error){
+                console.log(error);
+                errorFunction(error);
             })
         },function(error){
+            console.log(error)
             errorFunction(error);
         })
     },
