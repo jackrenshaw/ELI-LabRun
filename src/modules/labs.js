@@ -10,6 +10,8 @@ var Labs = {
         return JSON.parse(JSON.stringify(this.Labs).replace(/"Solution":"[^"]+"/g,'"Solution":""'));
     },
     getSaved: function(lab,part){
+        console.log(lab);
+        console.log(part);
         const labs = fs.readdirSync("save");
         console.log(labs);
         for(var s of labs)

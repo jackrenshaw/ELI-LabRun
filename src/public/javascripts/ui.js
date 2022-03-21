@@ -128,20 +128,21 @@ var UI = {
     $("wire,port").css("cursor","crosshair");
     $("body").css("cursor","default");
     //To start wiring, the student must click on a port or a wire
-    $("port,wire,bind").click(function(event){ if($(this).data("spice-node") || !UI.FrameWork){
+    $("port,wire,bind").click(function(event){ if($(this).data("spice-node") || $(this).data("spice-node") == '0' || !UI.FrameWork){
       $("port,wire,bind,body").unbind("click");
       console.log($(this).data("spice-node"));
       var spiceNode = "";
       if(UI.FrameWork)
-        spiceNode = " spice-node=\""+$(this).data("spice-node")+"\"";
+        spiceNode = " data-spice-node=\""+$(this).data("spice-node")+"\"";
       console.log(spiceNode);
       $("body").css("cursor","crosshair");
       var wireid = $('wire').length;
       var bindid = $('bind').length;
       while($("#wire"+wireid).length)
         wireid++;
-      while($("#wire"+bindid).length)
+      while($("#bind"+bindid).length)
         bindid++;
+      var endbind = bindid+1;
       var left = Math.round(event.clientX/1)*1;
       var top = Math.round(event.clientY/1)*1;
       if(["PORT","WIRE"].includes($(event.currentTarget).prop("nodeName")))
@@ -153,10 +154,12 @@ var UI = {
           left = $(event.currentTarget).offset().left+$(event.currentTarget).width()/2;
         else
           top = $(event.currentTarget).offset().top+$(event.currentTarget).height()/2;
-      $("main").append("<bind id='bind"+bindid+"' style='z-index:14;display:inline-block;background:#333;position:absolute;width:10px;height:10px;'></bind>");
+      $("main").append("<bind id='bind"+bindid+"' style='z-index:14;display:inline-block;background:#333;position:absolute;width:10px;height:10px;'"+spiceNode+"></bind>");
+      $("main").append("<bind id='bind"+endbind+"' style='z-index:14;display:inline-block;background:#333;position:absolute;width:10px;height:10px;'"+spiceNode+"></bind>");
       $("main").append("<wire id='wire"+wireid+"' style='z-index:13;display:inline-block;background:#333;position:absolute;'"+spiceNode+"></wire>");
       $("#wire"+wireid).show().offset({top:top,left:left});
       $("#bind"+bindid).show().offset({top:top-2,left:left-2});
+      $("#bind"+endbind).hide().offset({top:top-2,left:left-2});
       $(document).mousemove(function(event) {
         var cardinalOffset = [(top-event.clientY),(left-event.clientX),(event.clientY-top),(event.clientX-left)];
         peakDirection = cardinalOffset.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
@@ -165,6 +168,7 @@ var UI = {
         switch(peakDirection) {
           case 0://cursor trending up
             $("#wire"+wireid+"").css("width","6px").css("height",(top-clientY)).css("top",(clientY)).css("left",left);
+            $("#bind"+endbind+"").css("top",clientY-4).css("left",clientX-4);
             break;
           case 1://cursor trending left
             if(UI.gridPositionsX.includes(clientX))
@@ -174,9 +178,12 @@ var UI = {
                   break;
                 }
             $("#wire"+wireid+"").css("height","6px").css("width",(left-clientX)).css("top",(top)).css("left",clientX);
+            $("#bind"+endbind+"").css("top",clientY-4).css("left",clientX-4);
             break;
           case 2://cursor trending down
             $("#wire"+wireid+"").css("width","6px").css("height",(clientY-top)).css("top",top).css("left",left);
+            $("#wire"+wireid+"").css("width","6px").css("height",(clientY-top)).css("top",top).css("left",left);
+            $("#bind"+endbind+"").css("top",clientY-4).css("left",clientX-4);
             break;
           case 3://cursor trending right
             if(UI.gridPositionsX.includes(clientX))
@@ -186,12 +193,14 @@ var UI = {
                   break;
                 }
             $("#wire"+wireid+"").css("height","6px").css("width",(clientX-left)).css("top",top).css("left",left);
+            $("#bind"+endbind+"").css("top",clientY-4).css("left",clientX-4);
             break;
           default:
             void(0);
         }
-        $("body,port,wire").click(function(){
+        $("body,port,wire,bind").click(function(){
           if(($(this).data("spice-node") == $("#wire"+wireid).data("spice-node")) || !$(this).data("spice-node")){
+            $("#bind"+endbind+"").show();
             $(document).unbind("click");
             $("body,port,wire").unbind("click");
             $(document).unbind("mousemove");
@@ -199,6 +208,7 @@ var UI = {
           }else{
             $("#wire"+wireid).remove();
             $("#bind"+bindid).remove();
+            $("#bind"+endbind).remove();
           }
         })
       })

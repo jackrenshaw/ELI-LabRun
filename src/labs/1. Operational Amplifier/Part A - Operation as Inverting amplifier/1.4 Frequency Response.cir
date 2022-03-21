@@ -42,7 +42,7 @@ XU1 0 6 3 7 4 1 2 LT1008
 V1 3 0 15
 V2 0 7 15
 V3 5 0 ac 1 dc 0
-R1 4 6 1k
+R1 4 6 50k
 R2 6 5 1k
 C1 0 0 30p
 * INSTRUCTIONS: Determine the 3dB Bandwidth, of this circuit, and then the frequency at which the gain falls to 0dB. Finally, plot the phase frequency response

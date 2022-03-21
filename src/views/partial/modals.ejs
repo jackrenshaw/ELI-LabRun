@@ -62,12 +62,14 @@
     <section class="modal-card-body">
       <div class="columns is-vcentered">
         <div class="column has-text-centered">
-          <a href="#" data-action="save" class="button is-success" data-page='<%-JSON.stringify(page)%>'>Save Circuit</a>
-        </div>
-        <div class="column has-text-centered">
-          <a href="#" data-action="save"  class="button is-info" data-page='<%-JSON.stringify(page)%>'>Load Last</a>
+          <a href="#" data-action="save"  class="button is-success" data-page='<%-JSON.stringify(page)%>'>Save</a>
         </div>
       </div>
+      <table class="table">
+        <tbody>
+
+        </tbody>
+      </table>
     </section>
     <footer class="modal-card-foot">
       <button class="button is-info">Confirm</button>
@@ -152,7 +154,7 @@
         </p>
       </div>
       <div class="implement-button">
-        <button data-action='implement' class='button is-info' data-lab="<%=page.lab%>"  data-lab="<%=page.part%>"  data-lab="<%=page.section%>"  data-password="">Implement Circuit</button>
+        <button data-action='implement' class='button is-info' data-password="">Implement Circuit</button>
       </div>
     </section>
       <footer class="modal-card-foot">
@@ -174,7 +176,7 @@
         <p class="validation-result"></p>
       </div>
       <footer class="modal-card-foot">
-        <button class="button is-info">Confirm</button>
+        <button class="button is-info" data-action="implement" data-token="">Confirm</button>
       </footer>
     </div>
 </div>

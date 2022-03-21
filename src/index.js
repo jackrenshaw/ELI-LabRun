@@ -162,7 +162,7 @@ const createWindow = () => {
                       var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+s.Name
                       const ejse = require('ejs-electron')
                       .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
-                      .options('debug', true)
+                      .options('debug', false)
                       labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                       callback(reqURL);
                     }
@@ -175,7 +175,7 @@ const createWindow = () => {
 
   var loading = function(){
       const ejse = require('ejs-electron')
-      .options('debug', true)
+      .options('debug', false)
       mainWindow.loadFile(path.join(__dirname, 'views/index.ejs'));
   }
   loading();
@@ -184,7 +184,7 @@ const createWindow = () => {
     fs.writeFileSync("src/labs/labs.json",JSON.stringify(Labs.Labs))
     const ejse = require('ejs-electron')
     .data({labs:Labs.Labs,actions:Actions.Actions})
-    .options('debug', true)
+    .options('debug', false)
     mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
   }
   mainWindow.webContents.openDevTools();
@@ -196,14 +196,18 @@ const createWindow = () => {
   })
   ipcMain.on('save',(event,params) =>{
     console.log(params)
-    fs.mkdir("save/"+params.page.lab,{ recursive: true },function(){
+    fs.mkdir("save/"+params.page.lab+"/"+params.page.part,{ recursive: true },function(){
       fs.writeFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+Date.now()+".json",JSON.stringify(params.preload));
       event.reply('save-reply','success')
     })
   })
+  ipcMain.on('getload',(event,params) =>{
+    console.log(params)
+    event.reply('getload-reply',Labs.getSaved(params.page.lab,params.page.part));
+  })
   ipcMain.on('load',(event,params) =>{
     console.log(params)
-    openLab(params.page,JSON.parse(fs.readFileSync("save/"+params.page.lab+"/"+params.page.part+".json")),function(response){ event.reply('load-reply', response)},function(){event.reply('load-reply', 'error')})
+    openLab(params.page,JSON.parse(fs.readFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+params.file)),function(response){ event.reply('load-reply', response)},function(){event.reply('load-reply', 'error')})
   })
   ipcMain.on('simulate', (event,params) => {
     console.log("Simualting Circuit");
