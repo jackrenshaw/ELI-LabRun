@@ -12,6 +12,7 @@ const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 
 SPICE.SpiceCommand = "ngspice";
+Actions.ImplementCommand = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs/dev/dev/ELI-LabRun/src/bin/dummy"
 const isMac = process.platform === 'darwin'
 const BASE = 'https://unsw-eli.herokuapp.com/'
 
@@ -130,6 +131,37 @@ const createWindow = () => {
   
   openGraphSim();
 
+  var openPane = function(page,callback,errorCallback){
+    console.log(page);
+    var found = false;
+    if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section'))
+      for(var l of Labs.Labs)
+        if(l.Name == page.lab)
+          for(var p of l.Parts)
+            if(p.Name == page.part){
+              console.log("Found Lab!");
+              found = true;
+              const paneWindow = new BrowserWindow({
+                width: 1500,
+                height: 900,
+                webPreferences: {
+                  nodeIntegration: true,
+                  preload: path.join(__dirname, 'preload/pane-preload.js')
+                }
+              });
+              paneWindow.webContents.openDevTools();
+              const ejse = require('ejs-electron')
+              .data({part:p})
+              .options('debug', false)
+              paneWindow.loadFile(path.join(__dirname, 'views/pane.ejs'));
+              callback("success");
+            }
+  if(!found){
+    console.log("Lab doesn't exist?")
+    errorCallback("Page not Found");
+  }
+  }
+
   var openLab = function(page,preload,callback,errorCallback){
     console.log(page);
     console.log(preload);
@@ -159,12 +191,11 @@ const createWindow = () => {
                       }
                       });
                       labWindow.webContents.openDevTools();
-                      var reqURL = BASE+'l/'+page.lab+'/'+page.part+'/'+s.Name
                       const ejse = require('ejs-electron')
                       .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
                       .options('debug', false)
                       labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
-                      callback(reqURL);
+                      callback("success");
                     }
                   }
   if(!found){
@@ -220,6 +251,7 @@ const createWindow = () => {
       );
   })
   ipcMain.on('implement', (event,params) => {
+    console.log("Implementing the Circuit");
     implementCircuit(params,function(response){ event.reply('implement-reply', response)},function(){event.reply('implement-reply', 'error')});
   })
   ipcMain.on('openLab', (event,params) => {
@@ -227,7 +259,10 @@ const createWindow = () => {
     console.log(params.preload);
     openLab(params.page,params.preload,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
   })
-
+  ipcMain.on('openPane', (event,params) => {
+    console.log("Opening a new pane");
+    openPane(params.page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
+  })
   ipcMain.on('startup', (event,page) => {
     startup(event,loadView);
   })

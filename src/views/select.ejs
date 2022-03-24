@@ -31,9 +31,12 @@
     <% if(l.hasOwnProperty('Parts')) for(var pn=0;pn<l.Parts.length;pn++){ var p=l.Parts[pn] %>
     <section class="section is-hidden lab-actions" id="Action<%=pn%>" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>">
       <div class="columns">
-        <div class="is-3 is-offset-5">
+        <div class="column is-3">
           <% if(p.Sections) if(p.Sections.length) if(p.Sections[0].hasOwnProperty('Name')){ %>
-            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" data-section="<%=p.Sections[0].Name%>" class="button is-info is-large open-lab">Open Lab</a><br>
+            <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" data-section="<%=p.Sections[0].Name%>" class="button is-info is-large" data-action="open-lab">Open Lab</a><br>
+            <div class="column is-3">
+              <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" data-section="<%=p.Sections[0].Name%>" class="button is-info is-large" data-action="open-pane">Direct</a><br>
+            </div>
           <%}else{%>
             <a href="#" data-lab="<%=l.Name%>"  data-part="<%=p.Name%>" class="button is-info is-large open-lab" disabled>Lab Unavailable</a><br>
           <%}%>

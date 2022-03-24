@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 document.onreadystatechange = function () {
   if (document.readyState == "complete") {
     const $ = require('jquery');
+    $(document).add('*').off();
     ipcRenderer.on('startup-reply', (_event, arg) => {
       $(".container center").append(arg);
     });
@@ -20,9 +21,15 @@ document.onreadystatechange = function () {
       $("section.lab").addClass("is-hidden");
       $("section.lab-actions[data-lab='"+$(this).data("lab")+"'][data-part='"+$(this).data("part")+"']").removeClass("is-hidden");
     })
-    $("a.open-lab").click(function(){
+    $("a[data-action='open-lab']").click(function(){
       ipcRenderer.send('openLab',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null})
       ipcRenderer.on('openLab-reply', (_event, arg) => {
+        console.log(arg)
+      });
+    })
+    $("a[data-action='open-pane']").click(function(){
+      ipcRenderer.send('openPane',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null})
+      ipcRenderer.on('openPane-reply', (_event, arg) => {
         console.log(arg)
       });
     })
