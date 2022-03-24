@@ -7,7 +7,7 @@ var ImplementCommand = {
 
 var Tokens = {};
 
-function EnactDigital(pin,value,callback,errorFunction){
+function ImplementDigital(pin,value,callback,errorFunction){
   console.log("Digital Output at Pin");
   if(value == false)
     value = '0'
@@ -15,18 +15,21 @@ function EnactDigital(pin,value,callback,errorFunction){
     value = '1'
   else
     errorFunction("Digital Pin Value Error");
+  console.log("PIN:"+pin+"VALUE:"+value)
   child = exec((ImplementCommand.Digital+" "+pin+" "+value),
   function (error, stdout, stderr) {
     if(error)
       errorFunction(error)
     else if(stderr)
       errorFunction(stderr)
-    else
+    else{
       callback(stdout);
+      console.log(stdout);
+    }
   });
 }
 
-function EnactAnalog(pin,value,callback,errorFunction){
+function ImplementAnalog(pin,value,callback,errorFunction){
   console.log("Analog Output at pin")
   if(value > 5 || value < 0)
     errorFunction("Analog Value Error");
@@ -36,21 +39,24 @@ function EnactAnalog(pin,value,callback,errorFunction){
       errorFunction(error)
     else if(stderr)
       errorFunction(stderr)
-    else
+    else{
       callback(stdout);
+      console.log(stdout);
+    }
   });
 }
 
-function Enact(output,callback,errorFunction){
+function Implement(output,callback,errorFunction){
+  console.log("Enacting Circuit")
   for(var o=0;o<output.length;o++)
     if(output[o].type == 'digital')
-      EnactDigital(o,output[o].value,callback,errorFunction)
+      ImplementDigital(o,output[o].value,callback,errorFunction)
     else if(output[o].type == 'analog')
-      EnactAnalog(o,output[o].value,callback,errorFunction)
+      ImplementAnalog(o,output[o].value,callback,errorFunction)
     else
       errorFunction("Output Type Error");
 }
 
 module.exports.ImplementCommand = ImplementCommand
 module.exports.Tokens = Tokens
-module.exports.Enact = Enact
+module.exports.Implement = Implement

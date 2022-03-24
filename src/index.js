@@ -55,10 +55,12 @@ var openGraphSim = function(){
 //This needs more validation (for params at a minimum)
 //We also need to validate the actions object at some point
 function implementCircuit(params,callback,errorCallback){
+  console.log(params);
+  console.log(params.token);
   if(params.token == "password")
-    Actions.Enact(params,callback,errorCallback)
+    Actions.Implement(params.output,callback,errorCallback)
   else if(Actions.Tokens.hasOwnProperty(params.token))
-    Actions.Enact(params,callback,errorCallback)
+    Actions.Implement(params.output,callback,errorCallback)
   else
     errorCallback("invalid token")
 }
