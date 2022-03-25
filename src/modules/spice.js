@@ -437,8 +437,7 @@ var Spice = {
             if(type == 'X'  && this.simple.hasOwnProperty('X') && this.simple.X  && !inSubcircuit){
                 console.log(c)
                 for(var t of this.simple.X){
-                    console.log(t.Name+"="+params.slice(-1))
-                    if(t.Name == params.slice(-1)){
+                    if(t.Name == params.slice(-1)[0].replace(/[^A-z0-9]/gi, '')){
                         console.log("found it:"+t.Name)
                         var Component = {
                             Name:c.substring(0,c.indexOf(' ')),
@@ -459,6 +458,8 @@ var Spice = {
                         for(var p=0;p<Component.Ports.length;p++)
                             Component.Ports[p].node = c.split(" ")[(p+1)];
                         components.push(Component)
+                    }else{
+                        console.log(t.Name+"!="+params.slice(-1))
                     }
                 }
             }else if(this.simple.hasOwnProperty(type) && !inSubcircuit){
