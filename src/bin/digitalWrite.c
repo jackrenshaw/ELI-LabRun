@@ -31672,18 +31672,25 @@ int32 __CFUNC DAQmxGetPersistedScaleAllowInteractiveDeletion
 
 
 int main(int argc,char *argv[]){
-  if(argc == 2){
+  if(argc == 3){
 	int         error=0;
 	TaskHandle	taskHandle=0;
 	uInt32      data = (int)strtol(argv[1], NULL, 16);
 	char        errBuff[2048]={'\0'};
 	int32		written;
+    char        *port;
+
+    if(argv[1][0] == '1'){
+        port = "Dev1/port1";
+    }else{
+        port = "Dev1/port0";
+    }
 
 	/*********************************************/
 	// DAQmx Configure Code
 	/*********************************************/
 	DAQmxErrChk (DAQmxCreateTask("",&taskHandle));
-	DAQmxErrChk (DAQmxCreateDOChan(taskHandle,"Dev1/port0","",DAQmx_Val_ChanForAllLines));
+	DAQmxErrChk (DAQmxCreateDOChan(taskHandle,port,"",DAQmx_Val_ChanForAllLines));
 
 	/*********************************************/
 	// DAQmx Start Code
