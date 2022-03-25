@@ -4,6 +4,7 @@ const tmp = require('tmp');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const { off } = require('process');
+const { id } = require('vega');
 /*
 RULES: Source must be listed in the correct order
 Terms can only be seperated by spaces not commas
@@ -493,12 +494,19 @@ var Spice = {
         else return "No Specific Instructions Provided";
     },
     SPICE_to_OUTPUT: function(netlist){
-        const output = netlist.match(/\* OUTPUT:.+/g)
-        if(output) 
-            if(output.length) 
-                return output[0].replace(/\\n/g,'\n').replace(/\* ?OUTPUT:/g,"").trim();
-            else return null;
-        else return null;
+        const DIGOUTPUT = netlist.match(/\* DIGOUTPUT: ([0-1] ){7}[0-1]/g);
+        const AOUTPUT = netlist.match(/\* AOUTPUT:.+/g); 
+        var output = {
+            "Digital":null,
+            "Analog":null
+        }
+        if(DIGOUTPUT)
+            if(DIGOUTPUT.length == 1)
+                output.Digital = DIGOUTPUT[0].replace("* DIGOUTPUT: ",'').split(' ');
+        if(AOUTPUT)
+            if(AOUTPUT.length == 1)
+                output.Analog = AOUTPUT[0].replace("* AOUTPUT: ",'').split(' ');
+        return output;
     },
     SPICE_to_SimulationNotes: function(netlist){
         const instructions = netlist.match(/\* SIMULATION NOTES:.+/g)

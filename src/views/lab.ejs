@@ -7,6 +7,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
     <meta name="page" data-page='<%-JSON.stringify(page)%>'>
+    <meta name="output" data-output='<%-JSON.stringify(section.Output)%>'>
     <title>ELI - UNSW ELEC2133</title>
     <link rel="stylesheet" href="../../node_modules/bulma/css/bulma.min.css">
     <link rel="stylesheet" href="../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
@@ -211,7 +212,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
   UI.Page = JSON.parse('<%-JSON.stringify(page)%>');
-  UI.SimulationParams = JSON.parse(`<%- JSON.stringify(section.SimulationParams)%>`.replace(/\n/g,'\\n'));
+  UI.SimulationParams = JSON.parse(`<%- JSON.stringify(section.SimulationParams)%>`.replace(/\n/g,'\\n').replace(/\r/g,'\\r'));
   UI.SimulationParams.raw = UI.SimulationParams.raw.replace(/\\n/g,'\n');
   UI.Subcircuit = `<%=section.Subcircuit%>`; 
   for(var g of UI.portPositionsX)

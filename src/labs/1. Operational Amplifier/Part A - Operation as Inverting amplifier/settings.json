@@ -4,29 +4,8 @@
     "Instructions":"",
     "Available":"2021-12-13T10:25:43.581Z",
     "PaneImage":"images/panes/lab1A.png",
-    "Outputs":[{
-        "name":"SW1",
-        "type":"digital"
-    },{
-        "name":"SW2",
-        "type":"digital"
-    },{
-        "name":"SW3",
-        "type":"digital"
-    },{
-        "name":"SW4",
-        "type":"digital"
-    },{
-        "name":"SW5",
-        "type":"digital"
-    },{
-        "name":"SW6",
-        "type":"digital"
-    },{
-        "name":"SW7",
-        "type":"digital"
-    },{
-        "name":"SW8",
-        "type":"digital"
-    }]
+    "Output":{
+        "Digital":["S1","S2","S3","S4","S5","S6","S7","S8"],
+        "Analog":["Vres1"]
+    }
 }

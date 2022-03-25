@@ -52,7 +52,7 @@ document.onreadystatechange = function () {
     $("button[data-action='implement']").click(function(){
       var params = {
         page:$("meta[name='page']").data("page"),
-        value:null,
+        output:$("meta[name='output']").data("output"),
         token:$(this).data("token")
       }
       ipcRenderer.send('implement',params)

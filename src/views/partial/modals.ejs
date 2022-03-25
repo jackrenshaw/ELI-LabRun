@@ -3,7 +3,7 @@
   <div class="modal-card">
     <header class="modal-card-head">
       <p class="modal-card-title">Login to UNSW-ELI</p>
-      <button class="delete" aria-label="close"></button>
+      <button class="delete" aria-label="close" onclick="$('.modal').removeClass('is-active');"></button>
     </header>
     <section class="modal-card-body">
       <form action="https://unsw-eli.herokuapp.com/auth/login" method="POST" id="login-form">
@@ -132,8 +132,8 @@
   <script type="text/javascript">
     $(document).ready(function(){
     $("#Override input[type='password']").keyup(function(){
-      console.log($(this).val())
-      $("#Override .implement-button button").data("password",$(this).val())
+      $("#Override button[data-action='implement']").attr("data-token",$(this).val())
+      console.log($("#Override button[data-action='implement']").data("token"));
     })
   })
   </script>
@@ -154,7 +154,7 @@
         </p>
       </div>
       <div class="implement-button">
-        <button data-action='implement' class='button is-info' data-password="">Implement Circuit</button>
+        <button data-action='implement' class='button is-info' data-token="">Implement Circuit</button>
       </div>
     </section>
       <footer class="modal-card-foot">
@@ -176,7 +176,7 @@
         <p class="validation-result"></p>
       </div>
       <footer class="modal-card-foot">
-        <button class="button is-info" data-action="implement" data-token="">Confirm</button>
+        <button class="button is-info" data-action="implement" data-token="">Implement Circuit on Hardware</button>
       </footer>
     </div>
 </div>

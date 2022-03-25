@@ -11,23 +11,20 @@ document.onreadystatechange = function () {
       console.log(arg);
     })
     $("a[data-action='implement']").click(function(){
-      var output = [];
-      $(".switches li").each(function(){
-        if($(this).data("output-type") == 'digital'){
+      var output = {
+        "Digital":[],
+        "Analog":[]
+      };
+      $("input[data-output-type='digital']").each(function(){
           var value = false;
-          if($(this).find("input").attr("checked"))
+          if($(this).attr("checked"))
             value = true;
-          output.push({
-            "type":'digital',
-            "value":value
-          })
-        }else if($(this).data("output-type") == 'analog'){
-          output.push({
-            "type":'analog',
-            "value":$(this).find("input").val()
-          })
-        }
+          output.Digital.push(value);
       })
+      $("input[data-output-type='analog']").each(function(){
+        output.Analog.push($(this).val());
+       })
+      console.log(output);
       ipcRenderer.send('implement',{token:'password',output:output})
     })
   }

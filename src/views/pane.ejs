@@ -61,22 +61,33 @@
     <div class="columns">
     <div class="column is-2">
     <aside class="menu switches">
-      <%if(part.hasOwnProperty('Settings')) if(part.Settings.hasOwnProperty('Outputs')) if(part.Settings.Outputs.length) for(var i=0;i<part.Settings.Outputs.length;i++){ var o = part.Settings.Outputs[i];%>
+      <%if(part.hasOwnProperty('Settings')) if(part.Settings.hasOwnProperty('Output')) if(part.Settings.Output){%>
+        <%if(part.Settings.Output.hasOwnProperty('Analog')) if(part.Settings.Output.Analog) for(var i=0;i<part.Settings.Output.Analog.length;i++){ var o = part.Settings.Output.Analog[i];%>
+          <p class="menu-label">
+            Analog Input <%=o%>
+          </p>
+          <ul class="menu-list">
+            <li>
+              <div class="field">
+              <input id="input<%=o%>" type="text" name="i<%=o%>" class="input is-large" value="" data-output-type="analog">
+              <label for="input<%=o%>"></label>
+              </div>
+          </li>
+          </ul>
+        <%}%>
+        <%if(part.Settings.Output.hasOwnProperty('Digital')) if(part.Settings.Output.Digital) for(var i=0;i<part.Settings.Output.Digital.length;i++){ var o = part.Settings.Output.Digital[i];%>
       <p class="menu-label">
-        <%=o.name%>
+        <%=o%>
       </p>
       <ul class="menu-list">
-        <li data-output-type="<%=o.type%>">
-          <%if(o.type == "digital"){%>
+        <li>
           <div class="field">
-          <input id="switchLarge<%=o.name%>" type="checkbox" name="<%=o.name%>" class="switch is-large is-info" value="false">
-          <label for="switchLarge<%=o.name%>"></label>
+          <input id="switch<%=o%>" type="checkbox" name="s<%=o%>" class="switch is-large is-info" value="false" data-output-type="digital">
+          <label for="switch<%=o%>"></label>
           </div>
-          <%}else if(o.type == "analog"){%>
-
-          <%}%>
       </li>
       </ul>
+      <%}%>
       <%}%>
     </aside>
     </div>

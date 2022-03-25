@@ -11,7 +11,9 @@ const Labs = require("./modules/labs");
 const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 
-SPICE.SpiceCommand = "ngspice";
+//SPICE.SpiceCommand = "ngspice";
+SPICE.SpiceCommand = 'C:\\Users\\Jack Renshaw\\OneDrive - UNSW\\Desktop\\ELI-LabRun\\src\\bin\\ngspice_con.exe';
+
 Actions.ImplementCommand = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs/dev/dev/ELI-LabRun/src/bin/dummy"
 const isMac = process.platform === 'darwin'
 const BASE = 'https://unsw-eli.herokuapp.com/'
