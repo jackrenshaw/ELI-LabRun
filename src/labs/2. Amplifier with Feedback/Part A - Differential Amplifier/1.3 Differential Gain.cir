@@ -2,13 +2,13 @@
 R1 2 3 1k
 Q1 3 3 4 QM1
 C1 8 7 30p
-R2 1 2 1m
 R3 5 7 1k
 R4 6 8 1k
 V1 1 0 10
 V2 0 4 10
-RAmmeter1 1 5 1m
-RAmmeter2 1 6 1m
+RAmmeter1 1 2 1m
+RAmmeter2 1 5 1m
+RAmmeter3 1 6 1m
 Q3 7 0 9 QM1
 Q4 8 0 9 QM1
 Q2 9 9 4 QM1
@@ -17,7 +17,8 @@ Q2 9 9 4 QM1
 * SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
 * CODE: 111A
 .control
-tran 5u 2m
+.dc V1 10 10 0
+.dc V2 10 10 0
 run
-print v(1,2)/1m
+print v(7) V(8) v(9) v(3)
 .endc

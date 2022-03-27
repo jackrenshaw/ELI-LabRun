@@ -10,8 +10,9 @@ RULES: Source must be listed in the correct order
 Terms can only be seperated by spaces not commas
 */
 var Spice = {
-    SpiceCommand:null,
+    SpiceCommand:"C:\\Users\\Jack Renshaw\\OneDrive - UNSW\\Desktop\\ELI-LabRun\\src\\bin\\ngspice_con.exe",
     SpiceRegex:/[0-9]{1,4}\t[0-9]+\.[0-9]+(e(\+|\-)[0-9]+)?.+/g,
+    DCRegex:/(v|i)\([0-9](,[0-9])?\)((\+|\-|\*|\/)[0-9]+(f|p|n|u|m|k|Meg|G))? = \-?[0-9]+\.[0-9]+(e(\+|\-)[0-9]+)?.+/g,
     ShorthandRegex:/[0-9]+(f|p|n|u|m|k|Meg|G)/g,
     Shorthand:{
       'f':1e9,
@@ -122,7 +123,7 @@ var Spice = {
         Q:{
                 Name:'BJT',
                 Ports:[{
-                    id:'B',
+                    id:'C',
                     top:50,
                     left:34,
                     height:50,
@@ -136,7 +137,7 @@ var Spice = {
                         top:47
                     }
                 },{
-                    id:'E',
+                    id:'B',
                     top:50,
                     left:45,
                     height:50,
@@ -150,7 +151,7 @@ var Spice = {
                         top:47
                     }
                 },{
-                    id:'C',
+                    id:'E',
                     top:50,
                     left:57,
                     height:50,
@@ -181,7 +182,7 @@ var Spice = {
                     top:-20,
                     left:12
                 },
-                Value:null
+                Value:4
         },
         M:{
                 Name:'MOSFET',
@@ -278,6 +279,57 @@ var Spice = {
                 left:60,
                 height:22,
                 width:7,
+                position:2,
+                bindPosition:{
+                    left:29,
+                    top:0
+                },
+                labelPosition:{
+                    left:12,
+                    top:-11
+                },
+                CSS:"background:black;position:absolute;"
+            }],
+            Label:{
+                "top":-5,
+                "left":40
+            },
+            Value:3
+        },
+        Ammeter:{
+            Name:'Ammeter',
+            Image:'../public/images/ammeter.svg',
+            CSS:'position:absolute;background-size:75px;background-repeat:no-repeat;background-image:url(../public/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Height:100,
+            Width:100,
+            InterPortSpace:[{
+                top:48,
+                height:4,
+                left:20,
+                width:33
+            }],
+            Ports:[{
+                id:'+',
+                top:48,
+                left:0,
+                height:4,
+                width:20,
+                position:1,
+                bindPosition:{
+                    left:-3,
+                    top:0
+                },
+                labelPosition:{
+                    left:-13,
+                    top:-11
+                },
+                CSS:"background:black;position:absolute;"
+            },{
+                id:'-',
+                top:48,
+                left:80,
+                height:4,
+                width:20,
                 position:2,
                 bindPosition:{
                     left:29,
@@ -434,12 +486,13 @@ var Spice = {
                 type = 'Ammeter'
             else if(c.substring(0,9) == ('RVariable'))
                 type = 'VariableResistor'
+            console.log(type);
             if(type == 'X'  && this.simple.hasOwnProperty('X') && this.simple.X  && !inSubcircuit){
                 console.log(c)
                 for(var t of this.simple.X){
                     if(t.Name == params.slice(-1)[0].replace(/[^A-z0-9]/gi, '')){
                         console.log("found it:"+t.Name)
-                        var Component = {
+                        const Component = {
                             Name:c.substring(0,c.indexOf(' ')),
                             Type:t.Name,
                             Ports:t.Ports,
@@ -463,10 +516,10 @@ var Spice = {
                     }
                 }
             }else if(this.simple.hasOwnProperty(type) && !inSubcircuit){
-                var Component = {
+                const Component = {
                     Name:c.substring(0,c.indexOf(' ')),
                     Type:this.simple[type].Name,
-                    Ports:this.simple[type].Ports,
+                    Ports:JSON.parse(JSON.stringify(this.simple[type].Ports)),
                     CSS:this.simple[type].CSS,
                     Value:null,
                     Class:null,
@@ -495,18 +548,48 @@ var Spice = {
         else return "No Specific Instructions Provided";
     },
     SPICE_to_OUTPUT: function(netlist){
-        const DIGOUTPUT = netlist.match(/\* DIGOUTPUT: ([0-1] ){7}[0-1]/g);
-        const AOUTPUT = netlist.match(/\* AOUTPUT:.+/g); 
+        const DIGOUTPUT0_PRE = netlist.match(/\* DIGOUTPUT0_PRE = ([0-1] ){7}[0-1]/g);
+        const DIGOUTPUT1_PRE = netlist.match(/\* DIGOUTPUT1_PRE = ([0-1] ){7}[0-1]/g);
+        const DIGOUTPUT0_POST = netlist.match(/\* DIGOUTPUT0_POST = ([0-1] ){7}[0-1]/g);
+        const DIGOUTPUT1_POST = netlist.match(/\* DIGOUTPUT1_POST = ([0-1] ){7}[0-1]/g);
+        const AOUTPUT0_PRE = netlist.match(/\* AOUTPUT0_PRE = .+/g); 
+        const AOUTPUT1_PRE = netlist.match(/\* AOUTPUT1_PRE = .+/g); 
+        const AOUTPUT0_POST = netlist.match(/\* AOUTPUT0_POST = .+/g); 
+        const AOUTPUT1_POST = netlist.match(/\* AOUTPUT1_POST = .+/g); 
         var output = {
-            "Digital":null,
-            "Analog":null
+            Pre:{
+                "Digital":[],
+                "Analog":[]
+            },
+            Post:{
+                "Digital":[],
+                "Analog":[]
+            }
         }
-        if(DIGOUTPUT)
-            if(DIGOUTPUT.length == 1)
-                output.Digital = DIGOUTPUT[0].replace("* DIGOUTPUT: ",'').split(' ');
-        if(AOUTPUT)
-            if(AOUTPUT.length == 1)
-                output.Analog = AOUTPUT[0].replace("* AOUTPUT: ",'').split(' ');
+        if(DIGOUTPUT0_PRE)
+            if(DIGOUTPUT0_PRE.length == 1)
+                output.Pre.Digital[0] = DIGOUTPUT0_PRE[0].replace("* DIGOUTPUT0_PRE = ",'').split(' ');
+        if(DIGOUTPUT1_PRE)
+            if(DIGOUTPUT1_PRE.length == 1)
+                output.Pre.Digital[1] = DIGOUTPUT1_PRE[0].replace("* DIGOUTPUT1_PRE = ",'').split(' ');
+        if(DIGOUTPUT0_POST)
+            if(DIGOUTPUT0_POST.length == 1)
+                output.Post.Digital[0] = DIGOUTPUT0_POST[0].replace("* DIGOUTPUT0_POST = ",'').split(' ');
+        if(DIGOUTPUT1_POST)
+            if(DIGOUTPUT1_POST.length == 1)
+                output.Post.Digital[1] = DIGOUTPUT1_POST[0].replace("* DIGOUTPUT1_POST = ",'').split(' ');
+        if(AOUTPUT0_PRE)
+            if(AOUTPUT0_PRE.length == 1)
+                output.Pre.Analog[0] = AOUTPUT0_PRE[0].replace("* AOUTPUT0_PRE = ",'');
+        if(AOUTPUT1_PRE)
+            if(AOUTPUT1_PRE.length == 1)
+                output.Pre.Analog[1] = AOUTPUT1_PRE[0].replace("* AOUTPUT1_PRE = ",'');
+        if(AOUTPUT0_POST)
+            if(AOUTPUT0_POST.length == 1)
+                output.Post.Analog[0] = AOUTPUT0_POST[0].replace("* AOUTPUT0_POST = ",'');
+        if(AOUTPUT1_POST)
+            if(AOUTPUT1_POST.length == 1)
+                output.Post.Analog[1] = AOUTPUT1_POST[0].replace("* AOUTPUT1_POST = ",'');
         return output;
     },
     SPICE_to_SimulationNotes: function(netlist){
@@ -551,6 +634,8 @@ var Spice = {
                     start:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){3}/g)[0].split(' ')[3],
                     stop:params[0].match(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg|G|T)?){3}/g)[0].split(' ')[4],
                 }
+            }else if(netlist.includes("* MULTIMETER")){
+                simType = 'multimeter';
             }
             return {
                 raw:params[0],
@@ -567,6 +652,13 @@ var Spice = {
             return params
         else 
             return null;
+    },
+    SPICE_Models(netlist){
+        var params = netlist.match(/.MODEL .+/g);
+        if(params)
+            return params
+        else 
+            return [];
     },
     Board_to_SPICE(board){
         const $ = cheerio.load(board);
@@ -693,7 +785,9 @@ var Spice = {
                 errorFunction(error);
             });
             ls.on('close', (code) => {
+              console.log(rawData)
               var scopes = rawData.match(Spice.SpiceRegex);
+              var DC = rawData.match(Spice.DCRegex);
               var labels = rawData.match(Spice.LabelRegex);
               if(labels)
                 if(labels.length)
@@ -723,6 +817,9 @@ var Spice = {
             }
             if(scopeData.length)
                 callback(scopeData)
+            else if(DC && netlist.includes("* MULTIMETER")){
+                callback(DC)
+            }
             else
                 errorFunction("ngSPICE Simulation returned no data - check your circuit");
             });

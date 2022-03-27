@@ -195,8 +195,10 @@ function makeSVG(title,data,xLabel,yLabel,callback,errorFunction){
     callback(svg,data);
   })
   .catch(function(err) { errorFunction(err) });
-  }else
+  }else{
     errorFunction("Invalid Data");
+    console.log(data)
+  }
 }
 
 module.exports = makeSVG

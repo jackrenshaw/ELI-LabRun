@@ -16,9 +16,20 @@
       .button{
         margin:20px;
       }
+      #Notifications{
+        position: absolute;
+        right: 20px;
+        top: 150px;
+        max-width: 250px;
+        z-index: 99;
+        font-size: 12px;
+      }
     </style>
   </head>
   <body>
+    <div id="Notifications">
+
+    </div>
     <div class="tabs is-centered">
   <ul>
     <%if (labs) if(labs.length) for(var ln=0;ln<labs.length;ln++){ var l = labs[ln]; %>

@@ -103,8 +103,10 @@
     <section class="modal-card-body">
       <p><% if(section.Instructions){%><%= section.Instructions %><%}%></p>
         <p><b><% if(section.SimulationNotes){%><%= section.SimulationNotes %><%}%></b></p>
-        <p><%- section.SimulationImage %></p>
-        <p><b>NI-6008 pinout for this Lab: <% if(section.Output){%><%=section.Output%><%}%></b></p>
+        <%if(section.Multimeter){%>
+        <%-JSON.stringify(section.Simulation)%>  
+        <%}else{%><p><%- section.SimulationImage %></p>%<%}%>
+        <p><b>NI-6008 pinout for this Lab: <% if(section.Output){%><%-JSON.stringify(section.Output)%><%}%></b></p>
       </section>
       <footer class="modal-card-foot">
         <button class="button is-info">Close</button>
@@ -133,7 +135,10 @@
     $(document).ready(function(){
     $("#Override input[type='password']").keyup(function(){
       $("#Override button[data-action='implement']").attr("data-token",$(this).val())
-      console.log($("#Override button[data-action='implement']").data("token"));
+      if($(this).val() == 'password'){
+        ($("#Override button[data-action='implement']").data("token",$(this).val()));
+        $("#Override button[data-action='implement']").removeAttr("disabled");
+      }
     })
   })
   </script>
@@ -154,7 +159,7 @@
         </p>
       </div>
       <div class="implement-button">
-        <button data-action='implement' class='button is-info' data-token="">Implement Circuit</button>
+        <button data-action='implement' class='button is-info' data-token="" disabled>Implement Circuit</button>
       </div>
     </section>
       <footer class="modal-card-foot">
@@ -174,9 +179,10 @@
         <p class="sim-result"></p>
         <h6>Validation Notes</h6>
         <p class="validation-result"></p>
+        <div class="comparison-area"></div>
       </div>
       <footer class="modal-card-foot">
-        <button class="button is-info" data-action="implement" data-token="">Implement Circuit on Hardware</button>
+        <button class="button is-info" data-action="implement" data-token="" disabled>Implement Circuit on Hardware</button>
       </footer>
     </div>
 </div>

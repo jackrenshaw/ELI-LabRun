@@ -11,10 +11,10 @@ const Labs = require("./modules/labs");
 const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 
-//SPICE.SpiceCommand = "ngspice";
-SPICE.SpiceCommand = 'C:\\Users\\Jack Renshaw\\OneDrive - UNSW\\Desktop\\ELI-LabRun\\src\\bin\\ngspice_con.exe';
+SPICE.SpiceCommand = "ngspice";
+Actions.ImplementCommand.Analog = "echo";
+Actions.ImplementCommand.Digital = "echo";
 
-Actions.ImplementCommand = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs/dev/dev/ELI-LabRun/src/bin/dummy"
 const isMac = process.platform === 'darwin'
 const BASE = 'https://unsw-eli.herokuapp.com/'
 
@@ -123,6 +123,16 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = () => {
+  //Create the lab window
+  var labWindow = new BrowserWindow({
+    show:false,
+    width: 1500,
+    height: 900,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload/lab-preload.js')
+    }
+  });
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1200,
@@ -134,6 +144,18 @@ const createWindow = () => {
   });
   
   openGraphSim();
+
+  labWindow.on('close',function(event){
+    labWindow = new BrowserWindow({
+      show:false,
+      width: 1500,
+      height: 900,
+      webPreferences: {
+        nodeIntegration: true,
+        preload: path.join(__dirname, 'preload/lab-preload.js')
+      }
+    });
+  })
 
   var openPane = function(page,callback,errorCallback){
     console.log(page);
@@ -166,17 +188,17 @@ const createWindow = () => {
   }
   }
 
-  var openLab = function(page,preload,callback,errorCallback){
+  var openLab = function(page,preload,callback,errorCallback,labWindow){
     console.log(page);
     console.log(preload);
     var found = false;
     if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section'))
-      for(var l of Labs.Labs)
+      for(const l of Labs.Labs)
         if(l.Name == page.lab)
-          for(var p of l.Parts)
+          for(const p of l.Parts)
             if(p.Name == page.part)
                 for(var si=0;si<p.Sections.length;si++){
-                  var s = p.Sections[si];
+                  const s = p.Sections[si];
                   if(s.Name == page.section){
                     var prev = null;
                     var next = null;
@@ -186,20 +208,28 @@ const createWindow = () => {
                       next = {lab:l.Name,part:p.Name,section:p.Sections[si+1].Name};
                     console.log("Found Lab!");
                     found = true;
-                    const labWindow = new BrowserWindow({
-                        width: 1500,
-                        height: 900,
-                        webPreferences: {
-                          nodeIntegration: true,
-                          preload: path.join(__dirname, 'preload/lab-preload.js')
-                      }
+                      console.log("Implementing Pre Actions");
+                      Actions.Implement(s.Output.Pre,function(response){
+                        labWindow.destroy();
+                        labWindow = new BrowserWindow({
+                            show:false,
+                            width: 1500,
+                            height: 900,
+                            webPreferences: {
+                              nodeIntegration: true,
+                              preload: path.join(__dirname, 'preload/lab-preload.js')
+                            }
+                        });
+                        labWindow.webContents.openDevTools();
+                        const ejse = require('ejs-electron')
+                        .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
+                        .options('debug', false)
+                        labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
+                        labWindow.show();
+                        callback("success");
+                      },function(error){
+                        errorCallback(error);
                       });
-                      labWindow.webContents.openDevTools();
-                      const ejse = require('ejs-electron')
-                      .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
-                      .options('debug', false)
-                      labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
-                      callback("success");
                     }
                   }
   if(!found){
@@ -224,7 +254,7 @@ const createWindow = () => {
   }
   mainWindow.webContents.openDevTools();
   ipcMain.on('getCompletions', (event,page) => {
-    getCompletions(page,function(response){ event.reply('completion-reply', response)},function(){event.reply('completion-reply', 'error')});
+    getCompletions(page,function(response){ event.reply('completion-reply', response)},function(error){event.reply('completion-error', error)});
   })
   ipcMain.on('graph', (event,params) => {
     Graph("Function",params.signals,params.xlabel,params.ylabel,function(svg){event.reply('graph-reply', svg)},function(error){event.reply('graph-reply', error)});
@@ -242,30 +272,40 @@ const createWindow = () => {
   })
   ipcMain.on('load',(event,params) =>{
     console.log(params)
-    openLab(params.page,JSON.parse(fs.readFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+params.file)),function(response){ event.reply('load-reply', response)},function(){event.reply('load-reply', 'error')})
+    openLab(params.page,JSON.parse(fs.readFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
+  })
+  ipcMain.on('multimeter',(event,params) =>{
+    console.log(params.circuit);
+    console.log("Running Multimeter");
+    SPICE.SpiceSimulate(params.circuit,function(data){
+      var levels = {};
+      for(var d of data)
+          levels[d.split(" = ")[0]] = parseFloat(d.split(" = ")[1]);
+      event.reply('multimeter-reply',levels)
+    },function(error){event.reply('multimeter-error',error)})
   })
   ipcMain.on('simulate', (event,params) => {
     console.log("Simualting Circuit");
-    SPICE.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-reply',error)});
+    SPICE.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-error',error)});
   })
   ipcMain.on('validate', (event,params) => {
       circuitValidate(params,
         function(token){ console.log("success");event.reply('validate-reply', token)},
-        function(error){console.log(error); event.reply('validate-reply', error)}
+        function(error){console.log(error); event.reply('validate-error', error)}
       );
   })
   ipcMain.on('implement', (event,params) => {
     console.log("Implementing the Circuit");
-    implementCircuit(params,function(response){ event.reply('implement-reply', response)},function(){event.reply('implement-reply', 'error')});
+    implementCircuit(params,function(response){ event.reply('implement-reply', response)},function(error){event.reply('implement-error',error)});
   })
   ipcMain.on('openLab', (event,params) => {
     console.log("Opening a new lab");
     console.log(params.preload);
-    openLab(params.page,params.preload,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
+    openLab(params.page,params.preload,function(response){ event.reply('openLab-reply', response)},function(error){event.reply('openLab-error', error)},labWindow);
   })
   ipcMain.on('openPane', (event,params) => {
     console.log("Opening a new pane");
-    openPane(params.page,function(response){ event.reply('openLab-reply', response)},function(){event.reply('openLab-reply', 'error')});
+    openPane(params.page,function(response){ event.reply('openPane-reply', response)},function(error){event.reply('openPane-error', error)});
   })
   ipcMain.on('startup', (event,page) => {
     startup(event,loadView);

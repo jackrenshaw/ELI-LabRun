@@ -1,5 +1,6 @@
 const axios = require('axios')
 var exec = require('child_process').exec,child;
+
 var ImplementCommand = {
   Digital:"\"src/bin/test.exe\"",
   Analog:"\"src/bin/test1.exe\""
@@ -11,6 +12,9 @@ function ImplementDigital(value,callback,errorFunction){
   console.log("Digital Output Value:"+value);
   child = exec((ImplementCommand.Digital+" "+value),
   function (error, stdout, stderr) {
+    console.log(error)
+    console.log(stderr)
+    console.log(stdout)
     if(error)
       errorFunction(error)
     else if(stderr)
@@ -28,6 +32,9 @@ function ImplementAnalog(pin,value,callback,errorFunction){
     errorFunction("Analog Value Error");
   child = exec((ImplementCommand.Analog+" "+pin.toString()+" "+value.toString()),
   function (error, stdout, stderr) {
+    console.log(error)
+    console.log(stderr)
+    console.log(stdout)
     if(error)
       errorFunction(error)
     else if(stderr)

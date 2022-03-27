@@ -7,8 +7,16 @@ document.onreadystatechange = function () {
   if (document.readyState == "complete") {
     const $ = require('jquery');
     $(document).add('*').off();
-    ipcRenderer.addListener('implement-reply',function(arg){
+    ipcRenderer.addListener('implement-reply',function(_event, arg){
       console.log(arg);
+    })
+    ipcRenderer.addListener('implement-error',function(_event, arg){
+      console.log(arg);
+      $("body #Notifications").append(`<div class="notification is-danger  is-light">
+      <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>Error Implementing Switches</strong><br>
+There was an error implementing those changes. Please report this to your lab demonstrator<br>
+<strong>Details:</strong>`+arg+`</div>`);
     })
     $("a[data-action='implement']").click(function(){
       var output = {

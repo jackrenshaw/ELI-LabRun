@@ -54,17 +54,29 @@ var Labs = {
                         Part.Manual = ManualFile;
                 const sections = fs.readdirSync(inp+"/"+l+"/"+p)
                 for(var s of sections) if(s.substring(0,1) != "." && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
-                    const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[]}
+                    const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:false}
                     Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
                     var code = s.split(".");
                     code.pop();
-                    await Spice.ImageSimulate(fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),function(svg,data){Section.Simulation.push(data);Section.SimulationImage.push(svg);},console.log);
+                    if(Section.Solution.includes("* MULTIMETER")){
+                        Spice.SpiceSimulate(fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),function(data){
+                            console.log("Multimeter Mode");
+                            var levels = {};
+                            for(var d of data)
+                                levels[d.split(" = ")[0]] = parseFloat(d.split(" = ")[1]);
+                            Section.Simulation.push(levels);
+                            console.log(levels);
+                        },console.log);
+                        Section.Multimeter = true;
+                    }else
+                        Spice.ImageSimulate(fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),function(svg,data){Section.Simulation.push(data);Section.SimulationImage.push(svg);},console.log);
                     Section.Components = Spice.SPICE_to_Components(Section.Solution);
                     Section.Instructions = Spice.SPICE_to_Instructions(Section.Solution);
                     Section.SimulationNotes = Spice.SPICE_to_SimulationNotes(Section.Solution);
                     Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);
                     Section.SimulationParams = Spice.SPICE_SimulationParameters(Section.Solution);
                     Section.Subcircuit = Spice.SPICE_Subcircuit(Section.Solution);
+                    Section.Models = Spice.SPICE_Models(Section.Solution);
                     Part.Sections.push(Section);
                 }
                 for(var s of sections) if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){

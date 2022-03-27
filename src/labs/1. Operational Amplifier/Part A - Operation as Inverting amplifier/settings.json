@@ -3,9 +3,12 @@
     "Spiel":"",
     "Instructions":"",
     "Available":"2021-12-13T10:25:43.581Z",
-    "PaneImage":"images/panes/lab1A.png",
+    "PaneImage":"images/panes/lab1.png",
     "Output":{
-        "Digital":["S1","S2","S3","S4","S5","S6","S7","S8"],
+        "Digital":[
+            ["S1","S2","S3","S4","S5",null,null,null],
+            [null,null,null,"Power",null,null,null,null]
+        ],
         "Analog":["Vres1","Vres2"]
     }
 }

@@ -30,8 +30,19 @@
     })
   })
   </script>
+  <style>
+          #Notifications{
+        position: absolute;
+        right: 20px;
+        top: 150px;
+        max-width: 250px;
+        z-index: 99;
+        font-size: 12px;
+      }
+  </style>
   </head>
   <body>
+    <div id="Notifications"></div>
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="#">
@@ -75,7 +86,7 @@
           </li>
           </ul>
         <%}%>
-        <%if(part.Settings.Output.hasOwnProperty('Digital')) if(part.Settings.Output.Digital) for(var i=0;i<part.Settings.Output.Digital.length;i++){ var o = part.Settings.Output.Digital[i];%>
+        <%if(part.Settings.Output.hasOwnProperty('Digital')) if(part.Settings.Output.Digital) for(var i=0;i<part.Settings.Output.Digital.length;i++) for(var j=0;j<part.Settings.Output.Digital[i].length;j++) if(part.Settings.Output.Digital[i][j]){ var o = part.Settings.Output.Digital[i][j];%>
       <p class="menu-label">
         <%=o%>
       </p>

@@ -14,6 +14,24 @@ document.onreadystatechange = function () {
     ipcRenderer.on('startup-reply', (_event, arg) => {
       $(".container center").append(arg);
     });
+    ipcRenderer.on('openLab-reply', (_event, arg) => {
+      console.log(arg)
+    });
+    ipcRenderer.on('openLab-error', (_event, arg) => {
+      $("body #Notifications").append(`<div class="notification is-danger  is-light">
+      <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>Error Opening Lab</strong><br>
+There was an error the requested Laboratory. This error likely relates to setting the initial hardware conditions. Please report this to your lab demonstrator<br>
+<strong>Details:</strong>`+arg+`</div>`);
+      console.log("Error Opening Lab");
+      console.log(arg)
+    });
+    ipcRenderer.on('openPane-reply', (_event, arg) => {
+      console.log(arg)
+    });
+    ipcRenderer.on('completion-reply', (_event, arg) => {
+      console.log(arg);
+    })
     $("a.focus-lab").click(function(){
       console.log($(this));
       console.log($(this).data('lab'));
@@ -23,15 +41,9 @@ document.onreadystatechange = function () {
     })
     $("a[data-action='open-lab']").click(function(){
       ipcRenderer.send('openLab',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null})
-      ipcRenderer.on('openLab-reply', (_event, arg) => {
-        console.log(arg)
-      });
     })
     $("a[data-action='open-pane']").click(function(){
       ipcRenderer.send('openPane',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null})
-      ipcRenderer.on('openPane-reply', (_event, arg) => {
-        console.log(arg)
-      });
     })
     $("#confirm-modal button.is-success").click(function(){
       console.log("enactCircuit");
@@ -50,9 +62,6 @@ document.onreadystatechange = function () {
           $("#login-modal").removeClass("is-active");
         }if(arg == 'error')
           $("#login-form p.feedback").html("Login Failed!")
-      })
-      ipcRenderer.on('completion-reply', (_event, arg) => {
-        console.log(arg);
       })
     });
   }

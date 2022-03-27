@@ -67,7 +67,22 @@ function openNav() {
 
     $("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");
   $("#sidebar .container div[name='SPICE']").append("<br><h2 class='subtitle'>Conversion Output</h2>");
-  UI.makeSPICE();
+  UI.makeSPICE(function(error){
+    $("#sidebar .container div[name='SPICE']").append(error+"<br>");
+    $("body #Notifications").append(`<div class="notification is-danger  is-light">
+      <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>Error</strong><br>
+There was an error simulating the circuit. Please check your circuit<br>
+<strong>Details:</strong>`+error+`</div>`);
+  },function(input){
+    $("#sidebar .container div[name='SPICE']").append(input+"<br>");
+  },function(netlist,normalised){
+    console.log("Simualting and Validating Circuit");
+    window.electronAPI.SimulateCircuit(netlist);
+    window.electronAPI.ValidateCircuit(netlist,UI.Page);
+    //window.electronAPI.EnactCircuit(netlist);
+    console.log(netlist)
+  });
   $("a[href='#output-netlist'],a[href='#output-nodal']").removeClass("disabled");
   $("#sidebar .container div[name='SPICE']").append("<hr><h2 id='output-netlist' class='subtitle'>SPICE Output</h2><i>You can run this in a command line simulator like ngSPICE</i><br>"+UI.SPICE.SPICE.replace(/\n/g,'<br>')+"<hr>");
   $("#sidebar .container div[name='SPICE']").append("<h2 id='output-nodal' class='subtitle'>Nodes</h4>")

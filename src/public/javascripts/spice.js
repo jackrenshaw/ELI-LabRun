@@ -29,13 +29,14 @@ The procedure, in the broadest terms, is:
 
 */
 class SPICE{
-  constructor(powersupply,signalgenerator,oscilloscope,ground,nodes,components,wires,binds,parts,scopenodes,subcircuit,simulationParams,debugFunction,complete){
+  constructor(powersupply,signalgenerator,oscilloscope,ground,nodes,components,wires,binds,parts,scopenodes,multimeternodes,subcircuit,models,simulationParams,debugFunction,verboseFunction,complete){
     console.log(nodes);
     this.powersupply = powersupply;
     this.signalgenerator = signalgenerator;
     this.oscilloscope = oscilloscope;
     this.ground = ground;
     this.scopenodes = scopenodes;
+    this.multimeternodes = multimeternodes;
     this.ammeters = [];
     this.connectionnodes = {
       ps1_positiveNode:null,
@@ -47,9 +48,10 @@ class SPICE{
     }
     this.SPICE = "";
     this.dbg = debugFunction;
+    this.vbs = verboseFunction
 
     if(!nodes || !components){
-      this.dbg("No WireFrame - must manually identify nodes!");
+      this.vbs("No WireFrame - must manually identify nodes!");
       this.wires = wires;
       this.parts = parts;
       this.binds = binds;
@@ -61,13 +63,13 @@ class SPICE{
       this.formNodes();
       this.labelNodes();
     }else{
-      this.dbg("WireFrame provided (no need to manually identify nodes)");
+      this.vbs("WireFrame provided (no need to manually identify nodes)");
       this.nodes = nodes;
       this.components = components;
       var scopeValid = false;
       if(oscilloscope.hasOwnProperty('params'))
         if(oscilloscope.params.hasOwnProperty('type'))
-          if(['transient','ac'].includes(oscilloscope.params.type))
+          if(['transient','ac','multimeter'].includes(oscilloscope.params.type))
             if(oscilloscope.params.type == 'transient'){
               if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.transient.runtime) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.transient.step))
                 scopeValid = true;
@@ -75,6 +77,8 @@ class SPICE{
               console.log(oscilloscope.params)
               if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.start) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.stop) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.step) && ["linear","decade"].includes(oscilloscope.params.sweep.type))
                 scopeValid = true;
+            }else if(oscilloscope.params.type == 'multimeter'){
+              scopeValid = true;
             }
       if(!scopeValid){
         this.dbg("<b>Error:</b> The Oscilloscope is not configured correctly. Please check your settings")
@@ -98,7 +102,7 @@ class SPICE{
               throw 'Scope Placement Error';
             }
     }
-    this.setComponentNodes();
+    //this.setComponentNodes();
     this.SPICE += "Test Circuit\n";
     if(subcircuit)
       this.SPICE += subcircuit+'\n';
@@ -106,9 +110,11 @@ class SPICE{
     this.spiceConvert_source();
     this.spiceConvert_components();
     this.spiceConvert_ammeters();
+    if(models)
+      this.SPICE += models.join('\n')+'\n';
     this.spiceConvert_simulation();
     this.SPICENORM = this.spiceConvert_comparison();
-    this.dbg("Complete!");
+    this.vbs("Complete!");
     complete(this.SPICE),this.SPICENORM;
 }
 
@@ -182,7 +188,7 @@ containedSpan(spans1,spans2){
   }
 
  getSegmentsAndComponents(){
-    this.dbg("Calculating the span of each wire segment")
+    this.vbs("Calculating the span of each wire segment")
     for(var i=0;i<this.wires.length;i++){
         if(this.wires[i].width>0 && this.wires[i].height>0)
           this.wires[i].span.push({
@@ -197,7 +203,7 @@ containedSpan(spans1,spans2){
           if(this.inSpan(w.span,wq.span)) connected = true;
       if(connected) this.segments.push(JSON.parse(JSON.stringify(w)));
     }
-    this.dbg("Removing unnecessary wire segments to speed up analysis")
+    this.vbs("Removing unnecessary wire segments to speed up analysis")
     for(var i=0;i<this.segments.length;i++){
       for(var j=0;j<this.segments.length;j++){
         if(this.segments[j].span[0].horizontal[0] > this.segments[i].span[0].horizontal[0])
@@ -207,7 +213,7 @@ containedSpan(spans1,spans2){
                 this.segments = this.segments.splice(j,1);
       }
     }
-    this.dbg("Calculating the span of components and each port within a component")
+    this.vbs("Calculating the span of components and each port within a component")
     for(var p of this.parts){
         var component = {id:p.id,span:[],nodes:[],ports:[],type:p.type};
         var span = [{
@@ -228,8 +234,8 @@ containedSpan(spans1,spans2){
     }
 }
  connectedSegments(){
-   this.dbg("Determining which wire segments and ports are connected together");
-   this.dbg("&emsp;Finding adjacent wire segments and ports");
+   this.vbs("Determining which wire segments and ports are connected together");
+   this.vbs("&emsp;Finding adjacent wire segments and ports");
     for(var i=0;i<this.segments.length;i++){
         const fixed = this.segments[i];
         for(var j=0;j<this.segments.length;j++) if(i != j){
@@ -238,19 +244,19 @@ containedSpan(spans1,spans2){
               for(var b of this.binds)
                 if(this.inSpan(b.span,fixed.span) && this.inSpan(b.span,inQuestion.span))
                   if(!this.segments[i].connected.includes(j)){
-                    this.dbg("&emsp;&emsp;"+this.segments[i].id+" is connected to "+this.segments[j].id+" with a bind");
+                    this.vbs("&emsp;&emsp;"+this.segments[i].id+" is connected to "+this.segments[j].id+" with a bind");
                     this.segments[i].connected.push(j);
                   }
             }else{
               if(this.inSpan(inQuestion.span,fixed.span))
                 if(!this.segments[i].connected.includes(j)){
-                  this.dbg("&emsp;&emsp;"+this.segments[i].id+" is connected to "+this.segments[j].id);
+                  this.vbs("&emsp;&emsp;"+this.segments[i].id+" is connected to "+this.segments[j].id);
                   this.segments[i].connected.push(j);
                 }
             }
         }
   }
-  this.dbg("Recursively connecting segments together");
+  this.vbs("Recursively connecting segments together");
   for(var i=0;i<this.segments.length;i++)
     for(var j of this.segments[i].connected)
       for(var k of this.segments[j].connected)
@@ -259,7 +265,7 @@ containedSpan(spans1,spans2){
   }
 
  formNodes(){
-  this.dbg("Forming nodes on the basis of connected segments");
+  this.vbs("Forming nodes on the basis of connected segments");
    var excluded = [];
   for(var i=0;i<this.segments.length;i++){
     var node = {name:this.nodes.length,span:[]}
@@ -286,7 +292,7 @@ joinNodes(){
 }
 
  setComponentNodes(){
-  this.dbg("Setting the nodes that each component is connected to");
+  this.vbs("Setting the nodes that each component is connected to");
     for(var c=0;c<this.components.length;c++)
       for(var p=0;p<this.components[c].ports.length;p++)
         for(var n=0;n<this.nodes.length;n++)
@@ -296,7 +302,7 @@ joinNodes(){
 
 //Power supply 1 and 2 can be tethered if ground is placed at either the power supply positive or negative node of PS 2
 labelNodes(){
-  this.dbg("Labelling each node according to the SPICE/ELI conventions (i.e. 0 for the ground-connected node");
+  this.vbs("Labelling each node according to the SPICE/ELI conventions (i.e. 0 for the ground-connected node");
   for(var c=0;c<this.nodes.length;c++){
     //Set the ground node with name 0
     if(this.inSpan(this.nodes[c].span,this.ground.span)) 
@@ -323,7 +329,7 @@ labelNodes(){
 }
 
   spiceConvert_components(){
-    this.dbg("Creating a SPICE line entry for each component");
+    this.vbs("Creating a SPICE line entry for each component");
     for(var c of this.components){
       var spiceLine = c.name+" ";
       for(var p in c.ports)
@@ -337,7 +343,7 @@ labelNodes(){
   }
 
   spiceConvert_ammeters(){
-    this.dbg("Finding and Recording Ammeter Positions");
+    this.vbs("Finding and Recording Ammeter Positions");
     for(var c of this.components){
       if(c.name.includes('RAmmeter'))
         if(c.ports[0].nodes.length && c.ports[1].nodes.length && c.value)
@@ -347,7 +353,7 @@ labelNodes(){
   }
 
   spiceConvert_connectionNodes(){
-    this.dbg("Determining the nodes of connnections");
+    this.vbs("Determining the nodes of connnections");
     for(var n of this.nodes){
       if(UI.inSpan(n.span,this.powersupply[0].positive.span))
         this.connectionnodes.ps1_positiveNode = n.name
@@ -366,7 +372,8 @@ labelNodes(){
   }
 
   spiceConvert_source(){
-    this.dbg("Creating a SPICE line entry for each power supply and the signal generator");
+    this.vbs("Creating a SPICE line entry for each power supply and the signal generator");
+    console.log(this.connectionnodes);
     if(this.connectionnodes.ps1_positiveNode != null && this.connectionnodes.ps1_negativeNode != null)
       this.SPICE += "V1 "+this.connectionnodes.ps1_positiveNode+" "+this.connectionnodes.ps1_negativeNode+" "+this.powersupply[0].voltage+"\n";
     if(this.connectionnodes.ps2_positiveNode != null && this.connectionnodes.ps2_negativeNode != null)
@@ -415,13 +422,13 @@ labelNodes(){
       console.log(this.connectionnodes)
       console.log(this.ammeters)
       if(this.scopenodes.positive && (this.connectionnodes.siggen_positivenode || this.connectionnodes.ps1_positiveNode)){
-        this.dbg("Setting up a transient simulation for Voltage");
+        this.vbs("Setting up a transient simulation for Voltage");
         if(this.connectionnodes.siggen_positivenode)
           printline += ' v('+this.scopenodes.positive+') v('+this.connectionnodes.siggen_positivenode+')'
         else if(this.connectionnodes.ps1_positiveNode)
           printline += ' v('+this.scopenodes.positive+') v('+this.connectionnodes.ps1_positiveNode+')'
       }else if(this.ammeters.length){
-        this.dbg("Setting up a transient simulation for Current");
+        this.vbs("Setting up a transient simulation for Current");
         for(var a of this.ammeters) if(a.hasOwnProperty('value') && a.hasOwnProperty('positive') && a.hasOwnProperty('negative'))
           if(a.positive != '0' && a.negative != '0')
             printline += ' v('+a.positive+','+a.negative+')/'+a.value;
@@ -429,6 +436,28 @@ labelNodes(){
             printline += ' v('+a.positive+')/'+a.value;
           else if(a.positive == '0' && a.negative != '0')
             printline += '-v('+a.negative+')/'+a.value;
+      }
+      this.SPICE += printline+'\n';
+    }else if(this.oscilloscope.params.type == 'multimeter'){
+      this.SPICE += "* MULTIMETER\n";
+      this.SPICE += "dc V1 "+this.powersupply[0].voltage+" "+this.powersupply[0].voltage+" 0.1\n"
+      this.SPICE += "dc V1 "+this.powersupply[1].voltage+" "+this.powersupply[1].voltage+" 0.1\n"
+      this.SPICE += "run\n";
+      var printline = 'print'
+      for(var i of this.multimeternodes){
+        if(i.hasOwnProperty('value') && i.hasOwnProperty('+') && i.hasOwnProperty('-')){
+          if(i['+'] == 0 && i['-'] == 0)
+            void(0)
+          else if(i['+'] == 0)
+            printline += " -1*v("+i['-']+")/"+i['value'];
+          else if(i['-'] == 0)
+            printline += " v("+i['+']+")/"+i['value'];
+          else
+            printline += " v("+i['+']+","+i['-']+")/"+i['value'];
+        }else{
+          if(i != 0)
+            printline += " v("+i+")"
+        }
       }
       this.SPICE += printline+'\n';
     }
