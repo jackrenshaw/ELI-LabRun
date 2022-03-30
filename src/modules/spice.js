@@ -25,7 +25,7 @@ var Spice = {
       'G':1e9,
       'T':1e12,
     },
-    LabelRegex:/Index.+/g,
+    LabelRegex:/\* INDEX = .+/g,
     simple:{
         R:{
             Name:'Resistor',
@@ -486,7 +486,6 @@ var Spice = {
                 type = 'Ammeter'
             else if(c.substring(0,9) == ('RVariable'))
                 type = 'VariableResistor'
-            console.log(type);
             if(type == 'X'  && this.simple.hasOwnProperty('X') && this.simple.X  && !inSubcircuit){
                 console.log(c)
                 for(var t of this.simple.X){
@@ -785,15 +784,24 @@ var Spice = {
                 errorFunction(error);
             });
             ls.on('close', (code) => {
-              console.log(rawData)
               var scopes = rawData.match(Spice.SpiceRegex);
               var DC = rawData.match(Spice.DCRegex);
-              var labels = rawData.match(Spice.LabelRegex);
-              if(labels)
-                if(labels.length)
-                    labels = labels[0].match(/[A-z0-9\*\(\)\/,]+/g,'');
+              var labels = ["Input","Output"];
+              var includedLabels = null
+              if(/Index.+/g.test(rawData))
+                includedLabels = rawData.match(/Index.+/g);
+                if(includedLabels)
+                    labels = includedLabels[0].replace(/\s+/g,' ').trim().split(' ');
+              if(Spice.LabelRegex.test(netlist)){
+                console.log("Found custom labels");
+                var specLabels = netlist.match(Spice.LabelRegex)[0];
+                labels = specLabels.replace('* INDEX = ','').split(",");
+                console.log(labels)
+              }
+              else
+                console.log("No custom labels");
+              console.log(labels);
               console.log(netlist.split('\n')[0]);
-              console.log(labels)
               var scopeData = [];
               if(scopes) if(scopes.length){
                 var sampleStep = 1;
@@ -802,17 +810,18 @@ var Spice = {
                 for(var s=0;s<scopes.length;s=s+sampleStep){
                     var e = scopes[s].split("\t");
                     if(e && labels)
-                        if(e.length && labels.length){
-                            if(labels.length == 3)
-                                scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:"Output"})
-                            else if(labels.length == 4){
-                                scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:"Output"})
-                                scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[3]),c:"Input"})
-                            }else if(labels.length > 4 && labels.length == (e.length-2)){
-                                for(var i=2;i<(e.length-2);i++)
-                                    scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:(i-2)})
+                            if(e.length == 4)
+                                scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:labels[0]})
+                            else if(e.length == 5){
+                                scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[2]),c:labels[0]})
+                                scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[3]),c:labels[1]})
+                            }else if(e.length > 5){
+                                for(var i=2;i<(e.length-1);i++)
+                                    if((i-2) < labels.length)
+                                        scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[i]),c:labels[(i-2)]})
+                                    else
+                                        scopeData.push({x:parseFloat(e[1]),y:parseFloat(e[i]),c:(i-2)})
                             }
-                        }
                 }
             }
             if(scopeData.length)

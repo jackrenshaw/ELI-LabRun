@@ -272,41 +272,48 @@
           info
           </span>
           </a>
-          <a class="navbar-item">
-            <span class="material-icons">
-            navigation
-            </span>
-          </a>
-          <a class="navbar-item">
+          <a class="navbar-item is-active" onclick="UI.clear();if(!$(this).hasClass('is-active')){UI.select();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{$(this).removeClass('is-active');}">
             <span class="material-icons">
               pan_tool
               </span>
             </a>
-            <a class="navbar-item" onclick="UI.wire();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');">
+            <a class="navbar-item" onclick="UI.clear();if(!$(this).hasClass('is-active')){UI.wire();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{$(this).removeClass('is-active');}">
               <span class="material-icons">
                 edit
                 </span>
               </a>
-              <a class="navbar-item" onclick="if(!$(this).hasClass('is-active')){UI.StartMultimeter();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{UI.StopMultimeter();$(this).removeClass('is-active');}">
-              <span class="material-icons">
-                earbuds
-                </span>
-                </a>
-              <a class="navbar-item" onclick="if(!$(this).hasClass('is-active')){UI.remove();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{$(this).removeClass('is-active');}">
+              <a class="navbar-item" onclick="UI.clear();if(!$(this).hasClass('is-active')){UI.remove();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{$(this).removeClass('is-active');}">
                 <span class="material-icons">
                   clear
                   </span>
                 </a>
-                <a class="navbar-item" onclick="$('#SaveLocal').addClass('is-active');" data-action="getload" data-page='<%-JSON.stringify(page)%>'>
+                <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();$('#SaveLocal').addClass('is-active');" data-action="getload" data-page='<%-JSON.stringify(page)%>'>
                   <span class="material-icons">
                     save
                     </span>
                   </a>
-                  <a class="navbar-item" onclick="$('#SyncGlobal').addClass('is-active');">
+                  <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();$('#SyncGlobal').addClass('is-active');">
                     <span class="material-icons">
                       cloud_sync
                       </span>
                     </a>
+                    <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();">
+                    <span class="material-icons">
+                      done
+                      </span>
+                      </a>
+                      <a class="navbar-item is-disabled" onclick="UI.SetComponents();var results=UI.CheckComponents();UI.clear();if(!$(this).hasClass('is-active')){UI.StartMultimeter();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{UI.StopMultimeter();$(this).removeClass('is-active');}">
+                        <span class="material-icons">
+                          earbuds
+                          </span>
+                          </a>
+                          <a class="navbar-item is-disabled" onclick="UI.SetComponents();var results=UI.CheckComponents();UI.openNav();">
+                      <span class="material-icons">
+                        run_circle
+                        </span>
+                        </a>
+                        
+                      
     </div>
   </nav>
 <style>
@@ -380,25 +387,25 @@ top = top+200;
 </main>
 <%- include ('partial/modals.ejs') %>
 <connectors>
-<port style='position: absolute;top:600px;left:75px;background: red;height:130px;width:6px;z-index:10;' name="powersupply-1positive">
+<port style='position: absolute;top:600px;left:75px;background: red;height:130px;width:6px;z-index:10;' name="powersupply-1positive" data-spice-bench="PowerSupply 1">
   <label style="position: relative;left:10px;">Power Supply 1+</label>
 </port>
-<port style='position: absolute;top:600px;left:175px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-1negative">
+<port style='position: absolute;top:600px;left:175px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-1negative"  data-spice-bench="PowerSupply 1">
   <label  style="position: relative;left:10px;">Power Supply 1-</label>
 </port>
-<port style='position: absolute;top:600px;left:275px;background: red;height: 130px;width:6px;z-index:10;' name="powersupply-2positive">
+<port style='position: absolute;top:600px;left:275px;background: red;height: 130px;width:6px;z-index:10;' name="powersupply-2positive"  data-spice-bench="PowerSupply 2">
   <label  style="position: relative;left:10px;">Power Supply 2+</label>
 </port>
-<port style='position: absolute;top:600px;left:375px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-2negative">
+<port style='position: absolute;top:600px;left:375px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-2negative" data-spice-bench="PowerSupply 2">
   <label  style="position: relative;left:10px;">Power Supply 2-</label>
 </port>
-<port style='position: absolute;top:600px;left:600px;background: red;height:130px;width:6px;z-index:10;' name="signalgenerator-positive">
+<port style='position: absolute;top:600px;left:600px;background: red;height:130px;width:6px;z-index:10;' name="signalgenerator-positive" data-spice-bench="Signal Generator">
   <label  style="position: relative;left:10px;">Signal Generator V+</label>
 </port>
-<port style='position: absolute;top:600px;left:700px;background: black;height:100px;width:6px;z-index:10;' name="signalgenerator-negative">
+<port style='position: absolute;top:600px;left:700px;background: black;height:100px;width:6px;z-index:10;' name="signalgenerator-negative"  data-spice-bench="Oscilloscope">
   <label  style="position: relative;left:10px;">Signal Generator V-</label>
 </port>
-<port style='position: absolute;top:600px;left:1000px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-positive">
+<port style='position: absolute;top:600px;left:1000px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-positive" data-spice-bench="Oscilloscope">
   <label  style="position: relative;left:10px;">Oscilloscope V+</label>
 </port>
 <port style='position: absolute;top:600px;left:1150px;background: black;height:100px;width:6px;z-index:10;' name="oscilloscope-negative">

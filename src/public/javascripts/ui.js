@@ -13,51 +13,32 @@ var UI = {
   nodes:[],
   clear: function(){
     //clear all bindings, start from a blank slate
-    $("component,ground").draggable('disable');
-    $("body,component,ground").css("cursor","default");
-    $("component").off("dblclick");
-    $("wire").off("dblclick");
-    $("port").off("dblclick");
-    $("body").off("dblclick");
-    $("body").off("click");
-    $("port").off("click");
+    $("component,wire,ground").off("dblclick");
     $("wire").off("click");
-    $(document).off("mousemove");
+    $("component,ground").css("cursor","default");
   },
   select: function(){
-    //
-    UI.clear();
+    console.log("selecting/moving components")
     $("component,ground").css("cursor","pointer");
     UI.SelectListen();
     UI.RotateListen();
     UI.ComponentDrop();
   },
-  move: function(){
-    //Move the component
-    UI.clear();
-    $("component,ground").css("cursor","grab");
-    $("component,ground").draggable('enable');
-    UI.ComponentDrop();
-  },
   remove: function(){
     //When clicked, each wire will be 
     console.log("Removing a Wire");
-    UI.clear();
-    $("wire,bind").css("cursor","not-allowed");
-    $("wire,bind,component").click(function(){
+    $("wire,component").css("cursor","not-allowed");
+    $("wire,component").dblclick(function(){
       $(this).remove();
-      UI.remove();
     })
   },
   SelectListen: function(){
     $("component,ground").click(function(){
       $("component,ground").each(function(){ 
-        $(this).draggable('disable');
         $(this).find("label").css("font-weight","300").css("text-decoration","none");
       });
       $(this).find("label").css("font-weight","bold").css("text-decoration","underline");
       UI.selectedComponent = this;
-      $(this).draggable('enable');
     })
     $("wire").click(function(){
       $(this).css("background-color","rgba(var(--bs-primary-rgb),var(--bs-bg-opacity))!important")
@@ -97,10 +78,14 @@ var UI = {
           $(UI.selectedComponent).removeClass("rotated-180");
           $(UI.selectedComponent).removeClass("rotated-270");
           $(UI.selectedComponent).removeClass("rotated-90");
-        }else{
+        }else if(!$(UI.selectedComponent).hasClass("rotated-270") && !$(UI.selectedComponent).hasClass("rotated-180") && !$(UI.selectedComponent).hasClass("rotated-270")){
           $(UI.selectedComponent).removeClass("rotated-180");
           $(UI.selectedComponent).removeClass("rotated-270");
           $(UI.selectedComponent).addClass("rotated-90");
+        }else{
+          $(UI.selectedComponent).removeClass("rotated-180");
+          $(UI.selectedComponent).removeClass("rotated-270");
+          $(UI.selectedComponent).removeClass("rotated-90");
         }
     }); 
   },
@@ -134,7 +119,12 @@ var UI = {
       var mmid = $('multimeter').length;
       while($("#multimeter"+mmid).length)
         mmid++;
-      $("#MultimeterFlags").append(`<multimeter style="position:absolute;top:`+(event.clientY-20)+`px;left:`+(event.clientX-4)+`px;" data-spice-node="`+$(this).data("spice-node")+`" id="multimeter+`+mmid+`"><span class="material-icons">outlined_flag</span></multimeter>`);
+      var simulation = $("meta[name='simulation']").data("simulation")[0];
+      console.log(simulation)
+      console.log('v('+$(this).attr("data-spice-node")+')')
+      if(simulation.hasOwnProperty('v('+$(this).attr("data-spice-node")+')')){
+        $("#MultimeterFlags").append(`<multimeter style="position:absolute;top:`+(event.clientY-20)+`px;left:`+(event.clientX-4)+`px;" data-spice-node="`+$(this).attr("data-spice-node")+`" id="multimeter+`+mmid+`"><p>`+simulation['v('+$(this).data("spice-node")+')']+`V</p></multimeter>`);
+      }
     })
   },
   StopMultimeter: function(){
@@ -156,16 +146,15 @@ There was an error simulating the circuit. Please check your circuit<br>
   },
   wire: function(){
     console.log("Wiring");
-    UI.clear();
     $("wire,port").css("cursor","crosshair");
     $("body").css("cursor","default");
     //To start wiring, the student must click on a port or a wire
-    $("wire").click(function(event){ if($(this).data("spice-node") || $(this).data("spice-node") == '0' || !UI.FrameWork){
+    $("wire").click(function(event){console.log("clicked wire"); if($(this).attr("data-spice-node") || $(this).attr("data-spice-node") == '0' || !UI.FrameWork){
       $("port,wire,bind,body").unbind("click");
-      console.log($(this).data("spice-node"));
+      console.log($(this).attr("data-spice-node"));
       var spiceNode = "";
       if(UI.FrameWork)
-        spiceNode = " data-spice-node=\""+$(this).data("spice-node")+"\"";
+        spiceNode = " data-spice-node=\""+$(this).attr("data-spice-node")+"\"";
       console.log(spiceNode);
       $("body").css("cursor","crosshair");
       var wireid = $('wire').length;
@@ -233,22 +222,14 @@ There was an error simulating the circuit. Please check your circuit<br>
             void(0);
         }
       })
+    }else{
+      console.log("clicked on a wire but it doesn't have a spice node?")
     }
   });
-  $("component,port").dblclick(function(){
-    console.log("wiring to a port");
-    $(this).attr("data-spice-node",$("#wire"+wireid).data("spice-node"));
-    if($(this).data("spice-node") != $(this).data("spice-target-node"))
-      $("body #Notifications").html(`<div class="notification is-warning is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Warning</strong><br>This component is miswired!</div>`);          
-    $(document).unbind("click");
-    $("body,port,wire").unbind("click");
-    $(document).unbind("mousemove");
-    UI.wire();
-  })
   $("body").dblclick(function(){
-    $(document).unbind("click");
-    $("body,port,wire").unbind("click");
-    $(document).unbind("mousemove");
+    $(document).off("mousemove");
+    $("body").off("dblclick");
+    $("wire").off("click");
     UI.wire();
   });
   },
@@ -297,16 +278,9 @@ There was an error simulating the circuit. Please check your circuit<br>
             horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
             vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
           }];
-          if(UI.inSpan(Port,wirespan) && !wired && $(_port).data("bind-position")){
+          if(UI.inSpan(Port,wirespan) && !wired){
             console.log("Dropping Component on a wire");
-            wired = true;
-            $(_port).attr("data-spice-node",$(_wire).data("spice-node"));
-            console.log($(_port).data("spice-node"))
-            if($(_port).data("spice-node") == $(_port).data("spice-target-node"))
-              $("body #Notifications").html(`<div class="notification is-success is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Success!</strong><br>The component was placed in the correct position</div>`);          
-            else
-              $("body #Notifications").html(`<div class="notification is-warning is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Warning</strong><br>This component is misplaced</div>`);          
-            var bindPosition = $(_port).data("bind-position");
+            wired = true;    
             if($(_wire).height() == 6 && portHeight == 6){
               var heightDiff = $(_port).offset().top - $(_wire).offset().top;
               $(_comp).css("top",($(_comp).offset().top-heightDiff));
@@ -342,6 +316,69 @@ There was an error simulating the circuit. Please check your circuit<br>
       }})
     })
   },
+  SetComponents: function(){
+    $("port").each(function(){
+      var _port = this;
+      var portWidth = $(_port).width();
+      var portHeight = $(_port).height();
+      if($(this).parent("component,ground").hasClass("rotated-90") || $(this).parent("component").hasClass("rotated-90")){
+        portWidth = $(_port).height();
+        portHeight = $(_port).width();
+      }
+      const PortSpan = [{
+        horizontal:[$(_port).offset().left,($(_port).offset().left+portWidth)],
+        vertical:[$(_port).offset().top,($(_port).offset().top+portHeight)]
+      }];
+      $("wire").each(function(){
+        var _wire = this;
+        if($(_wire).width() == 0 || $(_wire).height() == 0) $(_wire).hide();
+        const WireSpan = [{
+          horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
+          vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
+        }];
+        if(UI.inSpan(PortSpan,WireSpan)){
+          console.log("found a match");
+          console.log($(_wire).attr("data-spice-node"));
+          $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
+        }
+      });
+    })
+  },
+  CheckComponents: function(){
+    var results = {
+      matching:[],
+      notmatching:[]
+    }
+    $("component port").each(function(){
+      console.log($(this).parent("component").data("spice-name")+" "+$(this).attr("name"));
+      console.log($(this).attr("data-spice-node"));
+      console.log($(this).attr("data-spice-target-node"));
+      if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
+        if($(this).attr("data-spice-bench"))
+          results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+        else
+          results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
+      else
+        if($(this).attr("data-spice-bench"))
+          results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+        else
+          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))    })
+    if(results.notmatching.length){
+      $("body #Notifications").append(`<div class="notification is-warning  is-light">
+      <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>Error</strong><br>
+Some of your connections are incorrect<br>
+<strong>Details:</strong><br>`+results.notmatching.join('<br>')+`</div>`);
+    }
+    if(results.matching.length){
+      $("body #Notifications").append(`<div class="notification is-success  is-light">
+      <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>Success</strong><br>
+Some of your connections are correct<br>
+<strong>Details:</strong><br>`+results.matching.join('<br>')+`</div>`);
+    }
+    return results;
+  },
   SplitWire: function(wireid,splitspan){
     console.log(splitspan);
     var wirespan = [{
@@ -369,6 +406,44 @@ There was an error simulating the circuit. Please check your circuit<br>
     }
     $(wireid).hide();
     UI.AddWire(newSpan);
+  },
+  openNav: function() {
+    $("#sidebar .container div[name='SPICE']").html("");
+    $("#sidebar").show();
+    html2canvas(document.querySelector("body")).then(canvas1 => {
+      //$("#sidebar .container div[name='SPICE']").append("<br><h2>Circuit Image</h2><p>You can right click on this image to save it</p>");
+      //$("#sidebar .container div[name='SPICE']").append(canvas1);
+      //$("#sidebar .container div[name='SPICE']").append("<hr>");
+  
+      $("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");
+    $("#sidebar .container div[name='SPICE']").append("<br><h2 class='subtitle'>Conversion Output</h2>");
+    UI.makeSPICE(function(error){
+      $("#sidebar .container div[name='SPICE']").append(error+"<br>");
+      $("body #Notifications").append(`<div class="notification is-danger  is-light">
+        <button class="delete" onclick='$(this).parent().remove()'></button>
+  <strong>Error</strong><br>
+  There was an error simulating the circuit. Please check your circuit<br>
+  <strong>Details:</strong>`+error+`</div>`);
+    },function(input){
+      $("#sidebar .container div[name='SPICE']").append(input+"<br>");
+    },function(netlist,normalised){
+      console.log("Simualting and Validating Circuit");
+      window.electronAPI.SimulateCircuit(netlist);
+      window.electronAPI.ValidateCircuit(netlist,UI.Page);
+      //window.electronAPI.EnactCircuit(netlist);
+      console.log(netlist)
+    });
+    $("a[href='#output-netlist'],a[href='#output-nodal']").removeClass("disabled");
+    $("#sidebar .container div[name='SPICE']").append("<hr><h2 id='output-netlist' class='subtitle'>SPICE Output</h2><i>You can run this in a command line simulator like ngSPICE</i><br>"+UI.SPICE.SPICE.replace(/\n/g,'<br>')+"<hr>");
+    $("#sidebar .container div[name='SPICE']").append("<h2 id='output-nodal' class='subtitle'>Nodes</h4>")
+      UI.showNodes();
+      html2canvas(document.querySelector("body")).then(canvas2 => {
+        //$("#sidebar .container div[name='SPICE']").append(canvas2);
+        //$("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");;
+        UI.hideNodes()
+      });
+    });
+  
   },
   RemoveWiresFromArea: function(span){
     $("wire").each(function(){
@@ -455,57 +530,28 @@ There was an error simulating the circuit. Please check your circuit<br>
   loadBoard: function(){
     $("main").html(localStorage.getItem("board"));
     $("component,ground").draggable();
-    UI.move();
+    UI.select();
   },
   makeSPICE: function(debugFunction,verboseFunction,callback){
     UI.nodes = [];
     UI.components = [];
     const powersupply = [{
       voltage:parseFloat($("#Source td[name='voltage1']").html()),
-      positive:{
-        span:[{
-          vertical:[$("port[name='powersupply-1positive").offset().top,($("port[name='powersupply-1positive").offset().top+$("port[name='powersupply-1positive").height())],
-          horizontal:[$("port[name='powersupply-1positive").offset().left,($("port[name='powersupply-1positive").offset().left+$("port[name='powersupply-1positive").width())],
-        }]
-      },
-      negative:{
-        span:[{
-          vertical:[$("port[name='powersupply-1negative").offset().top,($("port[name='powersupply-1negative").offset().top+$("port[name='powersupply-1negative").height())],
-          horizontal:[$("port[name='powersupply-1negative").offset().left,($("port[name='powersupply-1negative").offset().left+$("port[name='powersupply-1negative").width())],
-        }]
-      }
+      positive:$("port[name='powersupply-1positive']").attr("data-spice-node"),
+      negative:$("port[name='powersupply-1negative']").attr("data-spice-node")
+
     },{
-      voltage:parseFloat($("#Source td[name='voltage1']").html()),
-      positive:{
-        span:[{
-          vertical:[$("port[name='powersupply-2positive").offset().top,($("port[name='powersupply-2positive").offset().top+$("port[name='powersupply-2positive").height())],
-          horizontal:[$("port[name='powersupply-2positive").offset().left,($("port[name='powersupply-2positive").offset().left+$("port[name='powersupply-2positive").width())],
-        }]
-      },
-      negative:{
-        span:[{
-          vertical:[$("port[name='powersupply-2negative").offset().top,($("port[name='powersupply-2negative").offset().top+$("port[name='powersupply-2negative").height())],
-          horizontal:[$("port[name='powersupply-2negative").offset().left,($("port[name='powersupply-2negative").offset().left+$("port[name='powersupply-2negative").width())],
-        }]
-      }
+      voltage:parseFloat($("#Source td[name='voltage2']").html()),
+      positive:$("port[name='powersupply-2positive']").attr("data-spice-node"),
+      negative:$("port[name='powersupply-2negative']").attr("data-spice-node")
     }];
     const signalgenerator = {
       freqMultiple:$("#SignalGenerator td[name='frequency']").html().split(" ").pop(),
       voltage:parseFloat($("#SignalGenerator td[name='voltage']").html()),
       frequency:parseFloat($("#SignalGenerator td[name='frequency']").html()),
       waveType:"sine",
-      positive:{
-        span:[{
-          vertical:[$("port[name='signalgenerator-positive").offset().top,($("port[name='signalgenerator-positive").offset().top+$("port[name='signalgenerator-positive").height())],
-          horizontal:[$("port[name='signalgenerator-positive").offset().left,($("port[name='signalgenerator-positive").offset().left+$("port[name='signalgenerator-positive").width())],
-        }]
-      },
-      negative:{
-        span:[{
-          vertical:[$("port[name='signalgenerator-negative").offset().top,($("port[name='signalgenerator-negative").offset().top+$("port[name='signalgenerator-negative").height())],
-          horizontal:[$("port[name='signalgenerator-negative").offset().left,($("port[name='signalgenerator-negative").offset().left+$("port[name='signalgenerator-negative").width())],
-        }]
-      }
+      positive:$("port[name='signalgenerator-positive']").attr("data-spice-node"),
+      negative:$("port[name='signalgenerator-negative']").attr("data-spice-node")
     };
     const oscilloscope = {
       params:{
@@ -521,32 +567,17 @@ There was an error simulating the circuit. Please check your circuit<br>
           stop:$("#scope-sweep span.sweep-stop-frequency").html(),
         }
       },
-      positive:{
-        span:[{
-          vertical:[$("port[name='oscilloscope-positive").offset().top,($("port[name='oscilloscope-positive").offset().top+$("port[name='oscilloscope-positive").height())],
-          horizontal:[$("port[name='oscilloscope-positive").offset().left,($("port[name='oscilloscope-positive").offset().left+$("port[name='oscilloscope-positive").width())],
-        }]
-      },
-      negative:{
-        span:[{
-          vertical:[$("port[name='oscilloscope-negative").offset().top,($("port[name='oscilloscope-negative").offset().top+$("port[name='oscilloscope-negative").height())],
-          horizontal:[$("port[name='oscilloscope-negative").offset().left,($("port[name='oscilloscope-negative").offset().left+$("port[name='oscilloscope-negative").width())],
-        }]
-      }
+      positive:$("port[name='oscilloscope-positive']").attr("data-spice-node"),
+      negative:$("port[name='oscilloscope-negative']").attr("data-spice-node")
     };
-    const ground = {
-      span:[{
-        vertical:[$("ground port").offset().top,($("ground port").offset().top+$("ground port").height())],
-        horizontal:[$("ground port").offset().left,($("ground port").offset().left+$("ground port").width())],
-      }]
-    };
+    const ground = $("ground port").attr("data-spice-node")
     var multimeternodes = [];
     $("multimeter").each(function(){
-      if($(this).data("spice-node"))
-      multimeternodes.push($(this).data("spice-node"));
+      if($(this).attr("data-spice-node"))
+      multimeternodes.push($(this).attr("data-spice-node"));
     })
     $("component[data-spice-type='Ammeter']").each(function(){
-      multimeternodes.push({'+':$(this).find("port[name='+']").data("spice-node"),'-':$(this).find("port[name='+']").data("spice-node"),'value':$(this).data("spice-value")})
+      multimeternodes.push({'+':$(this).find("port[name='+']").attr("data-spice-node"),'-':$(this).find("port[name='+']").attr("data-spice-node"),'value':$(this).data("spice-value")})
     })
     multimeternodes = [...new Set(multimeternodes)];
     console.log(multimeternodes);
@@ -560,7 +591,7 @@ There was an error simulating the circuit. Please check your circuit<br>
       var scopenodes = {positive:null,negative:null};
       $("wire").each(function(){
         var nodeExists = false;
-        var node = $(this).data("spice-node");
+        var node = $(this).attr("data-spice-node");
         if(!UI.nodes.hasOwnProperty(node))
           UI.nodes[node] = {name:node,span:[]}
         if(node || node == 0){
@@ -571,9 +602,9 @@ There was an error simulating the circuit. Please check your circuit<br>
 
         if($(this).data("spice-scope"))
           if($(this).data("spice-scope") == '+')
-            scopenodes.positive = $(this).data("spice-node");
+            scopenodes.positive = $(this).attr("data-spice-node");
           else if($(this).data("spice-scope") == '-')
-            scopenodes.negative = $(this).data("spice-node");
+            scopenodes.negative = $(this).attr("data-spice-node");
         }
       });
         $("component").each(function(){
@@ -602,17 +633,11 @@ There was an error simulating the circuit. Please check your circuit<br>
                 horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
                 vertical:[$(this).offset().top,($(this).offset().top+$(this).height())],
               }],
-              nodes:[$(this).data("spice-node")]
+              nodes:[$(this).attr("data-spice-node")]
             });
           });
           UI.components.push(component);
         });
-      for(var n of UI.nodes){
-        if(UI.inSpan(n.span,oscilloscope.positive.span))
-          scopenodes.positive = n.name
-        if(UI.inSpan(n.span,oscilloscope.negative.span))
-          scopenodes.negative = n.name
-      }
       var nodes = [];
       for(var n in UI.nodes)
         nodes.push(UI.nodes[n]);
@@ -746,8 +771,8 @@ $("connectors port").each(function(){
       vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
     }];
     if(UI.inSpan(PortSpan,WireSpan))
-      if($(_wire).data("spice-node"))
-        $(_port).attr("data-spice-node",$(_wire).data("spice-node"));
+      if($(_wire).attr("data-spice-node"))
+        $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
   })
 })
 $("connectors div").each(function(){

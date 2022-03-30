@@ -38,14 +38,6 @@ class SPICE{
     this.scopenodes = scopenodes;
     this.multimeternodes = multimeternodes;
     this.ammeters = [];
-    this.connectionnodes = {
-      ps1_positiveNode:null,
-      ps1_negativeNode:null,
-      ps2_positiveNode:null,
-      ps2_negativeNode:null,
-      siggen_positivenode:null,
-      siggen_negativenode:null
-    }
     this.SPICE = "";
     this.dbg = debugFunction;
     this.vbs = verboseFunction
@@ -84,29 +76,12 @@ class SPICE{
         this.dbg("<b>Error:</b> The Oscilloscope is not configured correctly. Please check your settings")
         throw 'Oscilloscope Setup Error'
       }
-      for(var n of this.nodes)
-        if(n.name == '0')
-          if(!this.inSpan(this.ground.span,n.span)){
-            this.dbg("<b>Error:</b> Ground is not placed correctly.")
-            throw 'Ground Placement Error'
-          }
-        if(scopenodes)
-          if(n.name == scopenodes.positive)
-            if(!this.inSpan(this.oscilloscope.positive.span,n.span)){
-              this.dbg("<b>Error:</b> Oscilloscope Probe(+) not placed correctly.");
-              throw 'Scope Placement Error';
-            }
-          if(n.name == scopenodes.negative)
-            if(!this.inSpan(this.oscilloscope.negative.span,n.span)){
-              this.dbg("<b>Error:</b> Oscilloscope Probe(-) not placed correctly.");
-              throw 'Scope Placement Error';
-            }
     }
     //this.setComponentNodes();
     this.SPICE += "Test Circuit\n";
     if(subcircuit)
       this.SPICE += subcircuit+'\n';
-    this.spiceConvert_connectionNodes();
+    //this.spiceConvert_connectionNodes();
     this.spiceConvert_source();
     this.spiceConvert_components();
     this.spiceConvert_ammeters();
@@ -372,13 +347,15 @@ labelNodes(){
   }
 
   spiceConvert_source(){
+    console.log(this.powersupply)
+    console.log(this.oscilloscope)
+    console.log(this.signalgenerator);
     this.vbs("Creating a SPICE line entry for each power supply and the signal generator");
-    console.log(this.connectionnodes);
-    if(this.connectionnodes.ps1_positiveNode != null && this.connectionnodes.ps1_negativeNode != null)
-      this.SPICE += "V1 "+this.connectionnodes.ps1_positiveNode+" "+this.connectionnodes.ps1_negativeNode+" "+this.powersupply[0].voltage+"\n";
-    if(this.connectionnodes.ps2_positiveNode != null && this.connectionnodes.ps2_negativeNode != null)
-      this.SPICE += "V2 "+this.connectionnodes.ps2_positiveNode+" "+this.connectionnodes.ps2_negativeNode+" "+this.powersupply[1].voltage+"\n";
-    if(this.connectionnodes.siggen_positivenode != null && this.connectionnodes.siggen_negativenode != null){
+    if(this.powersupply[0].positive != null && this.powersupply[0].negative != null)
+      this.SPICE += "V1 "+this.powersupply[0].positive+" "+this.powersupply[0].negative+" "+this.powersupply[0].voltage+"\n";
+    if(this.powersupply[1].positive != null && this.powersupply[1].negative != null)
+      this.SPICE += "V2 "+this.powersupply[1].positive+" "+this.powersupply[1].negative+" "+this.powersupply[1].voltage+"\n";
+    if(this.signalgenerator.positive != null && this.signalgenerator.negative != null){
       var pulseParams = {
         V1: -this.signalgenerator.voltage,
         V2: this.signalgenerator.voltage,
@@ -406,9 +383,9 @@ labelNodes(){
       }
       console.log(pulseParams)
       if(this.signalgenerator.waveType == "sine")
-        this.SPICE += "V3 "+this.connectionnodes.siggen_positivenode+" "+this.connectionnodes.siggen_negativenode+" SINE(0 "+this.signalgenerator.voltage+" "+this.signalgenerator.frequency+")\n";
+        this.SPICE += "V3 "+this.signalgenerator.positive+" "+this.signalgenerator.negative+" SINE(0 "+this.signalgenerator.voltage+" "+this.signalgenerator.frequency+")\n";
       else 
-        this.SPICE += "V3 "+this.connectionnodes.siggen_positivenode+" "+this.connectionnodes.siggen_negativenode+" PULSE("+pulseParams.V1+" "+pulseParams.V2+" "+pulseParams.Td+" "+pulseParams.Tr+" "+pulseParams.Tf+" "+pulseParams.Pw+" "+pulseParams.Per+" "+pulseParams.Phase+")\n";
+        this.SPICE += "V3 "+this.signalgenerator.positive+" "+this.signalgenerator.negative+" PULSE("+pulseParams.V1+" "+pulseParams.V2+" "+pulseParams.Td+" "+pulseParams.Tr+" "+pulseParams.Tf+" "+pulseParams.Pw+" "+pulseParams.Per+" "+pulseParams.Phase+")\n";
     }
   }
 
@@ -418,15 +395,13 @@ labelNodes(){
       this.SPICE += 'tran '+this.oscilloscope.params.transient.step+' '+this.oscilloscope.params.transient.runtime;
       this.SPICE += '\nrun\n'
       var printline = 'print'
-      console.log(this.scopenodes)
-      console.log(this.connectionnodes)
       console.log(this.ammeters)
-      if(this.scopenodes.positive && (this.connectionnodes.siggen_positivenode || this.connectionnodes.ps1_positiveNode)){
+      if(this.oscilloscope.positive && (this.signalgenerator.positive || this.powersupply[0].positive)){
         this.vbs("Setting up a transient simulation for Voltage");
-        if(this.connectionnodes.siggen_positivenode)
-          printline += ' v('+this.scopenodes.positive+') v('+this.connectionnodes.siggen_positivenode+')'
-        else if(this.connectionnodes.ps1_positiveNode)
-          printline += ' v('+this.scopenodes.positive+') v('+this.connectionnodes.ps1_positiveNode+')'
+        if(this.signalgenerator.positive)
+          printline += ' v('+this.oscilloscope.positive+') v('+this.oscilloscope.negative+')'
+        else if(this.powersupply[0].positive)
+          printline += ' v('+this.oscilloscope.positive+') v('+this.powersupply[0].positive+')'
       }else if(this.ammeters.length){
         this.vbs("Setting up a transient simulation for Current");
         for(var a of this.ammeters) if(a.hasOwnProperty('value') && a.hasOwnProperty('positive') && a.hasOwnProperty('negative'))

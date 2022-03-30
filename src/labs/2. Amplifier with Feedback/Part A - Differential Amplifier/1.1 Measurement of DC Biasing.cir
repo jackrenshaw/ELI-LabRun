@@ -121,23 +121,24 @@ VU2$U5$V10$1 U2$U5$V10_PIN_1 U2$U5$V10_PIN_2
 .ends
 RB 2 3 1k
 Q4 3 3 4 QM1
-C1 8 7 30p
+C1 0 0 30p
 RC1 5 7 1k
 RC2 6 8 1k
-R41 0 0 4k
-R42 0 0 4k
-R3 0 0 4k
-R2 0 0 4k
-R1 0 0 1k
+*R41 0 0 4k
+*R42 0 0 4k
+*R3 0 0 4k
+*R2 0 0 4k
+*R1 0 0 1k
+R10 0 0 1k
 V1 1 0 dc 1
 V2 0 4 dc 1
 RAmmeter1 1 2 1m
 RAmmeter2 1 5 1m
 RAmmeter3 1 6 1m
-Q3 9 9 4 QM1
+Q3 9 3 4 QM1
 Q1 7 0 9 QM1
 Q2 8 0 9 QM1
-XU1 0 0 0 0 0 LM741
+*XU1 0 0 0 0 0 LM741
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.
 * SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
