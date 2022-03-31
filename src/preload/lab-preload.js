@@ -62,7 +62,7 @@ The simulation could not be performed<br>
           expectedNodeVoltages[node] = voltage;
         }
         else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
-          var nodes = a.split(" = ").replace(/[^0-9,]/g,'').split(",");
+          var nodes = a.split(" = ")[0].replace(/[^0-9,]/g,'').split(",");
           var current = parseFloat(a.split(" = ")[1])*1000;
         }
       console.log("Multimeter Response:");
@@ -76,7 +76,7 @@ The simulation could not be performed<br>
           nodeVoltages[node] = voltage;
         }
         else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
-          var nodes = a.split(" = ").replace(/[^0-9,]/g,'').split(",");
+          var nodes = a.split(" = ")[0].replace(/[^0-9,]/g,'').split(",");
           var current = parseFloat(a.split(" = ")[1])*1000;
         }
       console.log(nodeVoltages)

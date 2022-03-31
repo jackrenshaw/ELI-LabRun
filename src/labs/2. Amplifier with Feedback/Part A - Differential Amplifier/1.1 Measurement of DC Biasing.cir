@@ -129,7 +129,7 @@ RC2 6 8 1k
 *R3 0 0 4k
 *R2 0 0 4k
 *R1 0 0 1k
-R10 0 0 1k
+*R10 0 0 1k
 V1 1 0 dc 1
 V2 0 4 dc 1
 RAmmeter1 1 2 1m
@@ -147,5 +147,5 @@ Q2 8 0 9 QM1
 dc V1 10 10 0.1
 dc V2 10 10 0.1
 run
-print v(7) V(8) v(9) v(3) V(1,2)/1m V(1,5)/1m V(1,6)/1m
+print v(1) v(2) v(3) v(4) v(5) v(6) v(7) V(8) v(9) V(1,2)/1m V(1,5)/1m V(1,6)/1m
 .endc
