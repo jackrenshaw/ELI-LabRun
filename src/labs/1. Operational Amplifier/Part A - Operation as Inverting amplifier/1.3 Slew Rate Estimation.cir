@@ -45,11 +45,23 @@ V3 5 0 SINE(0 10 0.1Meg)
 R1 4 6 50k
 R2 6 5 1k
 C1 0 0 30p
-* INSTRUCTIONS: Increase the input voltage amplitude to well above 100mV (for example 350mV or above) record the shape of the output waveform at 1 kHz. Give an explanation for the shape of the output waveform as the amplitude is increased
-* SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 350mV. The simulation time should be 2 milliseconds
-* OUTPUT: 5 0 0 0 5 0 0 5
+* INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.
+* SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
+* DIGOUTPUT0_PRE = 1 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 1 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_PRE = 2.5
+* AOUTPUT1_PRE = 0.0
+* AOUTPUT0_POST = 3.3 
+* AOUTPUT1_POST = 0.0 
+* INDEX = Input*50,Output
 .control
 tran 5n 20u
 run
-print v(4) v(5)
+print v(5) v(4)
+dc V1 15 15 0.1
+dc V2 15 15 0.1
+run
+print v(1) v(2) v(3) v(4) v(5) v(6) v(7) v(8)
 .endc

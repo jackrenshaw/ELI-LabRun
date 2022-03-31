@@ -2,7 +2,6 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
   SimulateCircuit: (netlist) => ipcRenderer.send('simulate', {circuit:netlist}),
-  RunMultimeter: (netlist) => ipcRenderer.send('multimeter', {circuit:netlist}),
   ValidateCircuit: (netlist,page) => ipcRenderer.send('validate', {circuit:netlist,lab:page.lab,part:page.part,section:page.section}),
   ImplementCircuit: (params) => ipcRenderer.send('implement',params),
   LoadCircuit: (lab,part,section,file) => ipcRenderer.send('load',{page:{lab:lab,part:part,section:section},file:file})
@@ -44,9 +43,53 @@ document.onreadystatechange = function () {
       $("#Simulation p.sim-result").html(arg);
       $("#Simulation").addClass("is-active");
     })
+    ipcRenderer.on('simulate-error', (_event, arg) => {
+      $("body #Notifications").append(`<div class="notification is-warning  is-light">
+      <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>Error</strong><br>
+The simulation could not be performed<br>
+<strong>Details:</strong><br>`+arg+`</div>`);
+    })
     ipcRenderer.on('multimeter-reply', (_event, arg) => {
+      const multimeter = $("meta[name='circuit']").data("multimeter");
+      console.log(multimeter);
+      var expectedNodeVoltages = {};
+      var expectedAmmeterCurrents = {};
+      for(var a of multimeter)
+        if(/v\([0-9]+(,[0-9+])?\) = .+/.test(a)){
+          var node = a.split(" = ")[0].replace(/[^0-9]/g,'')
+          var voltage = parseFloat(a.split(" = ")[1]);
+          expectedNodeVoltages[node] = voltage;
+        }
+        else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
+          var nodes = a.split(" = ").replace(/[^0-9,]/g,'').split(",");
+          var current = parseFloat(a.split(" = ")[1])*1000;
+        }
       console.log("Multimeter Response:");
-      console.log(arg)
+      console.log(arg);
+      var nodeVoltages = {};
+      var ammeterCurrents = {};
+      for(var a of arg)
+        if(/v\([0-9]+(,[0-9+])?\) = .+/.test(a)){
+          var node = a.split(" = ")[0].replace(/[^0-9]/g,'')
+          var voltage = parseFloat(a.split(" = ")[1]);
+          nodeVoltages[node] = voltage;
+        }
+        else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
+          var nodes = a.split(" = ").replace(/[^0-9,]/g,'').split(",");
+          var current = parseFloat(a.split(" = ")[1])*1000;
+        }
+      console.log(nodeVoltages)
+      console.log(ammeterCurrents);
+      $("wire").each(function(){
+        $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+        if(nodeVoltages.hasOwnProperty($(this).attr("data-spice-node")) && expectedNodeVoltages.hasOwnProperty($(this).attr("data-spice-node")))
+          $(this).attr("data-tooltip","Expected:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nSimulated:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nMeasured:N/A");
+      });
+      $("component[data-spice-type='Ammeter']").each(function(){
+        $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+        $(this).attr("data-tooltip","Expected:0.1V\nSimulated:0.02V\nMeasured:0.01V");
+      })
     })
     ipcRenderer.on('implement-error', (_event, arg) => {
       console.log("There was an error in implementation");
@@ -55,13 +98,13 @@ document.onreadystatechange = function () {
     })
     ipcRenderer.on('save-reply', (_event, arg) => {
       if(arg == 'success')
-        ipcRenderer.send('getload',{page:$("meta[name='page']").data("page")});
+        ipcRenderer.send('getload',{page:$("meta[name='circuit']").data("page")});
       else
         console.log("error!");
     })
     ipcRenderer.on('getload-reply', (_event, arg) => {
       $("#SaveLocal table tbody").html("")
-      const page = $("meta[name='page']").data("page");
+      const page = $("meta[name='circuit']").data("page");
       for(var f of arg){
         var d = new Date(parseInt(f.replace('.json','')));
         $("#SaveLocal table tbody").append("<tr data-action='load' data-file='"+f+"' onclick=\"window.electronAPI.LoadCircuit('"+page.lab+"','"+page.part+"','"+page.section+"','"+f+"');\"><td>"+d.toLocaleString()+"</td></tr>");
@@ -82,10 +125,11 @@ document.onreadystatechange = function () {
         ipcRenderer.send('graph',{signals:comparedResults.outputs});
       }
     })
-    $("button[data-action='implement']").click(function(){
+    $("a[data-action='implement'],button[data-action='implement']").click(function(){
+      console.log("implementing");
       var params = {
-        page:$("meta[name='page']").data("page"),
-        output:$("meta[name='output']").data("output").Post,
+        page:$("meta[name='circuit']").data("page"),
+        output:$("meta[name='circuit']").data("output").Post,
         token:$(this).data("token")
       }
       ipcRenderer.send('implement',params)
@@ -110,8 +154,8 @@ document.onreadystatechange = function () {
       }
     })
     $("tr[data-action='load']").click(function(){
-      if($("meta[name='page']").data("page")){
-        ipcRenderer.send('load',{page:$("meta[name='page']").data("page"),file:$(this).data("file")});
+      if($("meta[name='circuit']").data("page")){
+        ipcRenderer.send('load',{page:$("meta[name='circuit']").data("page"),file:$(this).data("file")});
       }
     })
   }

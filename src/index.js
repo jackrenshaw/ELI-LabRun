@@ -142,20 +142,15 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload/preload.js')
   }
   });
-  
-  openGraphSim();
+
 
   labWindow.on('close',function(event){
-    labWindow = new BrowserWindow({
-      show:false,
-      width: 1500,
-      height: 900,
-      webPreferences: {
-        nodeIntegration: true,
-        preload: path.join(__dirname, 'preload/lab-preload.js')
-      }
-    });
+    console.log("attempting to close lab window");
+    event.preventDefault();
+    labWindow.hide();
   })
+  
+  openGraphSim();
 
   var openPane = function(page,callback,errorCallback){
     console.log(page);
@@ -210,16 +205,6 @@ const createWindow = () => {
                     found = true;
                       console.log("Implementing Pre Actions");
                       Actions.Implement(s.Output.Pre,function(response){
-                        labWindow.destroy();
-                        labWindow = new BrowserWindow({
-                            show:false,
-                            width: 1500,
-                            height: 900,
-                            webPreferences: {
-                              nodeIntegration: true,
-                              preload: path.join(__dirname, 'preload/lab-preload.js')
-                            }
-                        });
                         labWindow.webContents.openDevTools();
                         const ejse = require('ejs-electron')
                         .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
@@ -274,19 +259,22 @@ const createWindow = () => {
     console.log(params)
     openLab(params.page,JSON.parse(fs.readFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
   })
-  ipcMain.on('multimeter',(event,params) =>{
-    console.log(params.circuit);
-    console.log("Running Multimeter");
-    SPICE.SpiceSimulate(params.circuit,function(data){
-      var levels = {};
-      for(var d of data)
-          levels[d.split(" = ")[0]] = parseFloat(d.split(" = ")[1]);
-      event.reply('multimeter-reply',levels)
-    },function(error){event.reply('multimeter-error',error)})
-  })
   ipcMain.on('simulate', (event,params) => {
     console.log("Simualting Circuit");
-    SPICE.ImageSimulate(params.circuit,function(svg){event.reply('simulate-reply',svg)},function(error){event.reply('simulate-error',error)});
+    SPICE.ImageSimulate(
+      params.circuit,
+      function(svg){
+        console.log("returning simuation image");
+        event.reply('simulate-reply',svg)
+      },function(multimeter){
+        console.log("returning mutlimeter response");
+        console.log(multimeter);
+        event.reply('multimeter-reply',multimeter)
+      },function(error){
+        console.log("simulation error:")
+        console.log(error);
+        event.reply('simulate-error',error)
+      });
   })
   ipcMain.on('validate', (event,params) => {
       circuitValidate(params,

@@ -103,9 +103,7 @@
     <section class="modal-card-body">
       <p><% if(section.Instructions){%><%= section.Instructions %><%}%></p>
         <p><b><% if(section.SimulationNotes){%><%= section.SimulationNotes %><%}%></b></p>
-        <%if(section.Multimeter){%>
-        <%-JSON.stringify(section.Simulation)%>  
-        <%}else{%><p><%- section.SimulationImage %></p>%<%}%>
+        <p><%- section.SimulationImage %></p>
         <p><b>NI-6008 pinout for this Lab: <% if(section.Output){%><%-JSON.stringify(section.Output)%><%}%></b></p>
       </section>
       <footer class="modal-card-foot">
@@ -182,7 +180,7 @@
         <div class="comparison-area"></div>
       </div>
       <footer class="modal-card-foot">
-        <button class="button is-info" data-action="implement" data-token="" disabled>Implement Circuit on Hardware</button>
+        <button class="button is-info">Close</button>
       </footer>
     </div>
 </div>

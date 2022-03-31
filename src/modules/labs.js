@@ -54,23 +54,23 @@ var Labs = {
                         Part.Manual = ManualFile;
                 const sections = fs.readdirSync(inp+"/"+l+"/"+p)
                 for(var s of sections) if(s.substring(0,1) != "." && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
-                    const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:false}
+                    const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:[],Bench:{}}
                     Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
                     var code = s.split(".");
                     code.pop();
-                    if(Section.Solution.includes("* MULTIMETER")){
-                        Spice.SpiceSimulate(fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),function(data){
-                            console.log("Multimeter Mode");
-                            var levels = {};
-                            for(var d of data)
-                                levels[d.split(" = ")[0]] = parseFloat(d.split(" = ")[1]);
-                            Section.Simulation.push(levels);
-                            console.log(levels);
-                        },console.log);
-                        Section.Multimeter = true;
-                    }else
-                        Spice.ImageSimulate(fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),function(svg,data){Section.Simulation.push(data);Section.SimulationImage.push(svg);},console.log);
+                    Spice.ImageSimulate(
+                        fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),
+                        function(svg,data){
+                            Section.Simulation.push(data);Section.SimulationImage.push(svg);
+                        },
+                        function(DC){
+                            Section.Multimeter.push(DC);
+                        },
+                        console.log
+                    );
                     Section.Components = Spice.SPICE_to_Components(Section.Solution);
+                    Section.Bench = Spice.SPICE_to_Bench(Section.Solution);
+                    console.log(Section.Bench);
                     Section.Instructions = Spice.SPICE_to_Instructions(Section.Solution);
                     Section.SimulationNotes = Spice.SPICE_to_SimulationNotes(Section.Solution);
                     Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);

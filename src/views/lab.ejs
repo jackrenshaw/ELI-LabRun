@@ -6,13 +6,21 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
-    <meta name="page" data-page='<%-JSON.stringify(page)%>'>
-    <meta name="output" data-output='<%-JSON.stringify(section.Output)%>'>
-    <meta name="simulation" data-simulation='<%-JSON.stringify(section.Simulation)%>'>
+    <meta name="circuit" 
+    data-page='<%-JSON.stringify(page)%>' 
+    data-output='<%-JSON.stringify(section.Output)%>' 
+    data-simulation='<%-JSON.stringify(section.Simulation)%>' 
+    data-multimeter='<%-JSON.stringify(section.Multimeter[0])%>' 
+    data-simulationparams='<%-JSON.stringify(section.SimulationParams)%>' 
+    data-subcircuit='<%=section.Subcircuit%>'
+    data-models='<%-JSON.stringify(section.Models)%>'
+    data-components='<%-JSON.stringify(section.Components)%>'
+    data-framework='true'>
     <title>ELI - UNSW ELEC2133</title>
     <link rel="stylesheet" href="../../node_modules/bulma/css/bulma.min.css">
     <link rel="stylesheet" href="../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
     <script src="../../node_modules/bulma-extensions/dist/js/bulma-extensions.min.js"></script>
+    <link rel="stylesheet" href="../../node_modules/@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css">
     <script src="../public/javascripts/math.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -212,15 +220,6 @@
 <script type="text/javascript" src="../public/javascripts/spice.js" defer></script>
 <script type="text/javascript">
   $(document).ready(function(){
-  UI.Page = JSON.parse('<%-JSON.stringify(page)%>');
-  UI.SimulationParams = JSON.parse(`<%- JSON.stringify(section.SimulationParams)%>`.replace(/\n/g,'\\n').replace(/\r/g,'\\r'));
-  UI.SimulationParams.raw = UI.SimulationParams.raw.replace(/\\n/g,'\n');
-  UI.Subcircuit = `<%=section.Subcircuit%>`;
-  UI.Models = JSON.parse(`<%-JSON.stringify(section.Models)%>`);
-  UI.Components = JSON.parse(`<%-JSON.stringify(section.Components)%>`);
-  for(var g of UI.portPositionsX)
-    for(var i=-15;i<16;i++)
-      UI.gridPositionsX.push(g-i);
   $("component,ground").draggable();
   UI.select();
   $(".modal .modal-card-foot button:contains(Close),button[aria-label='close'],div.modal-background").click(function(){
@@ -297,23 +296,16 @@
                       cloud_sync
                       </span>
                     </a>
-                    <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();">
-                    <span class="material-icons">
-                      done
-                      </span>
-                      </a>
-                      <a class="navbar-item is-disabled" onclick="UI.SetComponents();var results=UI.CheckComponents();UI.clear();if(!$(this).hasClass('is-active')){UI.StartMultimeter();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{UI.StopMultimeter();$(this).removeClass('is-active');}">
-                        <span class="material-icons">
-                          earbuds
-                          </span>
-                          </a>
-                          <a class="navbar-item is-disabled" onclick="UI.SetComponents();var results=UI.CheckComponents();UI.openNav();">
+                    <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();UI.openNav();">
+                      <span class="material-icons">
+                        play_circle
+                        </span>
+                        </a>  
+                          <button class="navbar-item" data-action="implement" data-token="password" disabled style="background-color: #363636;color:#aaa;border: none;">
                       <span class="material-icons">
                         run_circle
                         </span>
-                        </a>
-                        
-                      
+                      </button>  
     </div>
   </nav>
 <style>
@@ -323,7 +315,7 @@
   #Notifications{
         position: absolute;
         right: 20px;
-        top: 150px;
+        top: 75px;
         max-width: 250px;
         z-index: 99;
         font-size: 12px;
@@ -339,22 +331,11 @@
 var preloadset = false;
 if(preload) if(preload.board){%>
 <%-preload.board%>
-<%preloadset = true%>
-<%}if(!preloadset){
+<%preloadset = true
+}if(!preloadset){
 var top = 100;
 var left = 50;
-var showFramework = false;
-if(part.hasOwnProperty('Framework'))
-  if(part.Framework)
-    showFramework = true;
-if(showFramework){%>
-  <script type="text/javascript">
-    $(document).ready(function(){
-      UI.FrameWork = true;
-    })
-  </script>
-<%-part.Framework%>
-<%}%>
+if(part.Framework){%><%-part.Framework%><%}%>
   <ground style="position:absolute;left:0px;top: 200px;">
     <div class='InterPortSpace'></div>
     <port data-bind-position='{"top":-3,"left":20}' data-spice-target-node="0"></port>
@@ -387,25 +368,25 @@ top = top+200;
 </main>
 <%- include ('partial/modals.ejs') %>
 <connectors>
-<port style='position: absolute;top:600px;left:75px;background: red;height:130px;width:6px;z-index:10;' name="powersupply-1positive" data-spice-bench="PowerSupply 1">
+<port style='position: absolute;top:600px;left:75px;background: red;height:130px;width:6px;z-index:10;' name="powersupply-1positive" data-spice-bench="PowerSupply 1" data-spice-target-node="<%=section.Bench.powersupply[0].positive%>">
   <label style="position: relative;left:10px;">Power Supply 1+</label>
 </port>
-<port style='position: absolute;top:600px;left:175px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-1negative"  data-spice-bench="PowerSupply 1">
+<port style='position: absolute;top:600px;left:175px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-1negative"  data-spice-bench="PowerSupply 1" data-spice-target-node="<%=section.Bench.powersupply[0].negative%>">
   <label  style="position: relative;left:10px;">Power Supply 1-</label>
 </port>
-<port style='position: absolute;top:600px;left:275px;background: red;height: 130px;width:6px;z-index:10;' name="powersupply-2positive"  data-spice-bench="PowerSupply 2">
+<port style='position: absolute;top:600px;left:275px;background: red;height: 130px;width:6px;z-index:10;' name="powersupply-2positive"  data-spice-bench="PowerSupply 2" data-spice-target-node="<%=section.Bench.powersupply[1].positive%>">
   <label  style="position: relative;left:10px;">Power Supply 2+</label>
 </port>
-<port style='position: absolute;top:600px;left:375px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-2negative" data-spice-bench="PowerSupply 2">
+<port style='position: absolute;top:600px;left:375px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-2negative" data-spice-bench="PowerSupply 2" data-spice-target-node="<%=section.Bench.powersupply[1].negative%>">
   <label  style="position: relative;left:10px;">Power Supply 2-</label>
 </port>
-<port style='position: absolute;top:600px;left:600px;background: red;height:130px;width:6px;z-index:10;' name="signalgenerator-positive" data-spice-bench="Signal Generator">
+<port style='position: absolute;top:600px;left:600px;background: red;height:130px;width:6px;z-index:10;' name="signalgenerator-positive" data-spice-bench="Signal Generator" data-spice-target-node="<%=section.Bench.signalgenerator.positive%>">
   <label  style="position: relative;left:10px;">Signal Generator V+</label>
 </port>
-<port style='position: absolute;top:600px;left:700px;background: black;height:100px;width:6px;z-index:10;' name="signalgenerator-negative"  data-spice-bench="Oscilloscope">
+<port style='position: absolute;top:600px;left:700px;background: black;height:100px;width:6px;z-index:10;' name="signalgenerator-negative" data-spice-bench="Signal Generator" data-spice-target-node="<%=section.Bench.signalgenerator.negative%>">
   <label  style="position: relative;left:10px;">Signal Generator V-</label>
 </port>
-<port style='position: absolute;top:600px;left:1000px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-positive" data-spice-bench="Oscilloscope">
+<port style='position: absolute;top:600px;left:1000px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-positive">
   <label  style="position: relative;left:10px;">Oscilloscope V+</label>
 </port>
 <port style='position: absolute;top:600px;left:1150px;background: black;height:100px;width:6px;z-index:10;' name="oscilloscope-negative">

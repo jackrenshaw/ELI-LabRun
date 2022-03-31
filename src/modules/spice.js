@@ -299,7 +299,7 @@ var Spice = {
         Ammeter:{
             Name:'Ammeter',
             Image:'../public/images/ammeter.svg',
-            CSS:'position:absolute;background-size:75px;background-repeat:no-repeat;background-image:url(../public/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{
@@ -310,10 +310,10 @@ var Spice = {
             }],
             Ports:[{
                 id:'+',
-                top:48,
-                left:0,
-                height:4,
-                width:20,
+                top:47,
+                left:10,
+                height:6,
+                width:24,
                 position:1,
                 bindPosition:{
                     left:-3,
@@ -323,13 +323,13 @@ var Spice = {
                     left:-13,
                     top:-11
                 },
-                CSS:"background:black;position:absolute;"
+                CSS:"background:red;position:absolute;"
             },{
                 id:'-',
-                top:48,
-                left:80,
-                height:4,
-                width:20,
+                top:47,
+                left:66,
+                height:6,
+                width:24,
                 position:2,
                 bindPosition:{
                     left:29,
@@ -765,12 +765,46 @@ var Spice = {
         }
         this.SpiceSimulate(netlist,testData,error);
     },
+    SPICE_to_Bench(netlist){
+        const V1 = netlist.match(/V1 ([0-9]+ ){2}.+/g);
+        const V2 = netlist.match(/V2 ([0-9]+ ){2}.+/g);
+        const V3 = netlist.match(/V3 ([0-9]+ ){2}.+/g);
+        if(V1 && V2 && V3)
+            return {
+                powersupply:[{
+                    positive:V1[0].split(" ")[1],
+                    negative:V1[0].split(" ")[2],
+                },{
+                    positive:V2[0].split(" ")[1],
+                    negative:V2[0].split(" ")[2],
+                }],
+                signalgenerator:{
+                    positive:V3[0].split(" ")[1],
+                    negative:V3[0].split(" ")[2],
+                }
+            }
+        else
+        return {
+            powersupply:[{
+                positive:null,
+                negative:null,
+            },{
+                positive:null,
+                negative:null,
+            }],
+            signalgenerator:{
+                positive:null,
+                negative:null,
+            }
+        }
+    },
     SpiceSimulate(netlist,callback,errorFunction){
         tmp.file(function _tempFileCreated(err, path, fd, cleanupCallback) {
             if(err) errorFunction(err);
             fs.writeFileSync(path,netlist);
             const ls = spawn(Spice.SpiceCommand, [path]);
             var scopeData = [];
+            var DC = [];
             var rawData = "";
             ls.stdout.on('data', (data) => {
               rawData += data;
@@ -785,13 +819,14 @@ var Spice = {
             });
             ls.on('close', (code) => {
               var scopes = rawData.match(Spice.SpiceRegex);
-              var DC = rawData.match(Spice.DCRegex);
+              if(rawData.match(Spice.DCRegex))
+                DC = rawData.match(Spice.DCRegex);
               var labels = ["Input","Output"];
               var includedLabels = null
               if(/Index.+/g.test(rawData))
                 includedLabels = rawData.match(/Index.+/g);
                 if(includedLabels)
-                    labels = includedLabels[0].replace(/\s+/g,' ').trim().split(' ');
+                    labels = includedLabels[0].replace(/(Index|Time)/gi,'').replace(/\s+/g,' ').trim().split(' ');
               if(Spice.LabelRegex.test(netlist)){
                 console.log("Found custom labels");
                 var specLabels = netlist.match(Spice.LabelRegex)[0];
@@ -824,11 +859,8 @@ var Spice = {
                             }
                 }
             }
-            if(scopeData.length)
-                callback(scopeData)
-            else if(DC && netlist.includes("* MULTIMETER")){
-                callback(DC)
-            }
+            if(scopeData.length || DC.length)
+                callback(scopeData,DC)
             else
                 errorFunction("ngSPICE Simulation returned no data - check your circuit");
             });
@@ -915,8 +947,10 @@ var Spice = {
             errorFunction(error);
         })
     },
-    ImageSimulate(netlist,callback,errorFunction){
-        var SpiceCallback = function(scopeData){
+    ImageSimulate(netlist,callback,multimeterCallback,errorFunction){
+        var SpiceCallback = function(scopeData,DC){
+            if(DC) if(DC.length)
+                multimeterCallback(DC)
             if(scopeData) if(scopeData.length)
             if(/tran( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?)+/g.test(netlist)){
                 var maxTime = scopeData[scopeData.length-1].x;

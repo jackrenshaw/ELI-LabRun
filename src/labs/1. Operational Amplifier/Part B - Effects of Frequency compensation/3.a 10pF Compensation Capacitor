@@ -45,9 +45,14 @@ V3 5 0 ac 1 dc 0
 R1 4 6 1k
 R2 6 5 1k
 C1 0 0 30p
+C2 1 2 10p
+C3 0 0 20p
+C4 0 0 50p
+C5 0 0 100p
 * INSTRUCTIONS: Determine the 3dB Bandwidth, of this circuit, and then the frequency at which the gain falls to 0dB. Finally, plot the phase frequency response
 * SIMULATION NOTES: Perform a frequency sweep of the circuit given. This will require configuring the virtual oscilloscope. Run the sweep up to 1MHz with decade time steps and 1 step per decade.
-* CODE: 111A
+* OUTPUT: 5 0 0 0 5 0 0 5
+* INDEX = Output Voltage (V), Phase (Scaled)
 .control
 ac dec 10 0.1 100T
 run

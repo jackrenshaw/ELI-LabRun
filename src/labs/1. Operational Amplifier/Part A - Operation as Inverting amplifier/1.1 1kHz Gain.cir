@@ -55,9 +55,13 @@ C1 0 0 30p
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 3.3 
 * AOUTPUT1_POST = 0.0 
-* INDEX = Input,Output
+* INDEX = Input*50,Output
 .control
 tran 5u 2m
 run
-print v(5) v(4)
+print 50*v(5) v(4)
+dc V1 15 15 0.1
+dc V2 15 15 0.1
+run
+print v(1) v(2) v(3) v(4) v(5) v(6) v(7) v(8)
 .endc
