@@ -40,7 +40,7 @@ var Labs = {
                 Lab.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/settings.json"));
             const parts = fs.readdirSync(inp+"/"+l);
             for(var p of parts) if(p.substring(0,1) != "." && p != "Framework" && fs.lstatSync(inp+"/"+l+"/"+p).isDirectory()){
-                var Part = {Name:p,Sections:[],Implementations:[],Settings:{Header:"",Spiel:"",Instructions:""},Framework:null,"Questions":null,"Manual":null}
+                var Part = {Name:p,Sections:[],Implementations:[],Alts:[],Settings:{Header:"",Spiel:"",Instructions:""},Framework:null,"Questions":null,"Manual":null}
                 if(fs.existsSync(inp+"/"+l+"/"+p+"/settings.json"))
                     Part.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/"+p+"/settings.json"));
                 const FrameworkFile = inp+"/"+l+"/"+p+"/Framework.html";
@@ -52,7 +52,14 @@ var Labs = {
                 const ManualFile = inp+"/"+l+"/"+p+"/Manual.pdf";
                     if(fs.existsSync(ManualFile))
                         Part.Manual = ManualFile;
-                const sections = fs.readdirSync(inp+"/"+l+"/"+p)
+                const sections = fs.readdirSync(inp+"/"+l+"/"+p);
+                console.log(sections);
+                if(sections.includes("alt")) if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+"alt").isDirectory()){
+                    const alts = fs.readdirSync(inp+"/"+l+"/"+p+"/"+"alt");
+                    for(var a of alts) 
+                        if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+"alt/"+a).isFile())
+                            Part.Alts.push(Spice.SPICE_to_Components(fs.readFileSync(inp+"/"+l+"/"+p+"/"+"alt/"+a)));
+                }
                 for(var s of sections) if(s.substring(0,1) != "." && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
                     const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:[],Bench:{}}
                     Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
@@ -79,11 +86,29 @@ var Labs = {
                     Section.Models = Spice.SPICE_Models(Section.Solution);
                     Part.Sections.push(Section);
                 }
+
                 for(var s of sections) if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
                     const Section = {};
                     Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
                     Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);
                     Part.Implementations.push(Section);
+                }
+                console.log("iterating through sections to find alt nodes")
+                for(var s1=0;s1<Part.Sections.length;s1++){
+                    for(var c1=0;c1<Part.Sections[s1].Components.length;c1++){
+                        for(var p1=0;p1<Part.Sections[s1].Components[c1].Ports.length;p1++){
+                            for(var s2=0;s2<Part.Sections.length;s2++){
+                                for(var c2=0;c2<Part.Sections[s2].Components.length;c2++){
+                                    for(var p2=0;p2<Part.Sections[s2].Components[c2].Ports.length;p2++){
+                                        if(Part.Sections[s1].Components[c1].Name == Part.Sections[s2].Components[c2].Name && Part.Sections[s1].Components[c1].Ports[p1].id == Part.Sections[s2].Components[c2].Ports[p2].id){
+                                            if(Part.Sections[s1].Components[c1].Ports[p1].altnode)
+                                                Part.Sections[s1].Components[c1].Ports[p1].altnode.push({sectionid:s2,node:Part.Sections[s2].Components[c2].Ports[p2].node})
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 Lab.Parts.push(Part);
             }

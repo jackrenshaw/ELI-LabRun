@@ -11,9 +11,9 @@ const Labs = require("./modules/labs");
 const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 
-SPICE.SpiceCommand = "ngspice";
-Actions.ImplementCommand.Analog = "echo";
-Actions.ImplementCommand.Digital = "echo";
+//SPICE.SpiceCommand = "ngspice";
+//Actions.ImplementCommand.Analog = "echo";
+//Actions.ImplementCommand.Digital = "echo";
 
 const isMac = process.platform === 'darwin'
 const BASE = 'https://unsw-eli.herokuapp.com/'
@@ -146,6 +146,7 @@ const createWindow = () => {
 
   labWindow.on('close',function(event){
     console.log("attempting to close lab window");
+    Actions.Restore();
     event.preventDefault();
     labWindow.hide();
   })

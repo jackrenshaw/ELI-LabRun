@@ -31675,7 +31675,7 @@ int main(int argc,char *argv[]){
   if(argc == 3){
 	int         error=0;
 	TaskHandle	taskHandle=0;
-	uInt32      data = (int)strtol(argv[1], NULL, 16);
+	uInt32      data = (int)strtol(argv[2], NULL, 16);
 	char        errBuff[2048]={'\0'};
 	int32		written;
     char        *port;
@@ -31685,6 +31685,8 @@ int main(int argc,char *argv[]){
     }else{
         port = "Dev1/port0";
     }
+
+    printf("Outputting:%d at: %s\n",data,port);
 
 	/*********************************************/
 	// DAQmx Configure Code

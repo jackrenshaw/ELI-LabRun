@@ -355,7 +355,7 @@ if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Wi
 <div class='InterPortSpace' style='position:absolute;top:<%=n.top%>px;left:<%=n.left%>px;height:<%=n.height%>px;width:<%=n.width%>px;'></div>
 <%}%>
 <% for(var p of c.Ports){%>
-<port name="<%=p.id%>" <%if(p.hasOwnProperty('bindPosition')){%>data-bind-position='<%-JSON.stringify(p.bindPosition)%>'<%}%> data-spice-node='0' data-spice-target-node="<%=p.node%>" data-spice-position="<%=p.position%>" style='top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px;<%if(p.hasOwnProperty('CSS')){%><%=p.CSS%><%}else{%>position:absolute;background:red;<%}%>'><% if(p.hasOwnProperty('labelPosition')) if(p.labelPosition) if(p.labelPosition.hasOwnProperty('top') && p.labelPosition.hasOwnProperty('left')){%><label style='position:relative;left:<%=p.labelPosition.left;%>px;top:<%=p.labelPosition.top;%>px'><%=p.id%></label><%}%></port>
+<port name="<%=p.id%>" <%if(p.hasOwnProperty('bindPosition')){%>data-bind-position='<%-JSON.stringify(p.bindPosition)%>'<%}%> data-spice-node='0' data-spice-target-node="<%=p.node%>" data-spice-alt-node='<%-JSON.stringify(p.altnode)%>' data-spice-position="<%=p.position%>" style='top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px;<%if(p.hasOwnProperty('CSS')){%><%=p.CSS%><%}else{%>position:absolute;background:red;<%}%>'><% if(p.hasOwnProperty('labelPosition')) if(p.labelPosition) if(p.labelPosition.hasOwnProperty('top') && p.labelPosition.hasOwnProperty('left')){%><label style='position:relative;left:<%=p.labelPosition.left;%>px;top:<%=p.labelPosition.top;%>px'><%=p.id%></label><%}%></port>
 <%}%>
 </component>
 <%left = left + c.Width;%>

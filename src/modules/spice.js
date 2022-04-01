@@ -507,8 +507,10 @@ var Spice = {
                             Component.Value = t.Name;
                         if(t.Class)
                             Component.Class = t.Name;
-                        for(var p=0;p<Component.Ports.length;p++)
+                        for(var p=0;p<Component.Ports.length;p++){
                             Component.Ports[p].node = c.split(" ")[(p+1)];
+                            Component.Ports[p].altnode = [c.split(" ")[(p+1)]];
+                        }
                         components.push(Component)
                     }else{
                         console.log(t.Name+"!="+params.slice(-1))
@@ -531,8 +533,10 @@ var Spice = {
                     Component.Value = params[this.simple[type].Value];
                 if(this.simple[type].Class)
                     Component.Class = params[this.simple[type].Class];
-                for(var p=0;p<Component.Ports.length;p++)
+                for(var p=0;p<Component.Ports.length;p++){
+                    Component.Ports[p].altnode = [c.split(" ")[(p+1)]];
                     Component.Ports[p].node = c.split(" ")[(p+1)];
+                }
                 components.push(Component)
             }
         }

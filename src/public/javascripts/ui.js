@@ -329,7 +329,7 @@ The circuit is below
 <strong>Error</strong><br>
 Some of your connections are incorrect<br>
 <strong>Details:</strong><br>`+results.notmatching.join('<br>')+`</div>`);
-$("a[data-action='implement']").prop("disabled", true);
+$("nav button[data-action='implement']").prop("disabled", true).css("background-color","#363636").css("color","#aaa").css("cursor","disabled");;
     }else
       $("nav button[data-action='implement']").prop("disabled", false).css("color","#fff").css("cursor","pointer");
     if(results.matching.length){

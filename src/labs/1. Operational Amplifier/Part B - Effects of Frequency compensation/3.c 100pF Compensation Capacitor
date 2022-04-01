@@ -51,7 +51,15 @@ C4 0 0 50p
 C5 1 2 100p
 * INSTRUCTIONS: Determine the 3dB Bandwidth, of this circuit, and then the frequency at which the gain falls to 0dB. Finally, plot the phase frequency response
 * SIMULATION NOTES: Perform a frequency sweep of the circuit given. This will require configuring the virtual oscilloscope. Run the sweep up to 1MHz with decade time steps and 1 step per decade.
-* OUTPUT: 5 0 0 0 5 0 0 5
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON, and the relay controlling the feedback resistor will switch to RF2 [unity gain] (S2 - Port 0 Line 1 ON). Upon successful completion of this lab, the Function generator switch will turn ON (S1 - Port 0 Line 0 ON). The relay controlling capacitor 3 will switch ON (S5 - Port 0 Line 4 - ON). All other capacitance switches (S3 - Port 0 Line 2 - OFF)(S4 - Port 0 Line 3 - OFF) will remain OFF
+* DIGOUTPUT0_PRE = 0 1 0 0 1 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* AOUTPUT0_PRE = 0.0
+* AOUTPUT1_PRE = 0.0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0  
 * INDEX = Output Voltage (V), Phase (Scaled)
 .control
 ac dec 10 0.1 100T
