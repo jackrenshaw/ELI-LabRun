@@ -341,6 +341,69 @@ Some of your connections are correct<br>
     }
     return results;
   },
+  checkAlts(){
+    const alts = $("meta[name='circuit']").data("alt");
+    var altmatches = [];
+    for(var a of alts){
+      var results = {
+        name:a.Name,
+        matching:[],
+        notmatching:[]
+      }
+      if(c.Directional)
+        for(const c of a.Components)
+          for(const p of c.Ports)
+            $("component port").each(function(){
+              if(c.Name == $(this).parent("component").attr("data-spice-name") && p.id == $(this).attr("name"))
+                if(p.node == $(this).attr("data-spice-node"))
+                  results.matching.push(c.Name+" Port: "+p.id)
+                else
+                  results.notmatching.push(c.Name+" Port: "+p.id)
+              });
+      else
+      for(const c of a.Components){
+        var c_portnodes = [];
+        var s_portnodes = [];
+        for(const p of c.Ports)
+          s_portnodes.push(p.node)
+          $("component port").each(function(){
+            if(c.Name == $(this).parent("component").attr("data-spice-name") && p.id == $(this).attr("name"))
+              c_portnodes.push($(this).attr("data-spice-node"))
+          });
+        if(c_portnodes.sort().join(" ") == s_portnodes.sort().join(" "))
+          results.matching.push(c.Name+" Port: "+p.id)
+        else
+          results.notmatching.push(c.Name+" Port: "+p.id)
+      }
+      if(a.Bench.signalgenerator.positive == $("port[name='signalgenerator-positive']"))
+        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      else
+        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      if(a.Bench.signalgenerator.negative == $("port[name='signalgenerator-negative']"))
+        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      else
+        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      if(a.Bench.powersupply[0].positive == $("port[name='powersupply-1positive']"))
+        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      else
+        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      if(a.Bench.powersupply[0].negative == $("port[name='signalgenerator-1negative']"))
+        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      else
+        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      if(a.Bench.powersupply[1].positive == $("port[name='powersupply-2positive']"))
+        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      else
+        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      if(a.Bench.powersupply[1].negative == $("port[name='signalgenerator-2negative']"))
+        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+      else
+        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+    altmatches.push(results);
+  }
+  console.log("Alt Matches:");
+  console.log(altmatches)
+  },
   openNav: function() {
     $("#sidebar .container div[name='SPICE']").html("");
     //$("#sidebar").show();

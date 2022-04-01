@@ -119,8 +119,15 @@ VU2$U5$V9$1 U2$U5$D10_PIN_1 U2$U5$V9_PIN_2
 VU2$U5$V10$1 U2$U5$V10_PIN_1 U2$U5$V10_PIN_2
 + 1.5489012642594155
 .ends
+.subckt CA3083 1 2 3 4 5 6 7 8 9 10 11 12
+Q3 1 2 3 QM1
+Q1 4 5 6 QM1
+Q2 7 8 9 QM1
+Q4 10 11 12 QM1
+.MODEL QM1 NPN(IS=8e-16 BF=66670)
+.ends
+X 7 0 9 8 0 9 9 3 4 3 3 4 CA3083
 RB 2 3 1k
-Q4 3 3 4 QM1
 C1 0 0 30p
 RC1 5 7 1k
 RC2 6 8 1k
@@ -133,11 +140,8 @@ RC2 6 8 1k
 V1 1 0 dc 1
 V2 0 4 dc 1
 RAmmeter1 1 2 1m
-RAmmeter2 1 5 1m
-RAmmeter3 1 6 1m
-Q3 9 3 4 QM1
-Q1 7 0 9 QM1
-Q2 8 0 9 QM1
+RJumper1 1 5 1m
+RJumper2 1 6 1m
 *XU1 0 0 0 0 0 LM741
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.

@@ -347,6 +347,57 @@ var Spice = {
             },
             Value:3
         },
+        Jumper:{
+            Name:'Jumper',
+            Image:null,
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Height:100,
+            Width:100,
+            InterPortSpace:[{
+                top:48,
+                height:4,
+                left:20,
+                width:33
+            }],
+            Ports:[{
+                id:'+',
+                top:47,
+                left:20,
+                height:6,
+                width:30,
+                position:1,
+                bindPosition:{
+                    left:-3,
+                    top:0
+                },
+                labelPosition:{
+                    left:-13,
+                    top:-11
+                },
+                CSS:"background:black;position:absolute;"
+            },{
+                id:'-',
+                top:47,
+                left:50,
+                height:6,
+                width:30,
+                position:2,
+                bindPosition:{
+                    left:29,
+                    top:0
+                },
+                labelPosition:{
+                    left:12,
+                    top:-11
+                },
+                CSS:"background:black;position:absolute;"
+            }],
+            Label:{
+                "top":-5,
+                "left":40
+            },
+            Value:3
+        },
         X:[{
                 Name:'LT1008',
                 CSS:`position:absolute;background-size:200px;background-image:url(../public/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
@@ -467,6 +518,108 @@ var Spice = {
                     "top":70,
                     "left":50
                 },
+            },{
+                Name: "CA3083",
+                CSS:`position:absolute;background-size:120px;background-image:url(../public/images/12pinDIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
+                Image:'../public/images/12pinDIP.svg',
+                Height:200,
+                Width:200,
+                InterPortSpace:[{
+                    top:47,
+                    height:6,
+                    left:30,
+                    width:35
+                }],
+                Ports:[{
+                    id:'Q1C',
+                    top:23,
+                    left:40,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q1B',
+                    top:50,
+                    left:40,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q1E',
+                    top:78,
+                    left:40,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q2C',
+                    top:106,
+                    left:40,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q2B',
+                    top:134,
+                    left:40,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q2E',
+                    top:162,
+                    left:40,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q3C',
+                    top:23,
+                    left:132,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q3B',
+                    top:50,
+                    left:132,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q3E',
+                    top:78,
+                    left:132,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q4C',
+                    top:106,
+                    left:132,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q4B',
+                    top:134,
+                    left:132,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                },{
+                    id:'Q4E',
+                    top:162,
+                    left:132,
+                    height:15,
+                    width:18,
+                    CSS:"background:black;position:absolute;"
+                }],
+                Value:null,
+                Label:{
+                    "top":70,
+                    "left":50
+                },
             }]
         },
     SPICE_to_Components: function(netlist){
@@ -486,11 +639,16 @@ var Spice = {
                 type = 'Ammeter'
             else if(c.substring(0,9) == ('RVariable'))
                 type = 'VariableResistor'
+            else if(c.substring(0,7) == ('RJumper'))
+                type = 'Jumper'
             if(type == 'X'  && this.simple.hasOwnProperty('X') && this.simple.X  && !inSubcircuit){
                 console.log(c)
                 for(var t of this.simple.X){
                     if(t.Name == params.slice(-1)[0].replace(/[^A-z0-9]/gi, '')){
                         console.log("found it:"+t.Name)
+                        var Directional = true;
+                        if(t.Directional == false)
+                            Directional = false
                         const Component = {
                             Name:c.substring(0,c.indexOf(' ')),
                             Type:t.Name,
@@ -501,6 +659,7 @@ var Spice = {
                             Height:t.Height,
                             Width:t.Width,
                             Label:t.Label,
+                            Directional:dir,
                             InterPortSpace:t.InterPortSpace
                         }
                         if(t.Name)
