@@ -128,22 +128,22 @@ Q5 14 13 12 QM1
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 .ends CA3083
 XU1 7 8 0 9 0 3 3 4 9 3 4 0 0 0 9 0 CA3083
-RB 2 3 2k
+RB 2 3 1k
 C1 0 0 30p
 RC1 5 7 1k
 RC2 6 8 1k
-*R41 0 0 4k
-*R42 0 0 4k
-*R3 0 0 4k
+*R4a 0 0 4k
+*R4b 0 0 4k
+*R3a 0 0 4k
+*R3a 0 0 4k
 *R2 0 0 4k
-*R1 0 0 1k
-*R10 0 0 1k
-V1 1 0 dc 10
-V2 0 4 dc 10
+*R7 0 0 4k
+*R8 0 0 4k
+*R9 0 0 4k
+V1 1 0 dc 1
+V2 0 4 dc 1
 RAmmeter1 1 2 1m
-RJumper1 1 5 1m
-RJumper2 1 6 1m
-*XU1 0 0 0 0 0 LM741
+*XU2 11 10 1 4 12 LM741
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware

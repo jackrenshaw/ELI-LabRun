@@ -152,9 +152,9 @@ The circuit is below
     $("wire").click(function(event){console.log("clicked wire"); if($(this).attr("data-spice-node") || $(this).attr("data-spice-node") == '0' || !$("meta[name='circuit']").data("framework")){
       $("port,wire,bind,body").unbind("click");
       console.log($(this).attr("data-spice-node"));
-      var spiceNode = "";
-      if($("meta[name='circuit']").data("framework"))
-        spiceNode = " data-spice-node=\""+$(this).attr("data-spice-node")+"\"";
+      console.log($(this).attr("data-spice-collapse-node"));
+      var spiceNode = " data-spice-node=\""+$(this).attr("data-spice-node")+"\"";
+      spiceNode += " data-spice-collapse-node=\""+$(this).attr("data-spice-collapse-node")+"\"";
       console.log(spiceNode);
       $("body").css("cursor","crosshair");
       var wireid = $('wire').length;
@@ -214,7 +214,39 @@ The circuit is below
       console.log("clicked on a wire but it doesn't have a spice node?")
     }
   });
-  $("body").dblclick(function(){
+  $("body").dblclick(function(event){
+    var wireid = $('wire').length;
+    while($("#wire"+wireid).length)
+      wireid++;
+    wireid--;
+    console.log(event.target.id)
+    console.log(event.target.nodeName.toLocaleLowerCase());
+    console.log(wireid);
+    if(event.target.nodeName.toLocaleLowerCase() == "wire"){
+      console.log("clicked on a wire")
+      if($("#"+event.target.id).attr("data-spice-node") == $("#wire"+wireid).attr("data-spice-node")){
+        console.log("You're allowed to join these nodes");
+        UI.Notification("Success","These nodes can be joined!","");
+      }else if($("#"+event.target.id).data("spice-collapse-node").includes($("#wire"+wireid).data("spice-node"))){
+        const oldID = $("#"+event.target.id).attr("data-spice-node");
+        const newID = $("#wire"+wireid).attr("data-spice-node");
+        console.log("Collapsing the target into the new wire")
+        UI.Notification("Success","These nodes can be joined!","You're collapsing node:"+oldID+" into "+newID);
+        $("wire[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID)});
+        $("port[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID).attr("data-spice-target-node",newID)});
+      }else if($("#wire"+wireid).data("spice-collapse-node").includes($("#"+event.target.id).data("spice-node"))){
+        const oldID = $("#wire"+wireid).attr("data-spice-node");
+        const newID = $("#"+event.target.id).attr("data-spice-node")
+        console.log("Collapsing into the target ")
+        UI.Notification("Success","These nodes can be joined!","You're collapsing node:"+oldID+" into "+newID);
+        $("wire[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID)});
+        $("port[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID).attr("data-spice-target-node",newID)});
+      }else{
+        UI.Notification("Error","You aren't allowed to join these nodes!","");
+        console.log("removing wire:"+wireid)
+        $("#wire"+wireid).css("display","none");
+      }
+    }
     $(document).off("mousemove");
     $("body").off("dblclick");
     $("wire").off("click");
@@ -284,121 +316,6 @@ The circuit is below
         })
       }})
     })
-  },
-  SetComponents: function(){
-    $("port").each(function(){
-      var _port = this;
-      var portWidth = $(_port).width();
-      var portHeight = $(_port).height();
-      if($(this).parent("component,ground").hasClass("rotated-90") || $(this).parent("component").hasClass("rotated-90")){
-        portWidth = $(_port).height();
-        portHeight = $(_port).width();
-      }
-      const PortSpan = [{
-        horizontal:[$(_port).offset().left,($(_port).offset().left+portWidth)],
-        vertical:[$(_port).offset().top,($(_port).offset().top+portHeight)]
-      }];
-      match = false;
-      $("wire").each(function(){
-        var _wire = this;
-        if($(_wire).width() == 0 || $(_wire).height() == 0) $(_wire).hide();
-        const WireSpan = [{
-          horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
-          vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
-        }];
-        if(UI.inSpan(PortSpan,WireSpan)){
-          console.log("found a match");
-          match = true;
-          console.log($(_wire).attr("data-spice-node"));
-          $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
-        }
-      });
-      if(!match)
-        $(_port).attr("data-spice-node",'0');
-    })
-  },
-  CheckComponents: function(){
-    var results = {
-      matching:[],
-      notmatching:[],
-      altresults:new Array($("meta[name='circuit']").data("alt").length).fill(0),
-      altverbose:new Array($("meta[name='circuit']").data("alt").length).fill([])
-    }
-    $("component port").each(function(){
-      if($(this).attr("data-spice-target-node") || $(this).attr("data-spice-target-node") == '0'){
-        if($(this).parent("component").data("spice-directional") == false){
-          var reqPorts = [];
-          var conPorts = [];
-          $(this).parent("component").find("port").each(function(){
-            reqPorts.push($(this).attr("data-spice-node"))
-            conPorts.push($(this).attr("data-spice-target-node"))
-          })
-          if(reqPorts.sort().join(" ") == conPorts.sort().join(" "))
-            results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
-          else
-            results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
-        }else{
-          if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
-            results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
-          else
-            results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))    
-        }
-      if($(this).data("spice-target-alt-node"))
-        if($(this).data("spice-target-alt-node").length == results.altresults.length)
-          for(var a in $(this).data("spice-target-alt-node"))
-            if($(this).parent("component").data("spice-directional") == false){
-              var reqPorts = [];
-              var conPorts = [];
-              $(this).parent("component").find("port").each(function(){
-                conPorts.push($(this).attr("data-spice-node"))
-                reqPorts.push($(this).data("spice-target-alt-node")[a])
-              })
-              if(reqPorts.sort().join(" ") == conPorts.sort().join(" "))
-                void(0);
-              else
-                results.altresults[a] += 1;
-            }else{
-              if($(this).attr("data-spice-node") == $(this).data("spice-target-alt-node")[a])
-                void(0);
-              else{
-                results.altresults[a] += 1;
-              }
-            }
-        else
-          results.altresults.fill(-1);
-      else
-        results.altresults.fill(-1);
-      }
-    })
-    if($("meta[name='circuit']").data("page").prev || $("meta[name='circuit']").data("page").next){
-      if(results.notmatching.length){
-        $("body #Notifications").append(`<div class="notification is-warning  is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Error</strong><br>Some of your connections are incorrect<br><strong>Details:</strong><br>`+results.notmatching.join('<br>')+`</div>`);
-        $("nav button[data-action='implement']").prop("disabled", true).css("background-color","#363636").css("color","#aaa").css("cursor","disabled");;
-      }else
-        $("nav button[data-action='implement']").prop("disabled", false).css("color","#fff").css("cursor","pointer");
-      if(results.matching.length)
-        $("body #Notifications").append(`<div class="notification is-success  is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Success</strong><br>Some of your connections are correct<br><strong>Details:</strong><br>`+results.matching.join('<br>')+`</div>`);
-    }else{ //creative mode
-      var min = {index:0,value:results.altresults[0]};
-      var pcount = 0;
-      for(var a in results.altresults){
-        if(results.altresults[a] == 0)
-          pcount++;
-        if(results.altresults[a] < min.value){
-          min.index = a;
-          min.value = results.altresults[a];
-        }
-      }
-      if(pcount == 1){
-        UI.Notification("Success",("Your circuit matched a valid hardware implementation:"),$("meta[name='circuit']").data("alt")[min.index].Name)
-      }else if(pcount == 0){
-        console.log("no matches")
-        UI.Notification("Warning","Your circuit failed to match a hardware implementation.","There are at least "+min.value+" ports misconfigured. Inspect your connections, node voltages and simulation output.")
-      }else{
-        UI.Notification("Error","Your circuit matches multiple possible implementations. Please report this to your lab demonstrator","")
-      }
-    }
-    return results;
   },
   openNav: function() {
     $("#sidebar .container div[name='SPICE']").html("");
@@ -484,7 +401,7 @@ The circuit is below
   },
   loadBoard: function(){
     $("main").html(localStorage.getItem("board"));
-    $("component").draggable();
+    $("component").draggable({ containment: "parent" });
     UI.select();
   },
   makeSPICE: function(type,debugFunction,verboseFunction,callback){

@@ -130,7 +130,7 @@ const createWindow = () => {
   var labWindow = new BrowserWindow({
     show:false,
     width: 1500,
-    height: 900,
+    height: 1000,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'preload/lab-preload.js')
@@ -202,6 +202,13 @@ const createWindow = () => {
           for(const p of l.Parts)
             if(p.Name == page.part)
                 for(var si=0;si<p.Sections.length;si++){
+                  var Framework = null;
+                  console.log(p.FrameworkFile)
+                  if(fs.existsSync(p.FrameworkFile))
+                    Framework = fs.readFileSync(p.FrameworkFile,"utf-8");
+                  else
+                    console.log("No Framework File!");
+                  console.log(Framework);
                   const s = p.Sections[si];
                   if(s.Name == page.section){
                     var prev = null;
@@ -216,7 +223,7 @@ const createWindow = () => {
                       Actions.Implement(s.Output.Pre,function(response){
                         labWindow.webContents.openDevTools();
                         const ejse = require('ejs-electron')
-                        .data({meta:{Creative:Labs.Creative,Procedural:Labs.Procedural,Direct:Labs.Direct},section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
+                        .data({meta:{Creative:Labs.Creative,Procedural:Labs.Procedural,Direct:Labs.Direct},section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload,Framework:Framework})
                         .options('debug', false)
                         labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                         labWindow.show();

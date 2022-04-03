@@ -119,33 +119,45 @@ VU2$U5$V9$1 U2$U5$D10_PIN_1 U2$U5$V9_PIN_2
 VU2$U5$V10$1 U2$U5$V10_PIN_1 U2$U5$V10_PIN_2
 + 1.5489012642594155
 .ends
+.subckt CA3083 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+Q3 1 16 15 QM1
+Q1 2 3 4 QM1
+Q2 7 6 8 QM1
+Q4 9 10 11 QM1
+Q5 14 13 12 QM1
+.MODEL QM1 NPN(IS=8e-16 BF=66670)
+.ends CA3083
+XU1 7 8 0 9 0 3 3 4 9 3 4 0 0 0 9 0 CA3083
 RB 2 3 1k
-Q4 3 3 4 QM1
-C1 8 7 30p
+C1 0 0 30p
 RC1 5 7 1k
 RC2 6 8 1k
-R41 7 10 4k
-R42 8 11 4k
-R31 10 12 4k
-R32 11 0 4k
+R4a 5 10 4k
+R4b 6 11 4k
+R3a 10 12 4k
+R3a 11 0 4k
 R2 12 13 4k
-R1 13 0 1k
 V1 1 0 dc 1
 V2 0 4 dc 1
 RAmmeter1 1 2 1m
-RAmmeter2 1 5 1m
-RAmmeter3 1 6 1m
-Q3 9 3 4 QM1
-Q1 7 0 9 QM1
-Q2 8 0 9 QM1
+RJumper1 1 5 1m
+RJumper2 1 6 1m
 XU1 11 10 1 4 12 LM741
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.
 * SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
-* MULTIMETER
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON, and the relay controlling the feedback resistor will switch to RF2 [unity gain] (S2 - Port 0 Line 1 ON). Upon successful completion of this lab, the Function generator switch will turn ON (S1 - Port 0 Line 0 ON). Capacitor 1 will Switch ON (S3 - Port 0 Line 2 - ON) All other capacitance switches (S4 - Port 0 Line 4 - OFF)(S5 - Port 0 Line 5 - OFF) will remain OFF
+* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* AOUTPUT0_PRE = 0.0
+* AOUTPUT1_PRE = 0.0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0  
 .control
 dc V1 10 10 0.1
 dc V2 10 10 0.1
 run
-print v(1) v(2) v(3) v(4) v(5) v(6) v(7) v(8) v(9) v(10) v(11) v(12) v(13) V(1,2)/1m V(1,5)/1m V(1,6)/1m
+print v(1) v(2) v(3) v(4) v(5) v(6) v(7) V(8) v(9) V(1,2)/1m V(1,5)/1m V(1,6)/1m
 .endc

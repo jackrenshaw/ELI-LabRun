@@ -34,6 +34,7 @@ var Spice = {
             Height:100,
             Width:100,
             Directional:false,
+            Fungible:true,
             InterPortSpace:[{
                 top:47,
                 height:6,
@@ -64,7 +65,7 @@ var Spice = {
                 }
             }],
             Label:{
-                "top":-5,
+                "top":15,
                 "left":40
             },
             Class:null,
@@ -76,6 +77,7 @@ var Spice = {
             CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/cap-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
+            Fungible:true,
             Directional:false,
             InterPortSpace:[{
                 top:76,
@@ -119,9 +121,11 @@ var Spice = {
                 Class:null,
                 Value:3,
                 Directional:false,
+                Fungible:true,
         },
         Q:{
                 Name:'BJT',
+                Fungible:true,
                 Ports:[{
                     id:'C',
                     top:50,
@@ -193,6 +197,7 @@ var Spice = {
         D:{
             Name:'Diode',
             Image:'../public/Images/smd-diode.svg',
+            Fungible:true,
             CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/smd-diode.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
@@ -248,6 +253,7 @@ var Spice = {
         VariableResistor:{
             Name:'VariableResistor',
             Image:'../public/images/vres.svg',
+            Fungible:true,
             CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(../public/images/vres.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
@@ -299,6 +305,7 @@ var Spice = {
         Ammeter:{
             Name:'Ammeter',
             Image:'../public/images/ammeter.svg',
+            Fungible:true,
             CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
@@ -349,6 +356,7 @@ var Spice = {
         },
         Jumper:{
             Name:'Jumper',
+            Fungible:true,
             Image:null,
             CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
@@ -403,6 +411,7 @@ var Spice = {
                 CSS:`position:absolute;background-size:200px;background-image:url(../public/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
                 Image:'../public/images/8pin-DIP.svg',
                 Height:200,
+                Fungible:true,
                 Width:200,
                 InterPortSpace:[{
                     top:47,
@@ -467,6 +476,7 @@ var Spice = {
                 },
             },{
                 Name:'LM741',
+                Fungible:true,
                 CSS:`position:absolute;background-size:200px;background-image:url(../public/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
                 Image:'../public/images/8pin-DIP.svg',
                 Height:200,
@@ -523,6 +533,8 @@ var Spice = {
                 CSS:`position:absolute;background-size:150px;background-image:url(../public/images/16pinDIP.svg);width:300px;height:300px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
                 Image:'../public/images/12pinDIP.svg',
                 Height:200,
+                Fungible:true,
+                InternalFungibility:false,
                 Width:200,
                 GroupNumber:5,
                 Groups:[],
@@ -679,8 +691,8 @@ var Spice = {
                 }],
                 Value:null,
                 Label:{
-                    "top":70,
-                    "left":50
+                    "top":96,
+                    "left":96
                 },
             }]
         },
@@ -709,6 +721,12 @@ var Spice = {
                         var Directional = true;
                         if(t.Directional == false)
                             Directional = false
+                        var Fungible = true;
+                            if(t.Fungible == false)
+                                Fungible = false
+                        var InternalFungibility = false;
+                            if(t.hasOwnProperty('InternalFungibility'))
+                                InternalFungibility = t.InternalFungibility;
                         const Component = {
                             Name:c.substring(0,c.indexOf(' ')),
                             Type:t.Name,
@@ -720,6 +738,8 @@ var Spice = {
                             Width:t.Width,
                             Label:t.Label,
                             Directional:Directional,
+                            Fungible:Fungible,
+                            InternalFungibility:InternalFungibility,
                             InterPortSpace:t.InterPortSpace,
                             Groups:new Array(5),
                         }
@@ -738,8 +758,6 @@ var Spice = {
                             }
                         }
                         components.push(Component)
-                    }else{
-                        console.log(t.Name+"!="+params.slice(-1))
                     }
                 }
             }else if(this.simple.hasOwnProperty(type) && !inSubcircuit){
@@ -753,6 +771,8 @@ var Spice = {
                     Height:this.simple[type].Height,
                     Width:this.simple[type].Width,
                     Label:this.simple[type].Label,
+                    Directional:Directional,
+                    Fungible:Fungible,
                     InterPortSpace:this.simple[type].InterPortSpace
                 }
                 if(this.simple[type].Value)
@@ -772,10 +792,8 @@ var Spice = {
                     for(var a in alts)
                         for(var co of alts[a].Components)
                             if(co.Name == components[c].Name){
-                                console.log("found a match for:"+components[c].Name)
                                 for(var po of co.Ports)
                                     if(po.id ==  components[c].Ports[p].id){
-                                        console.log("found a Port Match!");
                                         components[c].Ports[p].altnodes[a] = po.node;
                                     }
                             }
