@@ -14,6 +14,9 @@ const Actions = require("./actions.js");
 SPICE.SpiceCommand = "ngspice";
 Actions.ImplementCommand.Analog = "echo";
 Actions.ImplementCommand.Digital = "echo";
+Labs.Creative = true;
+Labs.Procedural = true;
+Labs.Direct = true;
 
 const isMac = process.platform === 'darwin'
 const BASE = 'https://unsw-eli.herokuapp.com/'
@@ -150,6 +153,11 @@ const createWindow = () => {
     event.preventDefault();
     labWindow.hide();
   })
+
+  app.on('window-all-closed', () => {
+    app.quit()
+  })
+  
   
   openGraphSim();
 
@@ -198,9 +206,9 @@ const createWindow = () => {
                   if(s.Name == page.section){
                     var prev = null;
                     var next = null;
-                    if(si>0)
+                    if(si>1)
                       prev = {lab:l.Name,part:p.Name,section:p.Sections[si-1].Name};
-                    if(si<(p.Sections.length-1))
+                    if(si<(p.Sections.length-1) && si !=0)
                       next = {lab:l.Name,part:p.Name,section:p.Sections[si+1].Name};
                     console.log("Found Lab!");
                     found = true;
@@ -208,7 +216,7 @@ const createWindow = () => {
                       Actions.Implement(s.Output.Pre,function(response){
                         labWindow.webContents.openDevTools();
                         const ejse = require('ejs-electron')
-                        .data({section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
+                        .data({meta:{Creative:Labs.Creative,Procedural:Labs.Procedural,Direct:Labs.Direct},section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload})
                         .options('debug', false)
                         labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                         labWindow.show();

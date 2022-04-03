@@ -41,6 +41,20 @@ var UI = {
       $(this).css("background-color","rgba(var(--bs-primary-rgb),var(--bs-bg-opacity))!important")
     })
   },
+  Notification(type,message,details){
+    var ctype = 'is-info'
+    if(type == 'Success')
+      ctype = 'is-success'
+    else if(type == 'Warning')
+      ctype = 'is-warning'
+    else if(type == 'Error')
+      ctype = 'is-danger'
+    $("body #Notifications").append(`<div class="notification `+ctype+` is-light">
+    <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>`+type+`</strong><br>
+`+message+`<br>
+<strong>Details:</strong><br>`+details+`</div>`);
+  },
   VariableResistorChange(_vresist){
     console.log("Changing Variable Resistance Value");
     const suffix = $(_vresist).data("spice-maxvalue").replace(/[0-9\.]/,'');
@@ -306,103 +320,85 @@ The circuit is below
   CheckComponents: function(){
     var results = {
       matching:[],
-      notmatching:[]
+      notmatching:[],
+      altresults:new Array($("meta[name='circuit']").data("alt").length).fill(0),
+      altverbose:new Array($("meta[name='circuit']").data("alt").length).fill([])
     }
-    $("component port,connectors port").each(function(){
-      console.log($(this).parent("component").data("spice-name")+" "+$(this).attr("name"));
-      console.log($(this).attr("data-spice-node"));
-      console.log($(this).attr("data-spice-target-node"));
-    if($(this).attr("data-spice-target-node") || $(this).attr("data-spice-target-node") == '0')
-      if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
-        if($(this).attr("data-spice-bench"))
-          results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
+    $("component port").each(function(){
+      if($(this).attr("data-spice-target-node") || $(this).attr("data-spice-target-node") == '0'){
+        if($(this).parent("component").data("spice-directional") == false){
+          var reqPorts = [];
+          var conPorts = [];
+          $(this).parent("component").find("port").each(function(){
+            reqPorts.push($(this).attr("data-spice-node"))
+            conPorts.push($(this).attr("data-spice-target-node"))
+          })
+          if(reqPorts.sort().join(" ") == conPorts.sort().join(" "))
+            results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
+          else
+            results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
+        }else{
+          if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
+            results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
+          else
+            results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))    
+        }
+      if($(this).data("spice-target-alt-node"))
+        if($(this).data("spice-target-alt-node").length == results.altresults.length)
+          for(var a in $(this).data("spice-target-alt-node"))
+            if($(this).parent("component").data("spice-directional") == false){
+              var reqPorts = [];
+              var conPorts = [];
+              $(this).parent("component").find("port").each(function(){
+                conPorts.push($(this).attr("data-spice-node"))
+                reqPorts.push($(this).data("spice-target-alt-node")[a])
+              })
+              if(reqPorts.sort().join(" ") == conPorts.sort().join(" "))
+                void(0);
+              else
+                results.altresults[a] += 1;
+            }else{
+              if($(this).attr("data-spice-node") == $(this).data("spice-target-alt-node")[a])
+                void(0);
+              else{
+                results.altresults[a] += 1;
+              }
+            }
         else
-          results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
+          results.altresults.fill(-1);
       else
-        if($(this).attr("data-spice-bench"))
-          results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-        else
-          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))    })
-    if(results.notmatching.length){
-      $("body #Notifications").append(`<div class="notification is-warning  is-light">
-      <button class="delete" onclick='$(this).parent().remove()'></button>
-<strong>Error</strong><br>
-Some of your connections are incorrect<br>
-<strong>Details:</strong><br>`+results.notmatching.join('<br>')+`</div>`);
-$("nav button[data-action='implement']").prop("disabled", true).css("background-color","#363636").css("color","#aaa").css("cursor","disabled");;
-    }else
-      $("nav button[data-action='implement']").prop("disabled", false).css("color","#fff").css("cursor","pointer");
-    if(results.matching.length){
-      $("body #Notifications").append(`<div class="notification is-success  is-light">
-      <button class="delete" onclick='$(this).parent().remove()'></button>
-<strong>Success</strong><br>
-Some of your connections are correct<br>
-<strong>Details:</strong><br>`+results.matching.join('<br>')+`</div>`);
+        results.altresults.fill(-1);
+      }
+    })
+    if($("meta[name='circuit']").data("page").prev || $("meta[name='circuit']").data("page").next){
+      if(results.notmatching.length){
+        $("body #Notifications").append(`<div class="notification is-warning  is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Error</strong><br>Some of your connections are incorrect<br><strong>Details:</strong><br>`+results.notmatching.join('<br>')+`</div>`);
+        $("nav button[data-action='implement']").prop("disabled", true).css("background-color","#363636").css("color","#aaa").css("cursor","disabled");;
+      }else
+        $("nav button[data-action='implement']").prop("disabled", false).css("color","#fff").css("cursor","pointer");
+      if(results.matching.length)
+        $("body #Notifications").append(`<div class="notification is-success  is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Success</strong><br>Some of your connections are correct<br><strong>Details:</strong><br>`+results.matching.join('<br>')+`</div>`);
+    }else{ //creative mode
+      var min = {index:0,value:results.altresults[0]};
+      var pcount = 0;
+      for(var a in results.altresults){
+        if(results.altresults[a] == 0)
+          pcount++;
+        if(results.altresults[a] < min.value){
+          min.index = a;
+          min.value = results.altresults[a];
+        }
+      }
+      if(pcount == 1){
+        UI.Notification("Success",("Your circuit matched a valid hardware implementation:"),$("meta[name='circuit']").data("alt")[min.index].Name)
+      }else if(pcount == 0){
+        console.log("no matches")
+        UI.Notification("Warning","Your circuit failed to match a hardware implementation.","There are at least "+min.value+" ports misconfigured. Inspect your connections, node voltages and simulation output.")
+      }else{
+        UI.Notification("Error","Your circuit matches multiple possible implementations. Please report this to your lab demonstrator","")
+      }
     }
     return results;
-  },
-  checkAlts(){
-    const alts = $("meta[name='circuit']").data("alt");
-    var altmatches = [];
-    for(var a of alts){
-      var results = {
-        name:a.Name,
-        matching:[],
-        notmatching:[]
-      }
-      if(c.Directional)
-        for(const c of a.Components)
-          for(const p of c.Ports)
-            $("component port").each(function(){
-              if(c.Name == $(this).parent("component").attr("data-spice-name") && p.id == $(this).attr("name"))
-                if(p.node == $(this).attr("data-spice-node"))
-                  results.matching.push(c.Name+" Port: "+p.id)
-                else
-                  results.notmatching.push(c.Name+" Port: "+p.id)
-              });
-      else
-      for(const c of a.Components){
-        var c_portnodes = [];
-        var s_portnodes = [];
-        for(const p of c.Ports)
-          s_portnodes.push(p.node)
-          $("component port").each(function(){
-            if(c.Name == $(this).parent("component").attr("data-spice-name") && p.id == $(this).attr("name"))
-              c_portnodes.push($(this).attr("data-spice-node"))
-          });
-        if(c_portnodes.sort().join(" ") == s_portnodes.sort().join(" "))
-          results.matching.push(c.Name+" Port: "+p.id)
-        else
-          results.notmatching.push(c.Name+" Port: "+p.id)
-      }
-      if(a.Bench.signalgenerator.positive == $("port[name='signalgenerator-positive']"))
-        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      else
-        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      if(a.Bench.signalgenerator.negative == $("port[name='signalgenerator-negative']"))
-        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      else
-        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      if(a.Bench.powersupply[0].positive == $("port[name='powersupply-1positive']"))
-        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      else
-        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      if(a.Bench.powersupply[0].negative == $("port[name='signalgenerator-1negative']"))
-        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      else
-        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      if(a.Bench.powersupply[1].positive == $("port[name='powersupply-2positive']"))
-        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      else
-        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      if(a.Bench.powersupply[1].negative == $("port[name='signalgenerator-2negative']"))
-        results.matching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-      else
-        results.notmatching.push($(this).attr("data-spice-bench")+" Port: "+$(this).attr("name"))
-    altmatches.push(results);
-  }
-  console.log("Alt Matches:");
-  console.log(altmatches)
   },
   openNav: function() {
     $("#sidebar .container div[name='SPICE']").html("");
@@ -420,7 +416,7 @@ Some of your connections are correct<br>
         <button class="delete" onclick='$(this).parent().remove()'></button>
   <strong>Error</strong><br>
   There was an error simulating the circuit. Please check your circuit<br>
-  <strong>Details:</strong>`+error+`</div>`);
+  <strong>Details:</strong><br>`+error+`</div>`);
     },function(input){
       $("#sidebar .container div[name='SPICE']").append(input+"<br>");
     },function(netlist,normalised){
@@ -488,7 +484,7 @@ The circuit is below
   },
   loadBoard: function(){
     $("main").html(localStorage.getItem("board"));
-    $("component,ground").draggable();
+    $("component").draggable();
     UI.select();
   },
   makeSPICE: function(type,debugFunction,verboseFunction,callback){
@@ -496,13 +492,13 @@ The circuit is below
     UI.components = [];
     const powersupply = [{
       voltage:parseFloat($("#Source td[name='voltage1']").html()),
-      positive:$("port[name='powersupply-1positive']").attr("data-spice-node"),
-      negative:$("port[name='powersupply-1negative']").attr("data-spice-node")
+      positive:$("port[name='powersupply-1-positive']").attr("data-spice-node"),
+      negative:$("port[name='powersupply-1-negative']").attr("data-spice-node")
 
     },{
       voltage:parseFloat($("#Source td[name='voltage2']").html()),
-      positive:$("port[name='powersupply-2positive']").attr("data-spice-node"),
-      negative:$("port[name='powersupply-2negative']").attr("data-spice-node")
+      positive:$("port[name='powersupply-2-positive']").attr("data-spice-node"),
+      negative:$("port[name='powersupply-2-negative']").attr("data-spice-node")
     }];
     const signalgenerator = {
       freqMultiple:$("#SignalGenerator td[name='frequency']").html().split(" ").pop(),
@@ -512,26 +508,40 @@ The circuit is below
       positive:$("port[name='signalgenerator-positive']").attr("data-spice-node"),
       negative:$("port[name='signalgenerator-negative']").attr("data-spice-node")
     };
-    const oscilloscope = {
+    const oscilloscope = [{
       params:{
         type:$("meta[name='circuit']").data("simulationparams").type,
         transient:{
-          runtime:$("#scope-transient input[type='text']").val(),
-          step:$("#scope-transient span.simulation-step").html(),
+          runtime:$("#scope-1-transient input[type='text']").val(),
+          step:$("#scope-1-transient span.simulation-step").html(),
         },
         sweep:{
-          type:$("#scope-sweep input[type='radio']:checked").val(),
-          step:$("#scope-sweep span.steps-per-interval").html(),
-          start:$("#scope-sweep span.sweep-start-frequency").html(),
-          stop:$("#scope-sweep span.sweep-stop-frequency").html(),
+          type:$("#scope-1-sweep input[type='radio']:checked").val(),
+          step:$("#scope-1-sweep span.steps-per-interval").html(),
+          start:$("#scope-1-sweep span.sweep-start-frequency").html(),
+          stop:$("#scope-1-sweep span.sweep-stop-frequency").html(),
         }
       },
-      positive:$("port[name='oscilloscope-positive']").attr("data-spice-node"),
-      negative:$("port[name='oscilloscope-negative']").attr("data-spice-node")
-    };
+      positive:$("port[name='oscilloscope-1-positive']").attr("data-spice-node"),
+      negative:$("port[name='oscilloscope-1-negative']").attr("data-spice-node")
+    },{
+      params:{
+        type:$("meta[name='circuit']").data("simulationparams").type,
+        transient:{
+          runtime:$("#scope-2-transient input[type='text']").val(),
+          step:$("#scope-2-transient span.simulation-step").html(),
+        },
+        sweep:{
+          type:$("#scope-2-sweep input[type='radio']:checked").val(),
+          step:$("#scope-2-sweep span.steps-per-interval").html(),
+          start:$("#scope-2-sweep span.sweep-start-frequency").html(),
+          stop:$("#scope-2-sweep span.sweep-stop-frequency").html(),
+        }
+      },
+      positive:$("port[name='oscilloscope-1-positive']").attr("data-spice-node"),
+      negative:$("port[name='oscilloscope-1-negative']").attr("data-spice-node")
+    }];
     const ground = $("ground port").attr("data-spice-node")
-    if($("ground port").attr("data-spice-node") != '0')
-      debugFunction("Ground MUST be placed Node 0. You have placed ground at node:"+ground);
     var multimeternodes = [];
     $("wire").each(function(){
       if($(this).attr("data-spice-node"))

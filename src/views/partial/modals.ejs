@@ -102,9 +102,8 @@
     </header>
     <section class="modal-card-body">
       <p><% if(section.Instructions){%><%= section.Instructions %><%}%></p>
-        <p><b><% if(section.SimulationNotes){%><%= section.SimulationNotes %><%}%></b></p>
+        <p><b><% if(section.ImplementationNotes){%><%= section.ImplementationNotes %><%}%></b></p>
         <p><%- section.SimulationImage %></p>
-        <p><b>NI-6008 pinout for this Lab: <% if(section.Output){%><%-JSON.stringify(section.Output)%><%}%></b></p>
       </section>
       <footer class="modal-card-foot">
         <button class="button is-info">Close</button>
@@ -320,33 +319,78 @@
         <section class="modal-card-body">
           <script type="text/javascript">
             $(document).ready(function(){
-              $("#scope-transient input[type='text']").keyup(function(){
+              $("#scope-1-transient input[type='text']").keyup(function(){
                 if(/[0-9]+(\.[0-9]+)?(f|p|n|u|m|k)/g.test($(this).val()))
                   $(this).addClass("is-valid").removeClass("is-invalid");
                 else
                   $(this).addClass("is-invalid").removeClass("is-valid");
               })
-              $("#scope-sweep input[name='steps-per-interval']").click(function(){
-                $("#scope-sweep span.steps-per-interval").html($(this).val());
+              $("#scope-1-sweep input[name='steps-per-interval']").click(function(){
+                $("#scope-1-sweep span.steps-per-interval").html($(this).val());
               })
-              $("#scope-sweep input[name='sweep-start-frequency'],#scope-sweep input[name='btnradio-frequency-start']").click(function(){
-                $("#scope-sweep span.sweep-start-frequency").html($("#scope-sweep input[name='sweep-start-frequency']").val()+$("#scope-sweep input[name='btnradio-frequency-start']:checked").val());
+              $("#scope-1-sweep input[name='sweep-start-frequency'],#scope-1-sweep input[name='btnradio-frequency-start']").click(function(){
+                $("#scope-1-sweep span.sweep-start-frequency").html($("#scope-1-sweep input[name='sweep-start-frequency']").val()+$("#scope-1-sweep input[name='btnradio-frequency-start']:checked").val());
               })
-              $("#scope-sweep input[name='sweep-stop-frequency'],#scope-sweep input[name='btnradio-frequency-stop']").click(function(){
-                $("#scope-sweep span.sweep-stop-frequency").html($("#scope-sweep input[name='sweep-stop-frequency']").val()+$("#scope-sweep input[name='btnradio-frequency-stop']:checked").val());
+              $("#scope-1-sweep input[name='sweep-stop-frequency'],#scope-1-sweep input[name='btnradio-frequency-stop']").click(function(){
+                $("#scope-1-sweep span.sweep-stop-frequency").html($("#scope-1-sweep input[name='sweep-stop-frequency']").val()+$("#scope-1-sweep input[name='btnradio-frequency-stop']:checked").val());
               })
-
+              $("#scope-2-transient input[type='text']").keyup(function(){
+                if(/[0-9]+(\.[0-9]+)?(f|p|n|u|m|k)/g.test($(this).val()))
+                  $(this).addClass("is-valid").removeClass("is-invalid");
+                else
+                  $(this).addClass("is-invalid").removeClass("is-valid");
+              })
+              $("#scope-2-sweep input[name='steps-per-interval']").click(function(){
+                $("#scope-2-sweep span.steps-per-interval").html($(this).val());
+              })
+              $("#scope-2-sweep input[name='sweep-start-frequency'],#scope-2-sweep input[name='btnradio-frequency-start']").click(function(){
+                $("#scope-2-sweep span.sweep-start-frequency").html($("#scope-2-sweep input[name='sweep-start-frequency']").val()+$("#scope-2-sweep input[name='btnradio-frequency-start']:checked").val());
+              })
+              $("#scope-2-sweep input[name='sweep-stop-frequency'],#scope-2-sweep input[name='btnradio-frequency-stop']").click(function(){
+                $("#scope-2-sweep span.sweep-stop-frequency").html($("#scope-2-sweep input[name='sweep-stop-frequency']").val()+$("#scope-2-sweep input[name='btnradio-frequency-stop']:checked").val());
+              })
             });
             </script>
+          <h5 class="title">Scope 1 Parameters</h5>
           <%if(section.SimulationParams.type == 'transient'){%>
-          <div id="scope-transient">
+          <div id="scope-1-transient">
           <h6>Transient Parameters</h6>
           <label for="frequency" class="form-label">Simulation Length</label><br>
             <input type="text" class="input" aria-label="Text input with dropdown button" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('time')){ %><%= section.SimulationParams.parameters.time %><%}%>">
           <p>Simulation Step: <span class='simulation-step'><% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%></span></p>
           </div>
           <%}else if(section.SimulationParams.type == 'ac'){%>
-          <div id='scope-sweep'>
+          <div id='scope-1-sweep'>
+          <h6>Frequency Sweep</h6>
+          <label for="frequency" class="form-label">Step Type</label><br>
+          <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='sweep-step-type'>
+            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio1" autocomplete="off" value='1' <% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('type')) if(section.SimulationParams.parameters.type == 'dec'){ %>checked<%}%>>
+            <label class="btn btn-outline-primary" for="sweep-step-type-btnradio1">Decade</label>
+            <input type="radio" class="btn-check" name="btnradio-sweep-type" id="sweep-step-type-btnradio2" autocomplete="off" value='10' <% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('type')) if(section.SimulationParams.parameters.type == 'lin'){ %>checked<%}%>
+            <label class="btn btn-outline-primary" for="sweep-step-type-btnradio2">Linear</label>
+          </div><br><br>
+          <label for="frequency" class="form-label">Steps per Interval: <span class='steps-per-interval'>1</span></label>
+          <input class="input is-medium" type="text" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%>">
+          <br>
+          <label for="frequency" class="form-label">Start Frequency: <span class='sweep-start-frequency'>1</span></label>
+          <input class="input is-medium" type="text" id="sweep-start-frequency" name='sweep-start-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.start %><%}%>">
+          <br>
+          <label for="frequency" class="form-label">Stop Frequency: <span class='sweep-stop-frequency'>1</span></label>
+          <input class="input is-medium" type="text" id="sweep-stop-frequency" name='sweep-stop-frequency' value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('start')){ %><%= section.SimulationParams.parameters.stop %><%}%>">
+          <br>
+        </div>
+        <%}%>
+        <hr>
+        <h5 class="title">Scope 2 Parameters</h5>
+        <%if(section.SimulationParams.type == 'transient'){%>
+        <div id="scope-2-transient">
+          <h6>Transient Parameters</h6>
+          <label for="frequency" class="form-label">Simulation Length</label><br>
+            <input type="text" class="input" aria-label="Text input with dropdown button" value="<% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('time')){ %><%= section.SimulationParams.parameters.time %><%}%>">
+          <p>Simulation Step: <span class='simulation-step'><% if(section.SimulationParams) if(section.SimulationParams.parameters) if(section.SimulationParams.parameters.hasOwnProperty('step')){ %><%= section.SimulationParams.parameters.step %><%}%></span></p>
+          </div>
+        <%}else if(section.SimulationParams.type == 'ac'){%>
+        <div id='scope-2-sweep'>
           <h6>Frequency Sweep</h6>
           <label for="frequency" class="form-label">Step Type</label><br>
           <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin: auto;" name='sweep-step-type'>

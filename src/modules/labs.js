@@ -4,11 +4,11 @@ var functions = require("./functions");
 var Spice = require("./spice");
 
 var Labs = {
+    Creative:true,
+    Procedural:true,
+    Direct:true,
     Labs:[],
     Simulations:[],
-    StudentView: function(){
-        return JSON.parse(JSON.stringify(this.Labs).replace(/"Solution":"[^"]+"/g,'"Solution":""'));
-    },
     getSaved: function(lab,part){
         console.log(lab);
         console.log(part);
@@ -54,20 +54,25 @@ var Labs = {
                         Part.Manual = ManualFile;
                 const sections = fs.readdirSync(inp+"/"+l+"/"+p);
                 console.log(sections);
-                if(sections.includes("alt")) if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+"alt").isDirectory()){
-                    const alts = fs.readdirSync(inp+"/"+l+"/"+p+"/"+"alt");
-                    for(var a of alts) 
-                        if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+"alt/"+a).isFile()){
-                            const Solution = fs.readFileSync(inp+"/"+l+"/"+p+"/"+"alt/"+a,"utf-8").replace(/\x00/g, "");
-                            Part.Alts.push({
-                                Name:a,
-                                Components:Spice.SPICE_to_Components(Solution),
-                                Bench:Spice.SPICE_to_Bench(Solution),
-                                Output:Spice.SPICE_to_OUTPUT(Solution)
-                            });
-                        }
+                if(fs.existsSync(inp+"/"+l+"/"+p+"/HardwareMap.cir")){
+                    const Map = fs.readFileSync(inp+"/"+l+"/"+p+"/HardwareMap.cir","utf-8").replace(/\x00/g, "");
+                    const Names = Map.match(/\*\*\*.+\*\*\*/g);
+                    const Solutions = Map.split(/\*\*\*.+\*\*\*/g).slice(1);
+                    console.log(Names)
+                    console.log(Solutions);
+                    console.log(Solutions.length)
+                    if(Names && Solutions)
+                        if(Names.length == Solutions.length)
+                            for(var a=0;a<Solutions.length;a++)
+                                Part.Alts.push({
+                                    Name:Names[a].replace(/\*/g,''),
+                                    Circuit:Solutions[a],
+                                    Components:Spice.SPICE_to_Components(Solutions[a]),
+                                    Bench:Spice.SPICE_to_Bench(Solutions[a]),
+                                    Output:Spice.SPICE_to_OUTPUT(Solutions[a])
+                                });
                 }
-                for(var s of sections) if(s.substring(0,1) != "." && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
+                for(var s of sections) if(s.substring(0,1) != "." && s.substring(0,15) != "HardwareMap.cir" && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
                     const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:[],Bench:{}}
                     Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
                     var code = s.split(".");
@@ -82,10 +87,11 @@ var Labs = {
                         },
                         console.log
                     );
-                    Section.Components = Spice.SPICE_to_Components(Section.Solution);
+                    Section.Components = Spice.SPICE_to_Components(Section.Solution,Part.Alts);
                     Section.Bench = Spice.SPICE_to_Bench(Section.Solution);
                     Section.Instructions = Spice.SPICE_to_Instructions(Section.Solution);
                     Section.SimulationNotes = Spice.SPICE_to_SimulationNotes(Section.Solution);
+                    Section.ImplementationNotes = Spice.SPICE_to_ImplementationNotes(Section.Solution);
                     Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);
                     Section.SimulationParams = Spice.SPICE_SimulationParameters(Section.Solution);
                     Section.Subcircuit = Spice.SPICE_Subcircuit(Section.Solution);

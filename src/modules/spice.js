@@ -478,14 +478,14 @@ var Spice = {
                     width:35
                 }],
                 Ports:[{
-                    id:'II',
+                    id:'NII',
                     top:89,
                     left:31,
                     height:14,
                     width:20,
                     CSS:"background:black;position:absolute;"
                 },{
-                    id:'NII',
+                    id:'II',
                     top:55,
                     left:31,
                     height:14,
@@ -520,100 +520,162 @@ var Spice = {
                 },
             },{
                 Name: "CA3083",
-                CSS:`position:absolute;background-size:120px;background-image:url(../public/images/12pinDIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
+                CSS:`position:absolute;background-size:150px;background-image:url(../public/images/16pinDIP.svg);width:300px;height:300px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
                 Image:'../public/images/12pinDIP.svg',
                 Height:200,
                 Width:200,
+                GroupNumber:5,
+                Groups:[],
                 InterPortSpace:[{
                     top:47,
                     height:6,
                     left:30,
-                    width:35
+                    width:35,
                 }],
                 Ports:[{
                     id:'Q1C',
-                    top:23,
-                    left:40,
-                    height:15,
+                    top:19,
+                    left:77,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
-                },{
-                    id:'Q1B',
-                    top:50,
-                    left:40,
-                    height:15,
-                    width:18,
-                    CSS:"background:black;position:absolute;"
-                },{
-                    id:'Q1E',
-                    top:78,
-                    left:40,
-                    height:15,
-                    width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:1,
+                    type:0
                 },{
                     id:'Q2C',
-                    top:106,
-                    left:40,
-                    height:15,
+                    top:53,
+                    left:77,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:2,
+                    type:0
                 },{
                     id:'Q2B',
-                    top:134,
-                    left:40,
-                    height:15,
+                    top:89,
+                    left:77,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:2,
+                    type:1
                 },{
                     id:'Q2E',
-                    top:162,
-                    left:40,
-                    height:15,
+                    top:124,
+                    left:77,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:2,
+                    type:2
                 },{
-                    id:'Q3C',
-                    top:23,
-                    left:132,
-                    height:15,
+                    id:'',
+                    top:159,
+                    left:77,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:0,
+                    type:0
                 },{
                     id:'Q3B',
-                    top:50,
-                    left:132,
-                    height:15,
+                    top:194,
+                    left:77,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:3,
+                    type:1
+                },{
+                    id:'Q3C',
+                    top:228,
+                    left:77,
+                    height:18,
+                    width:18,
+                    CSS:"background:black;position:absolute;",
+                    group:3,
+                    type:0
                 },{
                     id:'Q3E',
-                    top:78,
-                    left:132,
-                    height:15,
+                    top:262,
+                    left:77,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:3,
+                    type:2
                 },{
                     id:'Q4C',
-                    top:106,
-                    left:132,
-                    height:15,
+                    top:262,
+                    left:192,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:4,
+                    type:0
                 },{
                     id:'Q4B',
-                    top:134,
-                    left:132,
-                    height:15,
+                    top:228,
+                    left:192,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:4,
+                    type:1
                 },{
                     id:'Q4E',
-                    top:162,
-                    left:132,
-                    height:15,
+                    top:194,
+                    left:192,
+                    height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:black;position:absolute;",
+                    group:4,
+                    type:2
+                },{
+                    id:'Q5E',
+                    top:159,
+                    left:192,
+                    height:18,
+                    width:18,
+                    CSS:"background:black;position:absolute;",
+                    group:5,
+                    type:2
+                },{
+                    id:'Q5B',
+                    top:124,
+                    left:192,
+                    height:18,
+                    width:18,
+                    CSS:"background:black;position:absolute;",
+                    group:5,
+                    type:1
+                },{
+                    id:'Q5C',
+                    top:89,
+                    left:192,
+                    height:18,
+                    width:18,
+                    CSS:"background:black;position:absolute;",
+                    group:5,
+                    type:0
+                },{
+                    id:'Q1E',
+                    top:53,
+                    left:192,
+                    height:18,
+                    width:18,
+                    CSS:"background:black;position:absolute;",
+                    group:1,
+                    type:2
+                },{
+                    id:'Q1B',
+                    top:19,
+                    left:192,
+                    height:18,
+                    width:18,
+                    CSS:"background:black;position:absolute;",
+                    group:4,
+                    type:1
                 }],
                 Value:null,
                 Label:{
@@ -622,7 +684,7 @@ var Spice = {
                 },
             }]
         },
-    SPICE_to_Components: function(netlist){
+    SPICE_to_Components: function(netlist,alts){
         var components = [];
         const lines = netlist.split("\n");
         var inSubcircuit = false;
@@ -642,33 +704,38 @@ var Spice = {
             else if(c.substring(0,7) == ('RJumper'))
                 type = 'Jumper'
             if(type == 'X'  && this.simple.hasOwnProperty('X') && this.simple.X  && !inSubcircuit){
-                console.log(c)
                 for(var t of this.simple.X){
                     if(t.Name == params.slice(-1)[0].replace(/[^A-z0-9]/gi, '')){
-                        console.log("found it:"+t.Name)
                         var Directional = true;
                         if(t.Directional == false)
                             Directional = false
                         const Component = {
                             Name:c.substring(0,c.indexOf(' ')),
                             Type:t.Name,
-                            Ports:t.Ports,
+                            Ports:JSON.parse(JSON.stringify(t.Ports)),
                             CSS:t.CSS,
                             Value:null,
                             Class:null,
                             Height:t.Height,
                             Width:t.Width,
                             Label:t.Label,
-                            Directional:dir,
-                            InterPortSpace:t.InterPortSpace
+                            Directional:Directional,
+                            InterPortSpace:t.InterPortSpace,
+                            Groups:new Array(5),
                         }
                         if(t.Name)
                             Component.Value = t.Name;
                         if(t.Class)
                             Component.Class = t.Name;
+                        if(t.Ports)
+                            Component.Ports = JSON.parse(JSON.stringify(t.Ports))
                         for(var p=0;p<Component.Ports.length;p++){
                             Component.Ports[p].node = c.split(" ")[(p+1)];
-                            Component.Ports[p].altnode = [c.split(" ")[(p+1)]];
+                            if(Component.Ports[p].group && Component.Ports[p].type){
+                                if(!Component.Groups.hasOwnProperty(Component.Ports[p].group))
+                                    Component.Groups[Component.Ports[p].group] = [];
+                                Component.Groups[Component.Ports[p].group][Component.Ports[p].type] = Component.Ports[p].node;
+                            }
                         }
                         components.push(Component)
                     }else{
@@ -693,12 +760,26 @@ var Spice = {
                 if(this.simple[type].Class)
                     Component.Class = params[this.simple[type].Class];
                 for(var p=0;p<Component.Ports.length;p++){
-                    Component.Ports[p].altnode = [c.split(" ")[(p+1)]];
                     Component.Ports[p].node = c.split(" ")[(p+1)];
                 }
                 components.push(Component)
             }
         }
+        if(alts)
+            for(var c in components)
+                for(var p in components[c].Ports){
+                    components[c].Ports[p].altnodes = new Array(alts.length)
+                    for(var a in alts)
+                        for(var co of alts[a].Components)
+                            if(co.Name == components[c].Name){
+                                console.log("found a match for:"+components[c].Name)
+                                for(var po of co.Ports)
+                                    if(po.id ==  components[c].Ports[p].id){
+                                        console.log("found a Port Match!");
+                                        components[c].Ports[p].altnodes[a] = po.node;
+                                    }
+                            }
+                }                               
         return components;
     },
     SPICE_to_Instructions: function(netlist){
@@ -761,6 +842,14 @@ var Spice = {
                 return instructions[0].replace(/\\n/g,'\n').replace(/\* ?SIMULATION NOTES:/g,"").trim();
             else return "No Specific Instructions For Simulation Provided";    
         else return "No Specific Instructions For Simulation Provided";
+    },
+    SPICE_to_ImplementationNotes: function(netlist){
+        const instructions = netlist.match(/\* IMPLEMENTATION NOTES:.+/g)
+        if(instructions) 
+            if(instructions.length) 
+                return instructions[0].replace(/\\n/g,'\n').replace(/\* ?IMPLEMENTATION NOTES:/g,"").trim();
+            else return "No Specific Instructions For Implementation Provided";    
+        else return "No Specific Instructions For Implementation Provided";
     },
     SPICE_to_Action_Function: function(netlist){
         const actionfunction = netlist.match(/\* ACTION FUNCTION: ?[A-z0-9_]+/g)
@@ -998,8 +1087,6 @@ var Spice = {
               }
               else
                 console.log("No custom labels");
-              console.log(labels);
-              console.log(netlist.split('\n')[0]);
               var scopeData = [];
               if(scopes) if(scopes.length){
                 var sampleStep = 1;

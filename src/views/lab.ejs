@@ -16,7 +16,8 @@
     data-models='<%-JSON.stringify(section.Models)%>'
     data-components='<%-JSON.stringify(section.Components)%>'
     data-alt='<%-JSON.stringify(part.Alts)%>'
-    data-framework='true'>
+    data-framework='true'
+    data-solution='<%=section.Solution%>'>
     <title>ELI - UNSW ELEC2133</title>
     <link rel="stylesheet" href="../../node_modules/bulma/css/bulma.min.css">
     <link rel="stylesheet" href="../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
@@ -162,21 +163,16 @@
     }
     ground{
       position:absolute;
-      background-size:50px 100px;
+      background-size:25px;
       background-image:url(../public/images/ground.svg);
       width:50px;
-      height:100px;
+      height:50px;
       top:100px;
       left:0px;
       z-index: 10;
-    }
-    ground port{
-      position: absolute;
-      width: 6px;
-      height:50px;
-      left:20px;
-      top:10px;
-      background:red;
+      background-repeat: no-repeat;
+      background-position-x: center;
+      background-position-y: top;
     }
     ground .InterPortSpace{
       width:0px;
@@ -221,11 +217,15 @@
 <script type="text/javascript" src="../public/javascripts/spice.js" defer></script>
 <script type="text/javascript">
   $(document).ready(function(){
-  $("component,ground").draggable();
+  $("component").draggable();
   UI.select();
   $(".modal .modal-card-foot button:contains(Close),button[aria-label='close'],div.modal-background").click(function(){
     $(".modal").removeClass("is-active");
   })
+  if($("wire[data-spice-node='0']").width() == '6')
+    $("ground").offset({top:$("wire[data-spice-node='0']").offset().top,left:$("wire[data-spice-node='0']").offset().left-20})  
+  else
+    $("ground").offset({top:$("wire[data-spice-node='0']").offset().top+$("wire[data-spice-node='0']").height()-10,left:$("wire[data-spice-node='0']").offset().left-20})  
   $(document).on('keyup', function(e) {
     if (e.key == "Escape")    $(".modal").removeClass("is-active");
   });
@@ -282,11 +282,6 @@
                 edit
                 </span>
               </a>
-              <a class="navbar-item" onclick="UI.clear();if(!$(this).hasClass('is-active')){UI.remove();$('.navbar-item').removeClass('is-active');$(this).addClass('is-active');}else{$(this).removeClass('is-active');}">
-                <span class="material-icons">
-                  clear
-                  </span>
-                </a>
                 <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();$('#SaveLocal').addClass('is-active');" data-action="getload" data-page='<%-JSON.stringify(page)%>'>
                   <span class="material-icons">
                     save
@@ -297,7 +292,7 @@
                       cloud_sync
                       </span>
                     </a>
-                    <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();var alts=UI.checkAlts();UI.openNav();">
+                    <a class="navbar-item" onclick="UI.SetComponents();var results=UI.CheckComponents();console.log(results);UI.openNav();">
                       <span class="material-icons">
                         play_circle
                         </span>
@@ -339,11 +334,11 @@ var left = 50;
 if(part.Framework){%><%-part.Framework%><%}%>
   <ground style="position:absolute;left:0px;top: 200px;">
     <div class='InterPortSpace'></div>
-    <port data-bind-position='{"top":-3,"left":20}' data-spice-target-node="0"></port>
+    <port data-bind-position='{"top":-3,"left":20}' data-spice-target-node="0" data-spice-node="0" style="display: none;"></port>
     </ground>
 <%if(section) if(section.hasOwnProperty("Components")) for(var c of section.Components)
 if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
-<component data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>data-spice-maxvalue="<%=c.Value%>" ondblclick="UI.VariableResistorChange(this);"<%}%>>
+<component data-spice-directional="<%=c.Directional%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>data-spice-maxvalue="<%=c.Value%>" ondblclick="UI.VariableResistorChange(this);"<%}%>>
 <% if(c.Value && c.Name){ %>
 <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
 <%}else if(c.Value){ %>
@@ -356,7 +351,7 @@ if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Wi
 <div class='InterPortSpace' style='position:absolute;top:<%=n.top%>px;left:<%=n.left%>px;height:<%=n.height%>px;width:<%=n.width%>px;'></div>
 <%}%>
 <% for(var p of c.Ports){%>
-<port name="<%=p.id%>" <%if(p.hasOwnProperty('bindPosition')){%>data-bind-position='<%-JSON.stringify(p.bindPosition)%>'<%}%> data-spice-node='0' data-spice-target-node="<%=p.node%>" data-spice-position="<%=p.position%>" style='top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px;<%if(p.hasOwnProperty('CSS')){%><%=p.CSS%><%}else{%>position:absolute;background:red;<%}%>'><% if(p.hasOwnProperty('labelPosition')) if(p.labelPosition) if(p.labelPosition.hasOwnProperty('top') && p.labelPosition.hasOwnProperty('left')){%><label style='position:relative;left:<%=p.labelPosition.left;%>px;top:<%=p.labelPosition.top;%>px'><%=p.id%></label><%}%></port>
+<port name="<%=p.id%>" <%if(p.hasOwnProperty('bindPosition')){%>data-bind-position='<%-JSON.stringify(p.bindPosition)%>'<%}%> data-spice-node='0' <%if(p.hasOwnProperty('altnodes')){%>data-spice-target-alt-node='<%-JSON.stringify(p.altnodes)%>'<%}%> data-spice-target-node="<%=p.node%>" data-spice-position="<%=p.position%>" style='top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px;<%if(p.hasOwnProperty('CSS')){%><%=p.CSS%><%}else{%>position:absolute;background:red;<%}%>'><% if(p.hasOwnProperty('labelPosition')) if(p.labelPosition) if(p.labelPosition.hasOwnProperty('top') && p.labelPosition.hasOwnProperty('left')){%><label style='position:relative;left:<%=p.labelPosition.left;%>px;top:<%=p.labelPosition.top;%>px'><%=p.id%></label><%}%></port>
 <%}%>
 </component>
 <%left = left + c.Width;%>
@@ -369,16 +364,16 @@ top = top+200;
 </main>
 <%- include ('partial/modals.ejs') %>
 <connectors>
-<port style='position: absolute;top:600px;left:75px;background: red;height:130px;width:6px;z-index:10;' name="powersupply-1positive" data-spice-bench="PowerSupply 1" data-spice-target-node="<%=section.Bench.powersupply[0].positive%>">
+<port style='position: absolute;top:600px;left:75px;background: red;height:130px;width:6px;z-index:10;' name="powersupply-1-positive" data-spice-bench="PowerSupply 1" data-spice-target-node="<%=section.Bench.powersupply[0].positive%>">
   <label style="position: relative;left:10px;">Power Supply 1+</label>
 </port>
-<port style='position: absolute;top:600px;left:175px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-1negative"  data-spice-bench="PowerSupply 1" data-spice-target-node="<%=section.Bench.powersupply[0].negative%>">
+<port style='position: absolute;top:600px;left:175px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-1-negative"  data-spice-bench="PowerSupply 1" data-spice-target-node="<%=section.Bench.powersupply[0].negative%>">
   <label  style="position: relative;left:10px;">Power Supply 1-</label>
 </port>
-<port style='position: absolute;top:600px;left:275px;background: red;height: 130px;width:6px;z-index:10;' name="powersupply-2positive"  data-spice-bench="PowerSupply 2" data-spice-target-node="<%=section.Bench.powersupply[1].positive%>">
+<port style='position: absolute;top:600px;left:275px;background: red;height: 130px;width:6px;z-index:10;' name="powersupply-2-positive"  data-spice-bench="PowerSupply 2" data-spice-target-node="<%=section.Bench.powersupply[1].positive%>">
   <label  style="position: relative;left:10px;">Power Supply 2+</label>
 </port>
-<port style='position: absolute;top:600px;left:375px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-2negative" data-spice-bench="PowerSupply 2" data-spice-target-node="<%=section.Bench.powersupply[1].negative%>">
+<port style='position: absolute;top:600px;left:375px;background: black;height:100px;width:6px;z-index:10;' name="powersupply-2-negative" data-spice-bench="PowerSupply 2" data-spice-target-node="<%=section.Bench.powersupply[1].negative%>">
   <label  style="position: relative;left:10px;">Power Supply 2-</label>
 </port>
 <port style='position: absolute;top:600px;left:600px;background: red;height:130px;width:6px;z-index:10;' name="signalgenerator-positive" data-spice-bench="Signal Generator" data-spice-target-node="<%=section.Bench.signalgenerator.positive%>">
@@ -387,11 +382,17 @@ top = top+200;
 <port style='position: absolute;top:600px;left:700px;background: black;height:100px;width:6px;z-index:10;' name="signalgenerator-negative" data-spice-bench="Signal Generator" data-spice-target-node="<%=section.Bench.signalgenerator.negative%>">
   <label  style="position: relative;left:10px;">Signal Generator V-</label>
 </port>
-<port style='position: absolute;top:600px;left:1000px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-positive">
-  <label  style="position: relative;left:10px;">Oscilloscope V+</label>
+<port style='position: absolute;top:600px;left:1000px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-1-positive">
+  <label  style="position: relative;left:10px;">Scope V+</label>
 </port>
-<port style='position: absolute;top:600px;left:1150px;background: black;height:100px;width:6px;z-index:10;' name="oscilloscope-negative">
-  <label  style="position: relative;left:10px;">Oscilloscope V-</label>
+<port style='position: absolute;top:600px;left: 1060px;background: black;height:100px;width:6px;z-index:10;' name="oscilloscope-1-negative">
+  <label  style="position: relative;left:10px;">Scope V-</label>
+</port>
+<port style='position: absolute;top:600px;left:1120px;background: red;height:130px;width:6px;z-index:10;' name="oscilloscope-2-positive">
+  <label  style="position: relative;left:10px;">Scope V+</label>
+</port>
+<port style='position: absolute;top:600px;left:1180px;background: black;height:100px;width:6px;z-index:10;' name="oscilloscope-2-negative">
+  <label  style="position: relative;left:10px;">Scope V-</label>
 </port>
 <div style="position: absolute;height:200px;width:0px;border-left:2px dashed #777;left:500px;top:650px;"></div>
 <div style="position: absolute;height:0px;width:100%;border-top:2px dashed #777;left:0px;top:650px;"></div>

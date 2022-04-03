@@ -59,17 +59,17 @@ class SPICE{
       this.nodes = nodes;
       this.components = components;
       var scopeValid = false;
-      if(oscilloscope.hasOwnProperty('params'))
-        if(oscilloscope.params.hasOwnProperty('type'))
-          if(['transient','ac','multimeter'].includes(oscilloscope.params.type))
-            if(oscilloscope.params.type == 'transient'){
-              if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.transient.runtime) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.transient.step))
+      if(oscilloscope[0].hasOwnProperty('params'))
+        if(oscilloscope[0].params.hasOwnProperty('type'))
+          if(['transient','ac','multimeter'].includes(oscilloscope[0].params.type))
+            if(oscilloscope[0].params.type == 'transient'){
+              if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.transient.runtime) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.transient.step))
                 scopeValid = true;
-            }else if(oscilloscope.params.type == 'ac'){
-              console.log(oscilloscope.params)
-              if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.start) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.stop) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope.params.sweep.step) && ["linear","decade"].includes(oscilloscope.params.sweep.type))
+            }else if(oscilloscope[0].params.type == 'ac'){
+              console.log(oscilloscope[0].params)
+              if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.sweep.start) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.sweep.stop) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.sweep.step) && ["linear","decade"].includes(oscilloscope[0].params.sweep.type))
                 scopeValid = true;
-            }else if(oscilloscope.params.type == 'multimeter'){
+            }else if(oscilloscope[0].params.type == 'multimeter'){
               scopeValid = true;
             }
       if(!scopeValid){
@@ -391,19 +391,27 @@ labelNodes(){
 
   spiceConvert_simulation(){
     this.SPICE += '.control\n'
-      if(this.oscilloscope.positive && this.oscilloscope.positive  != '0'){
+      if(this.oscilloscope[0].positive != '0' || this.oscilloscope[1].positive != '0' ){
         this.vbs("Setting up a transient simulation for Voltage");
-        this.SPICE += 'tran '+this.oscilloscope.params.transient.step+' '+this.oscilloscope.params.transient.runtime;
+        this.SPICE += 'tran '+this.oscilloscope[0].params.transient.step+' '+this.oscilloscope[0].params.transient.runtime;
         this.SPICE += '\nrun\n'
         var printline = 'print'
-        if(this.oscilloscope.positive && this.oscilloscope.negative && this.oscilloscope.negative != '0')
-          printline += ' v('+this.oscilloscope.positive+','+this.oscilloscope.negative+')'
+        if(this.oscilloscope[0].positive && this.oscilloscope[0].negative && this.oscilloscope[0].negative != '0')
+          printline += ' v('+this.oscilloscope[0].positive+','+this.oscilloscope[0].negative+')'
         else
-          printline += ' v('+this.oscilloscope.positive+')'
+          printline += ' v('+this.oscilloscope[0].positive+')'
+        if(this.oscilloscope[1].positive && this.oscilloscope[1].negative && this.oscilloscope[1].negative != '0')
+          printline += ' v('+this.oscilloscope[1].positive+','+this.oscilloscope[1].negative+')'
+        else
+          printline += ' v('+this.oscilloscope[1].positive+')'
         this.SPICE += printline+'\n';
       }
-      this.SPICE += "dc V1 "+this.powersupply[0].voltage+" "+this.powersupply[0].voltage+" 0.1\n"
-      this.SPICE += "dc V2 "+this.powersupply[1].voltage+" "+this.powersupply[1].voltage+" 0.1\n"
+      if(this.powersupply[0].positive && this.powersupply[0].negative)
+        this.SPICE += "dc V1 "+this.powersupply[0].voltage+" "+this.powersupply[0].voltage+" 0.1\n"
+      if(this.powersupply[1].positive && this.powersupply[1].negative)
+        this.SPICE += "dc V2 "+this.powersupply[0].voltage+" "+this.powersupply[0].voltage+" 0.1\n" 
+      if(this.signalgenerator.positive && this.signalgenerator.negative)
+        this.SPICE += "dc V3 "+this.signalgenerator.voltage+" "+this.signalgenerator.voltage+" 0.1\n" 
       this.SPICE += "run\n";
       var printline = 'print'
       for(var i of this.multimeternodes){

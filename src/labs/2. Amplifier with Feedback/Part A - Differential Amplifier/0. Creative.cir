@@ -128,7 +128,7 @@ Q5 14 13 12 QM1
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 .ends CA3083
 XU1 7 8 0 9 0 3 3 4 9 3 4 0 0 0 9 0 CA3083
-RB 2 3 1k
+RB 2 3 2k
 C1 0 0 30p
 RC1 5 7 1k
 RC2 6 8 1k
@@ -138,16 +138,15 @@ RC2 6 8 1k
 *R2 0 0 4k
 *R1 0 0 1k
 *R10 0 0 1k
-V1 1 0 dc 1
-V2 0 4 dc 1
+V1 1 0 dc 10
+V2 0 4 dc 10
 RAmmeter1 1 2 1m
 RJumper1 1 5 1m
 RJumper2 1 6 1m
 *XU1 0 0 0 0 0 LM741
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.
-* SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON, and the relay controlling the feedback resistor will switch to RF2 [unity gain] (S2 - Port 0 Line 1 ON). Upon successful completion of this lab, the Function generator switch will turn ON (S1 - Port 0 Line 0 ON). Capacitor 1 will Switch ON (S3 - Port 0 Line 2 - ON) All other capacitance switches (S4 - Port 0 Line 4 - OFF)(S5 - Port 0 Line 5 - OFF) will remain OFF
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
 * DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
 * DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
@@ -157,6 +156,9 @@ RJumper2 1 6 1m
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0  
 .control
+tran 20u 20m
+run
+print v(1,2)/1m
 dc V1 10 10 0.1
 dc V2 10 10 0.1
 run
