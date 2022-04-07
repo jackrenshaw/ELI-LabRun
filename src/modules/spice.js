@@ -761,6 +761,15 @@ var Spice = {
                     }
                 }
             }else if(this.simple.hasOwnProperty(type) && !inSubcircuit){
+                var Directional = true;
+                if(this.simple[type].Directional == false)
+                    Directional = false
+                var Fungible = true;
+                    if(this.simple[type].Fungible == false)
+                        Fungible = false
+                var InternalFungibility = false;
+                    if(this.simple[type].hasOwnProperty('InternalFungibility'))
+                        InternalFungibility = this.simple[type].InternalFungibility;
                 const Component = {
                     Name:c.substring(0,c.indexOf(' ')),
                     Type:this.simple[type].Name,
@@ -1035,36 +1044,66 @@ var Spice = {
         }
         this.SpiceSimulate(netlist,testData,error);
     },
-    SPICE_to_Bench(netlist){
+    SPICE_to_Bench(netlist,alts){
         const V1 = netlist.match(/V1 ([0-9]+ ){2}.+/g);
         const V2 = netlist.match(/V2 ([0-9]+ ){2}.+/g);
         const V3 = netlist.match(/V3 ([0-9]+ ){2}.+/g);
-        if(V1 && V2 && V3)
+        var powersupply1_altnodes_positive = [];
+        var powersupply1_altnodes_negative = [];
+        var powersupply2_altnodes_positive = [];
+        var powersupply2_altnodes_negative = [];
+        var signalgenerator_altnodes_positive = [];
+        var signalgenerator_altnodes_negative = [];
+        if(alts)
+            for(var a of alts){
+                powersupply1_altnodes_positive.push(a.Bench.powersupply[0].positive);
+                powersupply1_altnodes_negative.push(a.Bench.powersupply[0].negative);
+                powersupply2_altnodes_positive.push(a.Bench.powersupply[1].positive);
+                powersupply2_altnodes_negative.push(a.Bench.powersupply[1].negative);
+                signalgenerator_altnodes_positive.push(a.Bench.signalgenerator.positive);
+                signalgenerator_altnodes_negative.push(a.Bench.signalgenerator.negative);
+            }
+        if(V1 && V2 && V3){
             return {
                 powersupply:[{
                     positive:V1[0].split(" ")[1],
                     negative:V1[0].split(" ")[2],
+                    altnodes:{
+                        positive:powersupply1_altnodes_positive,
+                        negative:powersupply1_altnodes_negative
+                    }
                 },{
                     positive:V2[0].split(" ")[1],
                     negative:V2[0].split(" ")[2],
+                    altnodes:{
+                        positive:powersupply2_altnodes_positive,
+                        negative:powersupply2_altnodes_negative
+                    }
                 }],
                 signalgenerator:{
                     positive:V3[0].split(" ")[1],
                     negative:V3[0].split(" ")[2],
+                    altnodes:{
+                        positive:signalgenerator_altnodes_positive,
+                        negative:signalgenerator_altnodes_negative
+                    }
                 }
             }
-        else
+        }else
         return {
             powersupply:[{
                 positive:null,
                 negative:null,
+                altnodes:{positive:[],negative:[]}
             },{
                 positive:null,
                 negative:null,
+                altnodes:{positive:[],negative:[]}
             }],
             signalgenerator:{
                 positive:null,
                 negative:null,
+                altnodes:{positive:[],negative:[]}
             }
         }
     },

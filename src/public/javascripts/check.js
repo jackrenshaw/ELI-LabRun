@@ -1,5 +1,56 @@
+Simulate = function(){
+    SetComponents();
+    $("#sidebar .container div[name='SPICE']").html("");
+    //$("#sidebar").show();
+    html2canvas(document.querySelector("body")).then(canvas1 => {
+      //$("#sidebar .container div[name='SPICE']").append("<br><h2>Circuit Image</h2><p>You can right click on this image to save it</p>");
+      //$("#sidebar .container div[name='SPICE']").append(canvas1);
+      //$("#sidebar .container div[name='SPICE']").append("<hr>");
+  
+      $("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");
+    $("#sidebar .container div[name='SPICE']").append("<br><h2 class='subtitle'>Conversion Output</h2>");
+    UI.makeSPICE("simulation",function(error){
+      $("#sidebar .container div[name='SPICE']").append(error+"<br>");
+      $("body #Notifications").append(`<div class="notification is-danger  is-light">
+        <button class="delete" onclick='$(this).parent().remove()'></button>
+  <strong>Error</strong><br>
+  There was an error simulating the circuit. Please check your circuit<br>
+  <strong>Details:</strong><br>`+error+`</div>`);
+    },function(input){
+      $("#sidebar .container div[name='SPICE']").append(input+"<br>");
+    },function(netlist,normalised){
+      console.log("Simualting and Validating Circuit");
+      window.electronAPI.SimulateCircuit(netlist);
+      console.log(netlist)
+      $("body #Notifications").append(`<div class="notification is-info  is-light">
+      <button class="delete" onclick='$(this).parent().remove()'></button>
+<strong>SPICE Circuit</strong><br>
+The circuit is below
+<strong>Details:</strong><br>`+netlist.replace(/\n/g,'<br>')+`</div>`);
+    });
+    $("a[href='#output-netlist'],a[href='#output-nodal']").removeClass("disabled");
+    $("#sidebar .container div[name='SPICE']").append("<hr><h2 id='output-netlist' class='subtitle'>SPICE Output</h2><i>You can run this in a command line simulator like ngSPICE</i><br>"+UI.SPICE.SPICE.replace(/\n/g,'<br>')+"<hr>");
+    $("#sidebar .container div[name='SPICE']").append("<h2 id='output-nodal' class='subtitle'>Nodes</h4>")
+      UI.showNodes();
+      html2canvas(document.querySelector("body")).then(canvas2 => {
+        //$("#sidebar .container div[name='SPICE']").append(canvas2);
+        //$("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");;
+        UI.hideNodes()
+      });
+    });
+  
+}
+
 validate = function(){
   console.log("Validating Circuit");
+  $("wire").each(function(){
+    $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+    $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
+  });
+  $("port").each(function(){
+    $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+    $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
+  });
   var continuityErrors = [];//checkCircuitContinuity();
   if(!continuityErrors.length){
     console.log("Continuity Check passed!");
@@ -34,12 +85,32 @@ checkCircuitContinuity = function(){
   return continuityErrors;
 }
 
+checkConnected = function(_wire,_port){
+  console
+  const WireSpan = [{
+    horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
+    vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
+  }];
+  var portWidth = $(_port).width();
+  var portHeight = $(_port).height();
+  if($(this).parent("component").hasClass("rotated-270") || $(this).parent("component").hasClass("rotated-90")){
+    portWidth = $(_port).height();
+    portHeight = $(_port).width();
+  }
+  const PortSpan = [{
+    horizontal:[$(_port).offset().left,($(_port).offset().left+portWidth)],
+    vertical:[$(_port).offset().top,($(_port).offset().top+portHeight)]
+  }];
+  console.log(inSpan(WireSpan,PortSpan));
+}
+
 SetComponents = function(){
+
   $("port").each(function(){
     var _port = this;
     var portWidth = $(_port).width();
     var portHeight = $(_port).height();
-    if($(this).parent("component,ground").hasClass("rotated-90") || $(this).parent("component").hasClass("rotated-90")){
+    if($(this).parent("component").hasClass("rotated-270") || $(this).parent("component").hasClass("rotated-90")){
       portWidth = $(_port).height();
       portHeight = $(_port).width();
     }
@@ -55,15 +126,18 @@ SetComponents = function(){
         horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
         vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
       }];
-      if(UI.inSpan(PortSpan,WireSpan)){
-        console.log("found a match");
+      if(inSpan(PortSpan,WireSpan)){
+        console.log("found a match for"+$(_port).parent("component").attr("data-spice-name")+" port:"+$(_port).attr("id"));
         match = true;
         console.log($(_wire).attr("data-spice-node"));
         $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
       }
     });
-    if(!match)
-      $(_port).attr("data-spice-node",'0');
+    if(!match){
+      console.log($(_port).parent("component").attr("data-spice-name")+" isn't on a node");
+      console
+      //$(_port).attr("data-spice-node",'-1');
+    }
   })
   return true;
 }
@@ -130,16 +204,19 @@ CheckComponents = function(){
   var results = {
     matching:[],
     notmatching:[],
-    altresults:new Array($("meta[name='circuit']").data("alt").length).fill(0),
-    altverbose:new Array($("meta[name='circuit']").data("alt").length).fill([]),
+    altresults:new Array($("meta[name='circuit']").data("alt").length),
     matchedALT:null
   }
+  for(var a=0;a<results.altresults.length;a++)
+    results.altresults[a] = [];
+  console.log(results);
   //Iterate through each port
   $("component port").each(function(){
     //Ignore ports which don't have a target node
     if($(this).attr("data-spice-target-node") || $(this).attr("data-spice-target-node") == '0'){
       //Consider component directionality
       if($(this).parent("component").data("spice-directional") == false){
+        console.log("We are dealing with a directional node")
         var reqPorts = [];
         var conPorts = [];
         $(this).parent("component").find("port").each(function(){
@@ -149,40 +226,54 @@ CheckComponents = function(){
         if(reqPorts.sort().join(" ") == conPorts.sort().join(" "))
           results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
         else
-          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
+          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).attr("data-spice-target-node")+" but it is actually on node: "+$(this).attr("data-spice-node"))
       }else{
         if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
           results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
         else
-          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))    
+          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).attr("data-spice-target-node")+" but it is actually on node: "+$(this).attr("data-spice-node"))
       }
     if($(this).data("spice-target-alt-node"))
       if($(this).data("spice-target-alt-node").length == results.altresults.length)
         for(var a in $(this).data("spice-target-alt-node"))
-          if($(this).parent("component").data("spice-directional") == false){
-            var reqPorts = [];
-            var conPorts = [];
-            $(this).parent("component").find("port").each(function(){
-              conPorts.push($(this).attr("data-spice-node"))
-              reqPorts.push($(this).data("spice-target-alt-node")[a])
-            })
-            if(reqPorts.sort().join(" ") == conPorts.sort().join(" "))
-              void(0);
-            else{
-              results.altresults[a] += 1;
-            }
-          }else{
-            if($(this).attr("data-spice-node") == $(this).data("spice-target-alt-node")[a])
-              void(0);
-            else{
-              results.altresults[a] += 1;
-            }
+        if($(this).parent("component").data("spice-directional") == false){
+          console.log("We are dealing with a directional component")
+          var reqPorts = [];
+          var conPorts = [];
+          $(this).parent("component").find("port").each(function(){
+            console.log($(this).attr("data-spice-node"));
+            reqPorts.push(parseInt($(this).attr("data-spice-node")))
+            conPorts.push(parseInt($(this).data("spice-target-alt-node")[a]))
+          })
+          if(reqPorts.sort().join(" ") != conPorts.sort().join(" ")){
+            if(!results.altresults[a])
+              results.altresults[a] = [];
+            results.altresults[a].push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).data("spice-target-alt-node")[a]+" but it is actually on node: "+$(this).attr("data-spice-node"))
           }
+        }else{
+          if(parseInt($(this).attr("data-spice-node")) != parseInt($(this).data("spice-target-alt-node")[a])){
+            if(!results.altresults[a])
+              results.altresults[a] = [];
+            results.altresults[a].push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).data("spice-target-alt-node")[a]+" but it is actually on node: "+$(this).attr("data-spice-node"))
+          }
+        }
       else
-        results.altresults.fill(-1);
+        results.altresults[a].push("Alt Length Error");
     else
-      results.altresults.fill(-1);
-    }
+      results.altresults[a].push("No Alt Length Provided");
+  }
+  })
+  $("connectors port").each(function(){
+    if($(this).attr("data-spice-target-node") || $(this).attr("data-spice-target-node") == '0'){
+      if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
+      results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
+    else
+      results.notmatching.push($(this).attr("name")+" should be on node: "+$(this).attr("data-spice-target-node")+" but it is actually on node: "+$(this).attr("data-spice-node"))
+    };
+    for(var a in $(this).data("spice-target-alt-node"))
+      if(parseInt($(this).attr("data-spice-node")) != parseInt($(this).data("spice-target-alt-node")[a])){
+        results.altresults[a].push($(this).data("spice-bench")+" should be connected to node:"+parseInt($(this).data("spice-target-alt-node")[a])+" but it is actually on node:"+parseInt($(this).attr("data-spice-node")))
+      }
   })
   if($("meta[name='circuit']").data("page").prev || $("meta[name='circuit']").data("page").next){
     if(results.notmatching.length){
@@ -193,14 +284,17 @@ CheckComponents = function(){
     if(results.matching.length)
       $("body #Notifications").append(`<div class="notification is-success  is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Success</strong><br>Some of your connections are correct<br><strong>Details:</strong><br>`+results.matching.join('<br>')+`</div>`);
   }else{ //creative mode
-    var min = {index:0,value:results.altresults[0]};
+    var min = {index:0,value:0};
+    if(results.altresults[0])
+      min.value = results.altresults[0].length;
     var pcount = 0;
+    console.log(results);
     for(var a in results.altresults){
-      if(results.altresults[a] == 0)
+      if(results.altresults[a].length == 0)
         pcount++;
-      if(results.altresults[a] < min.value){
+      if(results.altresults[a].length < min.value){
         min.index = a;
-        min.value = results.altresults[a];
+        min.value = results.altresults[a].length;
       }
     }
     if(pcount == 1){
@@ -208,7 +302,7 @@ CheckComponents = function(){
       results.matchedALT = min.index;
     }else if(pcount == 0){
       console.log("no matches")
-      UI.Notification("Warning","Your circuit failed to match a hardware implementation.","There are at least "+min.value+" ports misconfigured. Inspect your connections, node voltages and simulation output.")
+      UI.Notification("Warning","Your circuit failed to match a hardware implementation.","There are at least "+min.value+" ports misconfigured. Inspect your connections, node voltages and simulation output. The closest configuration is mismatched in the following way:")
     }else{
       UI.Notification("Error","Your circuit matches multiple possible implementations. Please report this to your lab demonstrator","")
     }

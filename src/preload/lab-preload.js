@@ -84,7 +84,7 @@ The simulation could not be performed<br>
       $("wire").each(function(){
         $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
         if(nodeVoltages.hasOwnProperty($(this).attr("data-spice-node")) && expectedNodeVoltages.hasOwnProperty($(this).attr("data-spice-node")))
-          $(this).attr("data-tooltip","Expected:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nSimulated:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nMeasured:N/A");
+          $(this).attr("data-tooltip",("Node:"+$(this).attr("data-spice-node")+"\nExpected:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nSimulated:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nMeasured:N/A"));
       });
       $("component[data-spice-type='Ammeter']").each(function(){
         $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");

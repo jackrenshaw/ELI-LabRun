@@ -350,6 +350,10 @@ labelNodes(){
     console.log(this.powersupply)
     console.log(this.oscilloscope)
     console.log(this.signalgenerator);
+    if(!this.powersupply[0].positive && !this.powersupply[0].positive && !this.powersupply[0].negative && !this.signalgenerator.positive){
+      this.dbg("<b>Error:</b> There are no sources connected to your circuit. No simulation can be produced");
+      throw 'Source node error';
+    }
     this.vbs("Creating a SPICE line entry for each power supply and the signal generator");
     if(this.powersupply[0].positive != this.powersupply[0].negative)
       this.SPICE += "V1 "+this.powersupply[0].positive+" "+this.powersupply[0].negative+" "+this.powersupply[0].voltage+"\n";

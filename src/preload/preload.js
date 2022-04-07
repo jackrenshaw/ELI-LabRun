@@ -36,8 +36,8 @@ There was an error the requested Laboratory. This error likely relates to settin
       console.log($(this));
       console.log($(this).data('lab'));
       console.log($(this).data('part'));
-      $("section.lab").addClass("is-hidden");
-      $("section.lab-actions[data-lab='"+$(this).data("lab")+"'][data-part='"+$(this).data("part")+"']").removeClass("is-hidden");
+      //$("section.lab").addClass("is-hidden");
+      //$("section.lab-actions[data-lab='"+$(this).data("lab")+"'][data-part='"+$(this).data("part")+"']").removeClass("is-hidden");
     })
     $("a[data-action='open-lab']").click(function(){
       ipcRenderer.send('openLab',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null})

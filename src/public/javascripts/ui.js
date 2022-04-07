@@ -226,26 +226,21 @@ The circuit is below
       console.log("clicked on a wire")
       if($("#"+event.target.id).attr("data-spice-node") == $("#wire"+wireid).attr("data-spice-node")){
         console.log("You're allowed to join these nodes");
-        UI.Notification("Success","These nodes can be joined!","");
-      }else if($("#"+event.target.id).data("spice-collapse-node").includes($("#wire"+wireid).data("spice-node"))){
-        const oldID = $("#"+event.target.id).attr("data-spice-node");
-        const newID = $("#wire"+wireid).attr("data-spice-node");
-        console.log("Collapsing the target into the new wire")
-        UI.Notification("Success","These nodes can be joined!","You're collapsing node:"+oldID+" into "+newID);
-        $("wire[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID)});
-        $("port[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID).attr("data-spice-target-node",newID)});
-      }else if($("#wire"+wireid).data("spice-collapse-node").includes($("#"+event.target.id).data("spice-node"))){
-        const oldID = $("#wire"+wireid).attr("data-spice-node");
-        const newID = $("#"+event.target.id).attr("data-spice-node")
-        console.log("Collapsing into the target ")
-        UI.Notification("Success","These nodes can be joined!","You're collapsing node:"+oldID+" into "+newID);
-        $("wire[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID)});
-        $("port[data-spice-node='"+oldID+"']").each(function(){$(this).attr("data-spice-node",newID).attr("data-spice-target-node",newID)});
+        //UI.Notification("Success","These nodes can be joined!","These wires were already on the same node.");
+      }else if($("#"+event.target.id).data("spice-collapse-node") || $("#wire"+wireid).data("spice-collapse-node")){
+        console.log("Collapsing the node");
+        var supernode = $("#"+event.target.id).attr("data-spice-node")
+        if(!$("#wire"+wireid).data("spice-collapse-node"))
+          supernode = $("#wire"+wireid).attr("data-spice-node");
+        console.log(supernode);
+        $("wire[data-spice-node='"+$("#"+event.target.id).attr("data-spice-node")+"']").attr("data-spice-node",supernode);
+        $("wire[data-spice-node='"+$("#wire"+wireid).attr("data-spice-node")+"']").attr("data-spice-node",supernode);
       }else{
-        UI.Notification("Error","You aren't allowed to join these nodes!","");
-        console.log("removing wire:"+wireid)
-        $("#wire"+wireid).css("display","none");
+        console.log("You can't join these wires");
+        $("#wire"+wireid).css("display","node").css("width","0px").css("height","0px").remove();
       }
+    }else if(event.target.nodeName.toLocaleLowerCase() == "port"){
+      $(event.target.id).attr("data-spice-node",$("#wire"+wireid).attr("data-spice-node"));
     }
     $(document).off("mousemove");
     $("body").off("dblclick");
@@ -254,13 +249,14 @@ The circuit is below
   });
   },
   ComponentDrop: function(){
-    $("component,ground").mouseup(function(event){
+    $("component").mouseup(function(event){
       const _comp = this;
       $("wire").each(function(){
         if($(this).is(":visible") && $(this).width() > 0 && $(this).height() > 0){
         const _wire = this;
         $(_comp).find("port").each(function(){
           const _port = this;
+          $(_port).attr("data-spice-node","999");
           const Component = [{
             horizontal:[$(_comp).offset().left,($(_comp).offset().left+$(_comp).width())],
             vertical:[$(_comp).offset().top,($(_comp).offset().top+$(_comp).height())]
@@ -301,6 +297,7 @@ The circuit is below
           if(UI.inSpan(Port,wirespan) && !wired){
             console.log("Dropping Component on a wire");
             wired = true;    
+            $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
             if($(_wire).height() == 6 && portHeight == 6){
               var heightDiff = $(_port).offset().top - $(_wire).offset().top;
               $(_comp).css("top",($(_comp).offset().top-heightDiff));
@@ -317,48 +314,7 @@ The circuit is below
       }})
     })
   },
-  openNav: function() {
-    $("#sidebar .container div[name='SPICE']").html("");
-    //$("#sidebar").show();
-    html2canvas(document.querySelector("body")).then(canvas1 => {
-      //$("#sidebar .container div[name='SPICE']").append("<br><h2>Circuit Image</h2><p>You can right click on this image to save it</p>");
-      //$("#sidebar .container div[name='SPICE']").append(canvas1);
-      //$("#sidebar .container div[name='SPICE']").append("<hr>");
-  
-      $("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");
-    $("#sidebar .container div[name='SPICE']").append("<br><h2 class='subtitle'>Conversion Output</h2>");
-    UI.makeSPICE("simulation",function(error){
-      $("#sidebar .container div[name='SPICE']").append(error+"<br>");
-      $("body #Notifications").append(`<div class="notification is-danger  is-light">
-        <button class="delete" onclick='$(this).parent().remove()'></button>
-  <strong>Error</strong><br>
-  There was an error simulating the circuit. Please check your circuit<br>
-  <strong>Details:</strong><br>`+error+`</div>`);
-    },function(input){
-      $("#sidebar .container div[name='SPICE']").append(input+"<br>");
-    },function(netlist,normalised){
-      console.log("Simualting and Validating Circuit");
-      window.electronAPI.SimulateCircuit(netlist);
-      console.log(netlist)
-      $("body #Notifications").append(`<div class="notification is-info  is-light">
-      <button class="delete" onclick='$(this).parent().remove()'></button>
-<strong>SPICE Circuit</strong><br>
-The circuit is below
-<strong>Details:</strong><br>`+netlist.replace(/\n/g,'<br>')+`</div>`);
-    });
-    $("a[href='#output-netlist'],a[href='#output-nodal']").removeClass("disabled");
-    $("#sidebar .container div[name='SPICE']").append("<hr><h2 id='output-netlist' class='subtitle'>SPICE Output</h2><i>You can run this in a command line simulator like ngSPICE</i><br>"+UI.SPICE.SPICE.replace(/\n/g,'<br>')+"<hr>");
-    $("#sidebar .container div[name='SPICE']").append("<h2 id='output-nodal' class='subtitle'>Nodes</h4>")
-      UI.showNodes();
-      html2canvas(document.querySelector("body")).then(canvas2 => {
-        //$("#sidebar .container div[name='SPICE']").append(canvas2);
-        //$("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");;
-        UI.hideNodes()
-      });
-    });
-  
-  },
-  RemoveWiresFromArea: function(span){
+ RemoveWiresFromArea: function(span){
     $("wire").each(function(){
       const Component = [{
           horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
@@ -630,7 +586,6 @@ $("connectors port").each(function(){
     horizontal:[$(_port).offset().left,($(_port).offset().left+$(_port).width())],
     vertical:[$(_port).offset().top,($(_port).offset().top+$(_port).height())]
   }];
-  $(this).height("200px")
   $("wire").each(function(){
     var _wire = this;
     const WireSpan = [{
@@ -641,7 +596,4 @@ $("connectors port").each(function(){
       if($(_wire).attr("data-spice-node"))
         $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
   })
-})
-$("connectors div").each(function(){
-  $(this).height("200px")
 })

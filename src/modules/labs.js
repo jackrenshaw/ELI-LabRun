@@ -68,63 +68,6 @@ var Labs = {
                                     Output:Spice.SPICE_to_OUTPUT(Solutions[a])
                                 });
                 }
-                FungibleAlts = [];
-                for(var a of Part.Alts){
-                    for(var c1 in a.Components){
-                        if(a.Components[c1].Fungible){
-                            console.log("Component "+a.Components[c1].Name+"is Fungible")
-                            for(var c2 in a.Components){
-                                if(c1 != c2 && a.Components[c2].Fungible && a.Components[c1].Type == a.Components[c2].Type && a.Components[c1].Value == a.Components[c2].Value){
-                                    console.log(a.Components[c1].Name+" is fungible with "+a.Components[c2].Name)
-                                    var Components = JSON.parse(JSON.stringify(a.Components))
-                                    const c1Name = Components[c1].Name
-                                    Components[c1].Name = Components[c2].Name;
-                                    Components[c2].Name = c1Name;
-                                    FungibleAlts.push({
-                                        Name:("(alt)"+a.Name),
-                                        Circuit:a.Circuit,
-                                        Components:Components,
-                                        Bench:a.Bench,
-                                        Output:a.Output
-                                    })
-                                }
-                            }
-                        }
-                    }
-                }
-                for(var a of FungibleAlts)
-                    Part.Alts.push(a);
-                FungibleAlts = [];
-                for(var a of Part.Alts){
-                    for(var c1 in a.Components){
-                        if(a.Components[c1].InternalFungibility){
-                            console.log("Component is internally fungible");
-                            if(a.Components[c1].InternalFungibility.type == 'groupwise' && a.Components[c1].InternalFungibility.groups.length){
-                                console.log("Component is groupwise fungible");
-                                const groups = a.Components[c1].InternalFungibility.groups;
-                                const glength = groups[0].length;
-                                for(var g1=0;g1<groups.length;g1++){
-                                    for(var g2=0;g2<groups.length;g2++){
-                                        var Components = JSON.parse(JSON.stringify(a.Components))
-                                        for(var i=0;i<glength;i++){
-                                            [Components[c1].Ports[groups[g1][i]], Components[c1].Ports[groups[g2][i]]] = [Components[c1].Ports[groups[g2][i]], Components[c1].Ports[groups[g1][i]]];
-                                        }
-                                        FungibleAlts.push({
-                                            Name:("(alt)"+a.Name),
-                                            Circuit:a.Circuit,
-                                            Components:Components,
-                                            Bench:a.Bench,
-                                            Output:a.Output
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                for(var a of FungibleAlts)
-                    Part.Alts.push(a);
-                console.log("Alts");
                 console.log(Part.Alts.length);
                 for(var s of sections) if(s.substring(0,1) != "." && s.substring(0,15) != "HardwareMap.cir" && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
                     const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:[],Bench:{}}
@@ -142,7 +85,7 @@ var Labs = {
                         console.log
                     );
                     Section.Components = Spice.SPICE_to_Components(Section.Solution,Part.Alts);
-                    Section.Bench = Spice.SPICE_to_Bench(Section.Solution);
+                    Section.Bench = Spice.SPICE_to_Bench(Section.Solution,Part.Alts);
                     Section.Instructions = Spice.SPICE_to_Instructions(Section.Solution);
                     Section.SimulationNotes = Spice.SPICE_to_SimulationNotes(Section.Solution);
                     Section.ImplementationNotes = Spice.SPICE_to_ImplementationNotes(Section.Solution);

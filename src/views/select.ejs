@@ -84,7 +84,7 @@
               <%= p.Settings.Instructions %><hr>
               <br><time><small>Available from <% var d = new Date(p.Settings.Available);%><%= d.toDateString() %></small></time>
               <% if(d < new Date() && p.Sections) if(p.Sections.length){  %>
-              <br><a data-lab="<%=l.Name%>" data-part="<%=p.Name%>" class='button is-small is-info focus-lab'>Select</a>
+              <br><a data-lab="<%=l.Name%>" data-part="<%=p.Name%>" data-section="<%=p.Sections[0].Name%>" data-action="open-lab" class='button is-small is-info focus-lab'>Select</a>
               <% } %>
             </div>
           </div>

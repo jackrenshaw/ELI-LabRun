@@ -44,19 +44,6 @@ function startup(event,callback){
   }) 
 }
 
-var openGraphSim = function(){
-  const graphWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: true,
-      preload: path.join(__dirname, 'preload/graphsim-preload.js')
-  }
-  });
-  graphWindow.webContents.openDevTools();
-  graphWindow.loadFile(path.join(__dirname, 'views/graphsim.ejs'))
-}
-
 //This needs more validation (for params at a minimum)
 //We also need to validate the actions object at some point
 function implementCircuit(params,callback,errorCallback){
@@ -146,6 +133,18 @@ const createWindow = () => {
   }
   });
 
+  const graphWindow = new BrowserWindow({
+    show:false,
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload/graphsim-preload.js')
+  }
+  });
+  graphWindow.webContents.openDevTools();
+  graphWindow.loadFile(path.join(__dirname, 'views/graphsim.ejs'))
+
 
   labWindow.on('close',function(event){
     console.log("attempting to close lab window");
@@ -158,9 +157,6 @@ const createWindow = () => {
     app.quit()
   })
   
-  
-  openGraphSim();
-
   var openPane = function(page,callback,errorCallback){
     console.log(page);
     var found = false;
