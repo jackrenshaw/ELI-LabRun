@@ -58,24 +58,6 @@ class SPICE{
       this.vbs("WireFrame provided (no need to manually identify nodes)");
       this.nodes = nodes;
       this.components = components;
-      var scopeValid = false;
-      if(oscilloscope[0].hasOwnProperty('params'))
-        if(oscilloscope[0].params.hasOwnProperty('type'))
-          if(['transient','ac','multimeter'].includes(oscilloscope[0].params.type))
-            if(oscilloscope[0].params.type == 'transient'){
-              if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.transient.runtime) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.transient.step))
-                scopeValid = true;
-            }else if(oscilloscope[0].params.type == 'ac'){
-              console.log(oscilloscope[0].params)
-              if(/[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.sweep.start) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.sweep.stop) && /[0-9]+(f|p|n|u|m)?/g.test(oscilloscope[0].params.sweep.step) && ["linear","decade"].includes(oscilloscope[0].params.sweep.type))
-                scopeValid = true;
-            }else if(oscilloscope[0].params.type == 'multimeter'){
-              scopeValid = true;
-            }
-      if(!scopeValid){
-        this.dbg("<b>Error:</b> The Oscilloscope is not configured correctly. Please check your settings")
-        throw 'Oscilloscope Setup Error'
-      }
     }
     //this.setComponentNodes();
     this.SPICE += "Test Circuit\n";
@@ -88,9 +70,8 @@ class SPICE{
     if(models)
       this.SPICE += models.join('\n')+'\n';
     this.spiceConvert_simulation();
-    this.SPICENORM = this.spiceConvert_comparison();
     this.vbs("Complete!");
-    complete(this.SPICE),this.SPICENORM;
+    complete(this.SPICE);
 }
 
 //Take the cartesian coordinates of a rectangle, returns true if the rectangles overlap
@@ -397,17 +378,34 @@ labelNodes(){
     this.SPICE += '.control\n'
       if(this.oscilloscope[0].positive != '0' || this.oscilloscope[1].positive != '0' ){
         this.vbs("Setting up a transient simulation for Voltage");
-        this.SPICE += 'tran '+this.oscilloscope[0].params.transient.step+' '+this.oscilloscope[0].params.transient.runtime;
+        this.SPICE += this.oscilloscope[0].line;
         this.SPICE += '\nrun\n'
         var printline = 'print'
-        if(this.oscilloscope[0].positive && this.oscilloscope[0].negative && this.oscilloscope[0].negative != '0')
-          printline += ' v('+this.oscilloscope[0].positive+','+this.oscilloscope[0].negative+')'
+        for(var i in this.oscilloscope)
+        if(this.oscilloscope[i].positive && this.oscilloscope[i].negative && this.oscilloscope[i].negative != '0')
+          if(this.oscilloscope[i].transformation.type)
+            if(this.oscilloscope[i].transformation.type == 'log')
+              printline += ' log(v('+this.oscilloscope[i].positive+','+this.oscilloscope[i].negative+'))'
+            else if(this.oscilloscope[i].transformation.type == 'mult' && this.oscilloscope[i].transformation.factor)
+              printline += ' '+this.oscilloscope[i].transformation.factor+'*(v('+this.oscilloscope[i].positive+','+this.oscilloscope[i].negative+'))'
+            else if(this.oscilloscope[i].transformation.type == 'diff' && this.oscilloscope[i].transformation.factor)
+              printline += ' (v('+this.oscilloscope[i].positive+','+this.oscilloscope[i].negative+')-'+this.oscilloscope[i].transformation.factor+')'
+            else
+              printline += ' v('+this.oscilloscope[i].positive+','+this.oscilloscope[i].negative+')'
+          else
+            printline += ' v('+this.oscilloscope[i].positive+','+this.oscilloscope[i].negative+')'
         else
-          printline += ' v('+this.oscilloscope[0].positive+')'
-        if(this.oscilloscope[1].positive && this.oscilloscope[1].negative && this.oscilloscope[1].negative != '0')
-          printline += ' v('+this.oscilloscope[1].positive+','+this.oscilloscope[1].negative+')'
-        else
-          printline += ' v('+this.oscilloscope[1].positive+')'
+          if(this.oscilloscope[i].transformation.type)
+            if(this.oscilloscope[i].transformation.type == 'log')
+              printline += ' log(v('+this.oscilloscope[i].positive+'))'
+            else if(this.oscilloscope[i].transformation.type == 'mult' && this.oscilloscope[i].transformation.factor)
+              printline += ' '+this.oscilloscope[i].transformation.factor+'*(v('+this.oscilloscope[i].positive+'))'
+            else if(this.oscilloscope[i].transformation.type == 'diff' && this.oscilloscope[i].transformation.factor)
+              printline += ' (v('+this.oscilloscope[i].positive+')-'+this.oscilloscope[i].transformation.factor+')'
+            else
+              printline += ' v('+this.oscilloscope[i].positive+')'
+          else
+            printline += ' v('+this.oscilloscope[i].positive+')'
         this.SPICE += printline+'\n';
       }
       if(this.powersupply[0].positive && this.powersupply[0].negative)
@@ -435,10 +433,5 @@ labelNodes(){
       }
       this.SPICE += printline+'\n';
     this.SPICE += '.endc'
-  }
-
-  spiceConvert_comparison(){
-    var SPICENORM = this.SPICE;
-    this.SPICE.replace(/tran .+\n/g,'tran 5u 2m\n');
   }
 }

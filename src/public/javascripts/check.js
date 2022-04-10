@@ -51,7 +51,7 @@ validate = function(){
     $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
     $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
   });
-  var continuityErrors = [];//checkCircuitContinuity();
+  var continuityErrors = checkCircuitContinuity();
   if(!continuityErrors.length){
     console.log("Continuity Check passed!");
     SetComponents();
@@ -61,8 +61,13 @@ validate = function(){
       console.log(checkResult.matchedALT);
   }else{
     console.log("There are continuity errors in this circuit");
-    for(var e of continuityErrors)
+    for(var e of continuityErrors){
       UI.Notification("Error","You have a discontinuity in one of your nodes! You must correct this prior to enacting the circuit",("Node:"+e))
+      $("wire[data-spice-node='"+e+"']").each(function(){
+        if($(this).attr("data-spice-revert-node"))
+          $(this).attr("data-spice-node",$(this).attr("data-spice-revert-node"));
+      })
+    }
   }
 }
 
@@ -302,7 +307,7 @@ CheckComponents = function(){
       results.matchedALT = min.index;
     }else if(pcount == 0){
       console.log("no matches")
-      UI.Notification("Warning","Your circuit failed to match a hardware implementation.","There are at least "+min.value+" ports misconfigured. Inspect your connections, node voltages and simulation output. The closest configuration is mismatched in the following way:")
+      UI.Notification("Warning","Your circuit failed to match a hardware implementation.","There are at least "+min.value+" ports misconfigured. The closest configuration is: <br><b>"+$("meta[name='circuit']").data("alt")[min.index].Name+"</b><br> Inspect your connections, node voltages and simulation output. The closest configuration is mismatched in the following way:<br>"+results.altresults[min.index].join("<br>"))
     }else{
       UI.Notification("Error","Your circuit matches multiple possible implementations. Please report this to your lab demonstrator","")
     }

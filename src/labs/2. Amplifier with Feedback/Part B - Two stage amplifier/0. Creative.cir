@@ -118,7 +118,7 @@ VU2$U5$V9$1 U2$U5$D10_PIN_1 U2$U5$V9_PIN_2
 + 1.5489012642594155
 VU2$U5$V10$1 U2$U5$V10_PIN_1 U2$U5$V10_PIN_2
 + 1.5489012642594155
-.ends
+.ends lm741
 .subckt CA3083 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
 Q3 1 16 15 QM1
 Q1 2 3 4 QM1
@@ -127,26 +127,21 @@ Q4 9 10 11 QM1
 Q5 14 13 12 QM1
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 .ends CA3083
-XU1 7 8 0 9 0 3 3 4 9 3 4 0 0 0 9 0 CA3083
+XU1 5 6 0 7 0 7 3 4 3 3 4 0 0 0 7 0 CA3083
 RB 2 3 1k
 C1 0 0 30p
-RC1 5 7 1k
-RC2 6 8 1k
-R4a 5 10 4k
-R4b 6 11 4k
-R3a 10 12 4k
-R3a 11 0 4k
-R2 12 13 4k
-V1 1 0 dc 1
-V2 0 4 dc 1
+RC1 1 5 2k
+RC2 1 6 3k
+R4 5 12 1k
+R5 6 11 1k
+R3 12 13 1k
+V1 1 0 10 dc 1
+V2 0 4 10 dc 1
 RAmmeter1 1 2 1m
-RJumper1 1 5 1m
-RJumper2 1 6 1m
-XU1 11 10 1 4 12 LM741
+XU2 11 12 1 4 13 LM741
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.
-* SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON, and the relay controlling the feedback resistor will switch to RF2 [unity gain] (S2 - Port 0 Line 1 ON). Upon successful completion of this lab, the Function generator switch will turn ON (S1 - Port 0 Line 0 ON). Capacitor 1 will Switch ON (S3 - Port 0 Line 2 - ON) All other capacitance switches (S4 - Port 0 Line 4 - OFF)(S5 - Port 0 Line 5 - OFF) will remain OFF
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
 * DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
 * DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
@@ -156,6 +151,9 @@ XU1 11 10 1 4 12 LM741
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0  
 .control
+tran 20u 20m
+run
+print v(1,2)/1m
 dc V1 10 10 0.1
 dc V2 10 10 0.1
 run

@@ -17,6 +17,7 @@ Actions.ImplementCommand.Digital = "echo";
 Labs.Creative = true;
 Labs.Procedural = true;
 Labs.Direct = true;
+const PANETOKEN = "ELEC2133"
 
 const isMac = process.platform === 'darwin'
 const BASE = 'https://unsw-eli.herokuapp.com/'
@@ -157,10 +158,10 @@ const createWindow = () => {
     app.quit()
   })
   
-  var openPane = function(page,callback,errorCallback){
+  var openPane = function(token,page,callback,errorCallback){
     console.log(page);
     var found = false;
-    if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section'))
+    if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section') && token == PANETOKEN)
       for(var l of Labs.Labs)
         if(l.Name == page.lab)
           for(var p of l.Parts)
@@ -184,7 +185,7 @@ const createWindow = () => {
             }
   if(!found){
     console.log("Lab doesn't exist?")
-    errorCallback("Page not Found");
+    errorCallback("Page not Found or wrong password");
   }
   }
 
@@ -305,7 +306,7 @@ const createWindow = () => {
   })
   ipcMain.on('openPane', (event,params) => {
     console.log("Opening a new pane");
-    openPane(params.page,function(response){ event.reply('openPane-reply', response)},function(error){event.reply('openPane-error', error)});
+    openPane(params.token,params.page,function(response){ event.reply('openPane-reply', response)},function(error){event.reply('openPane-error', error)});
   })
   ipcMain.on('startup', (event,page) => {
     startup(event,loadView);

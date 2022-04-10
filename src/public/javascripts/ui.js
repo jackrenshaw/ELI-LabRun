@@ -17,21 +17,14 @@ var UI = {
   select: function(){
     console.log("selecting/moving components")
     $("component,ground").css("cursor","pointer");
-    UI.SelectListen();
+    //UI.SelectListen();
     UI.RotateListen();
     UI.ComponentDrop();
-  },
-  remove: function(){
-    //When clicked, each wire will be 
-    console.log("Removing a Wire");
-    $("wire,component").css("cursor","not-allowed");
-    $("wire,component").dblclick(function(){
-      $(this).remove();
-    })
+    UI.DeleteListen();
   },
   SelectListen: function(){
-    $("component,ground").click(function(){
-      $("component,ground").each(function(){ 
+    $("component").click(function(){
+      $("component").each(function(){ 
         $(this).find("label").css("font-weight","300").css("text-decoration","none");
       });
       $(this).find("label").css("font-weight","bold").css("text-decoration","underline");
@@ -73,32 +66,48 @@ var UI = {
     $("input[name='vresistance']").off('click');
   },
   RotateListen: function(){
-    $(document).on("keypress", function(e) { 
-      if(e.key == "®" && UI.selectedComponent)
-        if($(UI.selectedComponent).hasClass("rotated-90")){
-          $(UI.selectedComponent).removeClass("rotated-90");
-          $(UI.selectedComponent).addClass("rotated-180");
-          $(UI.selectedComponent).removeClass("rotated-270");
+    $("component").bind('click', function(event){ 
+      if(event.altKey){
+        if($(this).hasClass("rotated-90")){
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-0");
         }
-        else if($(UI.selectedComponent).hasClass("rotated-180")){
-          $(UI.selectedComponent).removeClass("rotated-90");
-          $(UI.selectedComponent).removeClass("rotated-180");
-          $(UI.selectedComponent).addClass("rotated-270");
+        else if($(this).hasClass("rotated-180")){
+          $(this).removeClass("rotated-90");
+          $(this).removeClass("rotated-180");
+          $(this).addClass("rotated-270");
+          $(this).removeClass("rotated-0");
         }
-        else if($(UI.selectedComponent).hasClass("rotated-270")){
-          $(UI.selectedComponent).removeClass("rotated-180");
-          $(UI.selectedComponent).removeClass("rotated-270");
-          $(UI.selectedComponent).removeClass("rotated-90");
-        }else if(!$(UI.selectedComponent).hasClass("rotated-270") && !$(UI.selectedComponent).hasClass("rotated-180") && !$(UI.selectedComponent).hasClass("rotated-270")){
-          $(UI.selectedComponent).removeClass("rotated-180");
-          $(UI.selectedComponent).removeClass("rotated-270");
-          $(UI.selectedComponent).addClass("rotated-90");
+        else if($(this).hasClass("rotated-270")){
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-0");
+        }else if($(this).hasClass("rotated-0")){
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).addClass("rotated-90");
+          $(this).removeClass("rotated-0");
         }else{
-          $(UI.selectedComponent).removeClass("rotated-180");
-          $(UI.selectedComponent).removeClass("rotated-270");
-          $(UI.selectedComponent).removeClass("rotated-90");
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-0");
         }
+      }
     }); 
+  },
+  DeleteListen: function(){
+    $("wire").bind('click', function(event){ 
+      console.log(event)
+      if(event.altKey) {
+        if($(this).attr("data-spice-revert-node") && $(this).attr("data-spice-revert-node") != $(this).attr("data-spice-node")){
+          $(this).attr("data-spice-node",$(this).attr("data-spice-revert-node")).attr("data-tooltip",$(this).attr("data-spice-node"))
+        }$(this).css("display","none").css("width","0px").css("height","0px").remove();
+      }
+    });
   },
   removeUnusedWires: function(){
     var wires = [];
@@ -153,8 +162,12 @@ The circuit is below
       $("port,wire,bind,body").unbind("click");
       console.log($(this).attr("data-spice-node"));
       console.log($(this).attr("data-spice-collapse-node"));
+      console.log($(this).attr("data-spice-revert-node"));
       var spiceNode = " data-spice-node=\""+$(this).attr("data-spice-node")+"\"";
-      spiceNode += " data-spice-collapse-node=\""+$(this).attr("data-spice-collapse-node")+"\"";
+      if($(this).attr("data-spice-collapse-node"))
+        spiceNode += " data-spice-collapse-node=\""+$(this).attr("data-spice-collapse-node")+"\"";
+      if($(this).attr("data-spice-revert-node"))
+        spiceNode += " data-spice-revert-node=\""+$(this).attr("data-spice-revert-node")+"\"";
       console.log(spiceNode);
       $("body").css("cursor","crosshair");
       var wireid = $('wire').length;
@@ -382,37 +395,21 @@ The circuit is below
       negative:$("port[name='signalgenerator-negative']").attr("data-spice-node")
     };
     const oscilloscope = [{
-      params:{
-        type:$("meta[name='circuit']").data("simulationparams").type,
-        transient:{
-          runtime:$("#scope-1-transient input[type='text']").val(),
-          step:$("#scope-1-transient span.simulation-step").html(),
-        },
-        sweep:{
-          type:$("#scope-1-sweep input[type='radio']:checked").val(),
-          step:$("#scope-1-sweep span.steps-per-interval").html(),
-          start:$("#scope-1-sweep span.sweep-start-frequency").html(),
-          stop:$("#scope-1-sweep span.sweep-stop-frequency").html(),
-        }
+      line:$("#Oscilloscope input[name='simulation-line']").val(),
+      transformation:{
+        type:$("#Oscilloscope form[name='scope1-transformation'] input[name='type']:checked").val(),
+        factor:$("#Oscilloscope form[name='scope1-transformation'] input[name='factor']").val()
       },
       positive:$("port[name='oscilloscope-1-positive']").attr("data-spice-node"),
       negative:$("port[name='oscilloscope-1-negative']").attr("data-spice-node")
     },{
-      params:{
-        type:$("meta[name='circuit']").data("simulationparams").type,
-        transient:{
-          runtime:$("#scope-2-transient input[type='text']").val(),
-          step:$("#scope-2-transient span.simulation-step").html(),
-        },
-        sweep:{
-          type:$("#scope-2-sweep input[type='radio']:checked").val(),
-          step:$("#scope-2-sweep span.steps-per-interval").html(),
-          start:$("#scope-2-sweep span.sweep-start-frequency").html(),
-          stop:$("#scope-2-sweep span.sweep-stop-frequency").html(),
-        }
+      line:$("#Oscilloscope input[name='simulation-line']").val(),
+      transformation:{
+        type:$("#Oscilloscope form[name='scope2-transformation'] input[name='type']:checked").val(),
+        factor:$("#Oscilloscope form[name='scope2-transformation'] input[name='factor']").val()
       },
-      positive:$("port[name='oscilloscope-1-positive']").attr("data-spice-node"),
-      negative:$("port[name='oscilloscope-1-negative']").attr("data-spice-node")
+      positive:$("port[name='oscilloscope-2-positive']").attr("data-spice-node"),
+      negative:$("port[name='oscilloscope-2-negative']").attr("data-spice-node")
     }];
     const ground = $("ground port").attr("data-spice-node")
     var multimeternodes = [];

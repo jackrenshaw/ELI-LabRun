@@ -119,32 +119,24 @@ VU2$U5$V9$1 U2$U5$D10_PIN_1 U2$U5$V9_PIN_2
 VU2$U5$V10$1 U2$U5$V10_PIN_1 U2$U5$V10_PIN_2
 + 1.5489012642594155
 .ends lm741
-.subckt CA3083 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
-Q3 1 16 15 QM1
-Q1 2 3 4 QM1
-Q2 7 6 8 QM1
-Q4 9 10 11 QM1
-Q5 14 13 12 QM1
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-.ends CA3083
-XU1 5 6 11 7 0 7 3 4 3 3 4 0 0 0 7 0 CA3083
-RB 2 3 1k
-C1 0 0 30p
-RC1 1 5 2k
-RC2 1 6 3k
-*R4a 0 0 4k
-*R4b 0 0 4k
-*R3a 0 0 4k
-*R3a 0 0 4k
-*R2 0 0 4k
-*R7 0 0 4k
-*R8 0 0 4k
-*R9 0 0 4k
-V1 1 0 dc 1
-V2 0 4 dc 1
-RAmmeter1 1 2 1m
-*XU2 11 10 1 4 12 LM741
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
+.MODEL d1 D(IS=18.8n RS=0 BV=400 IBV=5u CJO=30 M=0.333 N=2)
+XA 3 2 4 11 1 LM741
+XB 5 6 4 11 7 LM741
+XC 10 9 4 11 8 LM741
+XD 12 13 4 11 14 LM741
+D1 14 2 d1
+D2 2 1 D1
+V1 4 0 15
+V2 0 11 15
+R21 10 15 1k
+RVariable1 15 8 10k
+R41 2 2 10k
+R32 3 6 1k
+RVr 11 4 10k
+Rx11 3 13 1k
+Rx24 2 13 1k
+Rx22 2 13 1k
+V
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
@@ -156,11 +148,8 @@ RAmmeter1 1 2 1m
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0  
 .control
-tran 20u 20m
+dc V1 15 15 0.1
+dc V2 15 15 0.1
 run
-print v(1,2)/1m
-dc V1 10 10 0.1
-dc V2 10 10 0.1
-run
-print v(1) v(2) v(3) v(4) v(5) v(6) v(7) V(8) v(9) V(1,2)/1m V(1,5)/1m V(1,6)/1m
+print v(1) v(2) v(3) v(4) v(5) v(6) v(7) V(8) v(9) v(10) v(11) v(12) v(13) v(14) v(15)
 .endc

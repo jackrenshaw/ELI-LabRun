@@ -36,6 +36,9 @@ document.onreadystatechange = function () {
       }
       return preload;
     }
+    $("a[data-action='open-pane']").click(function(){
+      ipcRenderer.send('openPane',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null,token:$(this).data("token")})
+    })
     ipcRenderer.on('graph-reply', (_event, arg) => {
       $("#Simulation .comparison-area").append(arg);
     });

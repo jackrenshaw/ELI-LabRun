@@ -83,7 +83,7 @@
               font-size: 3.5rem;
             }
           }
-    .rotated-90 {
+    .rotated-0 {
       transform: rotate(0deg);
       -ms-transform: rotate(0deg); /* IE 9 */
       -moz-transform: rotate(0deg); /* Firefox */
@@ -348,7 +348,7 @@ if(Framework){%><%-Framework%><%}%>
     </ground>
 <%if(section) if(section.hasOwnProperty("Components")) for(var c of section.Components)
 if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
-<component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>data-spice-maxvalue="<%=c.Value%>" ondblclick="UI.VariableResistorChange(this);"<%}%>>
+<component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>data-spice-maxvalue="<%=c.Value%>" ondblclick="UI.VariableResistorChange(this);"<%}%> class="rotated-0">
 <% if(c.Value && c.Name){ %>
 <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
 <%}else if(c.Value){ %>
