@@ -131,7 +131,7 @@
   <script type="text/javascript">
     $(document).ready(function(){
     $("#Override input[type='password']").keyup(function(){
-        $("#Override button[data-action='open-pane']").data("token",$(this).val());
+        $("#Override button[data-action='open-pane']").attr("data-token",$(this).val());
         $("#Override button[data-action='open-pane']").removeAttr("disabled");
     })
   })
@@ -153,7 +153,7 @@
         </p>
       </div>
       <div class="implement-button">
-        <button data-action='open-pane' class='button is-info' data-token="" disabled>Implement Circuit</button>
+        <button data-action='open-pane' class='button is-info' data-token="" disabled>Open Control Panel</button>
       </div>
     </section>
       <footer class="modal-card-foot">

@@ -1,5 +1,13 @@
 {
     "HeaderImage":"images/header/famil.jpeg",
     "Spiel":"",
-    "Available":"2021-12-13T10:25:43.581Z"
+    "Available":"2021-12-13T10:25:43.581Z",
+    "PaneImage":"images/panes/lab3.png",
+    "Output":{
+        "Digital":[
+            ["S1","S2","S3","S4","S5",null,null,null],
+            [null,null,null,"Power",null,null,null,null]
+        ],
+        "Analog":[null,null]
+    }
 }

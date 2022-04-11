@@ -159,6 +159,8 @@ const createWindow = () => {
   })
   
   var openPane = function(token,page,callback,errorCallback){
+    console.log(token)
+    console.log(PANETOKEN)
     console.log(page);
     var found = false;
     if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section') && token == PANETOKEN)
@@ -306,6 +308,7 @@ const createWindow = () => {
   })
   ipcMain.on('openPane', (event,params) => {
     console.log("Opening a new pane");
+    console.log(params);
     openPane(params.token,params.page,function(response){ event.reply('openPane-reply', response)},function(error){event.reply('openPane-error', error)});
   })
   ipcMain.on('startup', (event,page) => {

@@ -9,6 +9,6 @@
             ["S1","S2","S3","S4","S5",null,null,null],
             [null,null,null,"Power",null,null,null,null]
         ],
-        "Analog":["Vres1","Vres2"]
+        "Analog":[null,null]
     }
 }

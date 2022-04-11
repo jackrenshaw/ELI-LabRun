@@ -36,8 +36,9 @@ document.onreadystatechange = function () {
       }
       return preload;
     }
-    $("a[data-action='open-pane']").click(function(){
-      ipcRenderer.send('openPane',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null,token:$(this).data("token")})
+    $("button[data-action='open-pane']").click(function(){
+      console.log("Opening the Pane");
+      ipcRenderer.send('openPane',{page:{lab:$("meta[name='circuit']").data("page").lab,part:$("meta[name='circuit']").data("page").part,section:$("meta[name='circuit']").data("page").section},preload:null,token:$(this).attr("data-token")})
     })
     ipcRenderer.on('graph-reply', (_event, arg) => {
       $("#Simulation .comparison-area").append(arg);

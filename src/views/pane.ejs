@@ -57,14 +57,6 @@
       </div>
     
       <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item" onclick="$('.graph-area').removeClass('is-hidden');$('.sim-area').addClass('is-hidden');">
-            Graph
-          </a>
-          <a class="navbar-item" onclick="$('.graph-area').addClass('is-hidden');$('.sim-area').removeClass('is-hidden');">
-            Simulate
-          </a>
-      </div>
     </nav>
     <div class="container">
       <br>
@@ -73,7 +65,7 @@
     <div class="column is-2">
     <aside class="menu switches">
       <%if(part.hasOwnProperty('Settings')) if(part.Settings.hasOwnProperty('Output')) if(part.Settings.Output){%>
-        <%if(part.Settings.Output.hasOwnProperty('Analog')) if(part.Settings.Output.Analog) for(var i=0;i<part.Settings.Output.Analog.length;i++){ var o = part.Settings.Output.Analog[i];%>
+        <%if(part.Settings.Output.hasOwnProperty('Analog')) if(part.Settings.Output.Analog) for(var i=0;i<part.Settings.Output.Analog.length;i++) if(part.Settings.Output.Analog[i]){var o = part.Settings.Output.Analog[i];%>
           <p class="menu-label">
             Analog Input <%=o%>
           </p>
