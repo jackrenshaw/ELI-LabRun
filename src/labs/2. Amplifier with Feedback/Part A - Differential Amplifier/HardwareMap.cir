@@ -6,6 +6,7 @@ RC1 1 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+V3 999 999 0
 RAmmeter1 1 2 1m
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
@@ -26,6 +27,7 @@ RC1 2 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+V3 999 999 0
 RAmmeter1 1 2 1m
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.

@@ -230,6 +230,7 @@ RC1 1 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+V3 999 999
 RAmmeter1 1 2 1m
 XU2 13 14 1 4 15 LM741
 R4 5 14 1k
@@ -257,6 +258,7 @@ RC1 2 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+V3 999 999 0
 RAmmeter1 1 2 1m
 XU2 13 14 1 4 15 LM741
 R4 5 14 1k
@@ -592,6 +594,7 @@ RC1 1 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+v3 999 999 0
 RAmmeter1 1 2 1m
 XU2 999 999 999 999 999 LM741
 R4 5 14 1k
@@ -616,6 +619,7 @@ RC1 2 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+V3 999 999 0
 RAmmeter1 1 2 1m
 XU2 999 999 999 999 999 LM741
 R4 5 14 1k
@@ -915,6 +919,7 @@ RC1 1 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+V3 999 999 0
 RAmmeter1 1 2 1m
 XU2 13 14 1 4 15 LM741
 R4 5 14 1k
@@ -939,6 +944,7 @@ RC1 2 5 2k
 RC2 1 6 3k
 V1 1 0 dc 1
 V2 0 4 dc 1
+V3 999 999 0
 RAmmeter1 1 2 1m
 xu2 13 14 1 4 15 LM741
 R4 5 14 1k
