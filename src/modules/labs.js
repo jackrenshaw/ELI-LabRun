@@ -25,14 +25,19 @@ var Labs = {
 
             }
     },
-    setLabs: async function(inp,verbose){
+    setLabs: async function(inp,verbose,error){
         verbose("Parsing Lab Files")
         Labs.Labs = [];
         var labs = null
-        if(fs.lstatSync(inp).isDirectory())
-            labs = fs.readdirSync(inp);
-        else if(fs.lstatSync(inp).isFile() && inp.includes('.json'))
-            labs = JSON.parse(fs.readFileSync(inp));
+        if(fs.existsSync(inp))
+            if(fs.lstatSync(inp).isDirectory())
+                labs = fs.readdirSync(inp);
+            else if(fs.lstatSync(inp).isFile() && inp.includes('.json'))
+                labs = JSON.parse(fs.readFileSync(inp));
+            else
+                error("There was an issue opening the lab directory")
+        else
+            error("Lab Directory doesn't exist")
         if(labs) for(var l of labs) if(l.substring(0,1) != "." && fs.lstatSync(inp+"/"+l).isDirectory()){
             verbose(l);
             var Lab = {Name:l,Settings:{Header:"",Spiel:"",Instructions:""},Parts:[]}

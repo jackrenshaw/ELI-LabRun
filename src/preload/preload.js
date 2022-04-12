@@ -4,15 +4,23 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setTitle: (title) => ipcRenderer.send('set-title', title),
   login: (form) => ipcRenderer.send('login',form),
   getCompletions: (page) => ipcRenderer.send('getCompletions',page),
-  startup: () => ipcRenderer.send('startup','begin')
+  startup: () => ipcRenderer.send('startup','begin'),
+  setDirectory: (directory) => ipcRenderer('set-directory',directory)
 })
 
 document.onreadystatechange = function () {
   if (document.readyState == "complete") {
+    function changeDir(){
+      ipcRenderer('set-directory',directory)
+    }
     const $ = require('jquery');
     $(document).add('*').off();
     ipcRenderer.on('startup-reply', (_event, arg) => {
       $(".container center").append(arg);
+    });
+    ipcRenderer.on('startup-error', (_event, arg) => {
+      $(".container center").append(arg);
+      $(".container div.changedir").show();
     });
     ipcRenderer.on('openLab-reply', (_event, arg) => {
       console.log(arg)
@@ -38,6 +46,10 @@ There was an error the requested Laboratory. This error likely relates to settin
       console.log($(this).data('part'));
       //$("section.lab").addClass("is-hidden");
       //$("section.lab-actions[data-lab='"+$(this).data("lab")+"'][data-part='"+$(this).data("part")+"']").removeClass("is-hidden");
+    })
+    $("button[data-action='changedir']").click(function(){
+      console.log("Changing the Directory")
+      ipcRenderer('changedir',directory)
     })
     $("a[data-action='open-lab']").click(function(){
       ipcRenderer.send('openLab',{page:{lab:$(this).data("lab"),part:$(this).data("part"),section:$(this).data("section")},preload:null})

@@ -10,6 +10,7 @@ const Graph = require("./modules/graph");
 const Labs = require("./modules/labs");
 const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
+const { eventNames } = require('process');
 
 //SPICE.SpiceCommand = "ngspice";
 //Actions.ImplementCommand.Analog = "echo";
@@ -18,6 +19,8 @@ Labs.Creative = true;
 Labs.Procedural = true;
 Labs.Direct = true;
 const PANETOKEN = "ELEC2133"
+var LABDIR = "src/labs1";
+var HALTSTARTUP = false;
 
 const isMac = process.platform === 'darwin'
 const BASE = 'https://unsw-eli.herokuapp.com/'
@@ -36,8 +39,12 @@ function login(form,callback,errorCallback){
 function startup(event,callback){
   SPICE.test(async function(){
     event.reply('startup-reply', "SPICE Works Locally<br>")
-    Labs.setLabs("src/labs",function(debugLine){
+    Labs.setLabs(LABDIR,function(debugLine){
       event.reply('startup-reply', (debugLine+"<br>"))
+    },function(error){
+      HALTSTARTUP = true;
+      console.log("Lab Parse error")
+      event.reply('startup-error', (error+"<br>"))
     })
     setTimeout(callback, 5000);
   },function(){
@@ -246,11 +253,13 @@ const createWindow = () => {
   loading();
 
   var loadView = function(){
+    if(!HALTSTARTUP){
     fs.writeFileSync("src/labs/labs.json",JSON.stringify(Labs.Labs))
     const ejse = require('ejs-electron')
     .data({labs:Labs.Labs,actions:Actions.Actions})
     .options('debug', false)
     mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
+    }
   }
   mainWindow.webContents.openDevTools();
   ipcMain.on('getCompletions', (event,page) => {
@@ -314,7 +323,11 @@ const createWindow = () => {
   ipcMain.on('startup', (event,page) => {
     startup(event,loadView);
   })
-
+  ipcMain.on('changedir', (event,directory) => {
+    console.log("Changing lab Directory")
+    LABDIR = directory;
+    startup(event,loadView);
+  })
 };
 
 // This method will be called when Electron has finished
