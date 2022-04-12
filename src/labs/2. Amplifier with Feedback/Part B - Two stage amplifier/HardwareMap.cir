@@ -1,3 +1,53 @@
+*** Open Loop disconnected Ammeter voltage ***
+XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
+RB 1 3 1k
+C1 999 999 30p
+RC1 1 5 2k
+RC2 1 6 3k
+V1 1 0 dc 1
+V2 0 4 dc 1
+V3 999 999 0
+RAmmeter1 999 999 1m
+XU2 13 14 1 4 15 LM741
+R4 5 14 1k
+R5 6 13 1k
+R3 14 15 1k
+.MODEL QM1 NPN(IS=8e-16 BF=66670)
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 1 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
+* AOUTPUT0_PRE = 0.0
+* AOUTPUT1_PRE = 0.0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** Open Loop flaoting Ammeter voltage ***
+XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
+RB 1 3 1k
+C1 999 999 30p
+RC1 1 5 2k
+RC2 1 6 3k
+V1 1 0 dc 1
+V2 0 4 dc 1
+V3 999 999 0
+RAmmeter1 999 999 1m
+XU2 13 14 1 4 15 LM741
+R4 5 14 1k
+R5 6 13 1k
+R3 14 15 1k
+.MODEL QM1 NPN(IS=8e-16 BF=66670)
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 1 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
+* AOUTPUT0_PRE = 0.0
+* AOUTPUT1_PRE = 0.0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
 *** Open Loop connected Ammeter connected to RB1 ***
 XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
 RB 2 3 1k
@@ -15,10 +65,10 @@ R3 14 15 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 1 0 0 0 0 0
+* DIGOUTPUT1_POST = 1 1 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
@@ -40,10 +90,10 @@ R3 14 15 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 1 0 0 0 0 1
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
@@ -65,10 +115,10 @@ R3 14 15 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 1 0 0 0 0 0 1 0
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
@@ -90,10 +140,10 @@ R3 14 15 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 1 0 1 0 1 0 0 0
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
@@ -115,85 +165,10 @@ R3 14 15 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Open Loop Signal Generator Ammeter RB ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 2 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 6 13 1k
-R3 14 15 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Open Loop Signal Generator Ammeter RC1 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 2 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 6 13 1k
-R3 14 15 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Open Loop Signal Generator Ammeter RC2 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 2 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 6 13 1k
-R3 14 15 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 1 0 1 0 1 0 0 0
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
@@ -215,10 +190,10 @@ R3 14 15 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 1 0 0 0 1 0 0 0
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
@@ -240,10 +215,10 @@ R3 14 15 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
+* DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 1 0 0 0 1 0 0 0
+* DIGOUTPUT1_POST = 0 1 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
@@ -312,656 +287,6 @@ XU2 13 14 1 4 15 LM741
 R4 5 14 1k
 R5 6 13 1k
 R3 14 15 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected connected Ammeter connected to RB1 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
-RB 2 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 999 999 0
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Ammeter connected to RC1 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 2 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 999 999 0
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0  
-*** Disconnected Ammeter connected to RC2 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 2 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Disconnected Ammeter ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 999 999 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Floating Ammeter ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Ammeter RB ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 2 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Ammeter RC1 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 2 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Ammeter RC2 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 2 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Capacitor disconnected ammeter ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 999 999 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Capacitor floating ammeter ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Capacitor ammeter RB ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 2 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Capacitor ammeter RC1 ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 2 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-RAmmeter1 1 2 1m
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected Signal Generator Capacitor ammeter RC2 ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 2 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 999 999 999 999 999 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in connected Ammeter connected to RB1 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
-RB 2 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 999 999 0
-RAmmeter1 1 2 1m
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Ammeter connected to RC1 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 2 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 999 999 0
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0  
-*** Disconnected, but plugged in Ammeter connected to RC2 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 0 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 2 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Disconnected, but plugged in Ammeter ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 999 999 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Floating Ammeter ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Ammeter RB ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 2 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Ammeter RC1 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 2 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Ammeter RC2 ***
-XU1 5 6 0 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 999 999 30p
-RC1 1 5 2k
-RC2 2 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Capacitor Disconnected, but plugged in ammeter ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 999 999 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Capacitor floating ammeter ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Capacitor ammeter RB ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 2 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Capacitor ammeter RC1 ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 2 5 2k
-RC2 1 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-XU2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
-RAmmeter1 1 2 1m
-.MODEL QM1 NPN(IS=8e-16 BF=66670)
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
-* DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
-* AOUTPUT0_PRE = 0.0
-* AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-*** Disconnected, but plugged in Signal Generator Capacitor ammeter RC2 ***
-XU1 5 6 11 7 999 7 3 4 3 3 4 999 999 999 7 10 CA3083
-RB 1 3 1k
-C1 5 6 30p
-RC1 1 5 2k
-RC2 2 6 3k
-V1 1 0 dc 1
-V2 0 4 dc 1
-V3 10 0 SINE(0 40m 1k)
-RAmmeter1 1 2 1m
-xu2 13 14 1 4 15 LM741
-R4 5 14 1k
-R5 999 999 1k
-R3 999 999 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware

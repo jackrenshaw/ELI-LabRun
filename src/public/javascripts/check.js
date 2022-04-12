@@ -74,14 +74,14 @@ validate = function(){
 checkCircuitContinuity = function(){
   var nodeSpans = {};
   var continuityErrors = [];
-  $("wire").each(function(){
+  $("wire").each(function(){ if($(this).width() > 5 && $(this).height() > 5){
     if(!nodeSpans.hasOwnProperty($(this).attr("data-spice-node")))
       nodeSpans[$(this).attr("data-spice-node")] = [];
-      nodeSpans[$(this).attr("data-spice-node")].push({
-        horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
-        vertical:[$(this).offset().top,($(this).offset().top+$(this).height())]
-      });
-  });
+    nodeSpans[$(this).attr("data-spice-node")].push({
+      horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
+      vertical:[$(this).offset().top,($(this).offset().top+$(this).height())]
+    });
+  }});
   for(var s in nodeSpans)
     if(CheckContinuity(nodeSpans[s]))
       console.log("this node is continuous");
