@@ -136,6 +136,10 @@ The simulation could not be performed<br>
         output:$("meta[name='circuit']").data("output").Post,
         token:$(this).data("token")
       }
+      console.log($(this).attr("data-alt"))
+      if($(this).attr("data-alt"))
+        params.output = $("meta[name='circuit']").data("alt")[parseInt($(this).attr("data-alt"))].Output.Post
+      console.log(params)
       ipcRenderer.send('implement',params)
     })
     $("a[data-action='changelab']").click(function(){

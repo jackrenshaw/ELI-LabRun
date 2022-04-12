@@ -20,14 +20,13 @@ There was an error implementing those changes. Please report this to your lab de
     })
     $("a[data-action='implement']").click(function(){
       var output = {
-        "Digital":[],
-        "Analog":[]
+        "Digital":[[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]],
+        "Analog":[0.0,0.0]
       };
       $("input[data-output-type='digital']").each(function(){
           var value = false;
-          if($(this).attr("checked"))
-            value = true;
-          output.Digital.push(value);
+          if($(this).attr("checked") && ($(this).data("digital-port") || $(this).data("digital-port") == 0) && ($(this).data("digital-line") || $(this).data("digital-line") == 0))
+            output.Digital[$(this).data("digital-port")][$(this).data("digital-line")] = 1;
       })
       $("input[data-output-type='analog']").each(function(){
         output.Analog.push($(this).val());
