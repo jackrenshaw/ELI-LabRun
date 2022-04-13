@@ -8,6 +8,7 @@ var UI = {
   selectedWire:null,
   SPICE:null,
   nodes:[],
+  Analog:[0.0,0.0],
   clear: function(){
     //clear all bindings, start from a blank slate
     $("component,wire,ground").off("dblclick");
@@ -49,18 +50,21 @@ var UI = {
 <strong>Details:</strong><br>`+details+`</div>`);
   },
   VariableResistorChange(_vresist){
-    console.log("Changing Variable Resistance Value");
-    const suffix = $(_vresist).data("spice-maxvalue").replace(/[0-9\.]/,'');
-    const maxVal = $(_vresist).data("spice-maxvalue").replace(/[^0-9\.]/,'');
-    $("#VariableResistor h5").html($(_vresist).data("spice-maxvalue"));
+    $("input[name='vresistance']").slider();
+    $("input[name='vresistance']").off();
+    $("input[name='vresistance']").slider('value',$(_vresist).attr("data-spice-value"));
+    const suffix = $(_vresist).data("spice-maxvalue").replace(/[0-9\.]/g,'');
+    const maxVal = $(_vresist).data("spice-maxvalue").replace(/[^0-9\.]/g,'');
+    $("#VariableResistor h5").html($(_vresist).attr("data-spice-value"));
     $("#VariableResistor").addClass("is-active");
     $("input[name='vresistance']").click(function(){
       console.log("Changing Value?");
       const newVal = ($(this).val()*maxVal)/100+suffix;
       $(_vresist).data("spice-value",newVal);
+      $(_vresist).data("spice-analog-value",newVal);
       $("#VariableResistor h5").html(newVal);
+      $(_vresist).attr("data-spice-value",newVal);
     })
-    $(this).data("spice-value","10k");
   },
   SaveVariableResistance(){
     $("input[name='vresistance']").off('click');

@@ -1,0 +1,15 @@
+*
+.SUBCKT POTENTIOMETER 1 2 3
+.param w=limit(wiper,1m,.999)
+R0 1 3 {R*(1-w)}
+R1 3 2 {R*(w)}
+.ENDS POTENTIOMETER
+V1 4 0 15 dc 1
+V2 0 11 15 dc 1
+XP 4 11 5 POTENTIOMETER
+.control
+dc V1 15 15 0.1
+v2 V2 15 15 0.1
+run 
+print v(4) v(5) v(11)
+.endc

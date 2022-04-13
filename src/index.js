@@ -12,14 +12,15 @@ const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
 
-//SPICE.SpiceCommand = "ngspice";
-//Actions.ImplementCommand.Analog = "echo";
-//Actions.ImplementCommand.Digital = "echo";
+SPICE.SpiceCommand = "ngspice";
+Actions.ImplementCommand.Analog = "echo";
+Actions.ImplementCommand.Digital = "echo";
 Labs.Creative = true;
 Labs.Procedural = true;
 Labs.Direct = true;
 const PANETOKEN = "ELEC2133"
-var LABDIR = "src/labs1";
+const ACTIONTOKEN = "ELEC2133"
+var LABDIR = "src/labs";
 var HALTSTARTUP = false;
 
 const isMac = process.platform === 'darwin'
@@ -57,7 +58,7 @@ function startup(event,callback){
 function implementCircuit(params,callback,errorCallback){
   console.log(params);
   console.log(params.token);
-  if(params.token == "password")
+  if(params.token == ACTIONTOKEN)
     Actions.Implement(params.output,callback,errorCallback)
   else if(Actions.Tokens.hasOwnProperty(params.token))
     Actions.Implement(params.output,callback,errorCallback)
@@ -321,11 +322,6 @@ const createWindow = () => {
     openPane(params.token,params.page,function(response){ event.reply('openPane-reply', response)},function(error){event.reply('openPane-error', error)});
   })
   ipcMain.on('startup', (event,page) => {
-    startup(event,loadView);
-  })
-  ipcMain.on('changedir', (event,directory) => {
-    console.log("Changing lab Directory")
-    LABDIR = directory;
     startup(event,loadView);
   })
 };

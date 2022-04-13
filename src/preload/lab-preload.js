@@ -139,7 +139,20 @@ The simulation could not be performed<br>
       console.log($(this).attr("data-alt"))
       if($(this).attr("data-alt"))
         params.output = $("meta[name='circuit']").data("alt")[parseInt($(this).attr("data-alt"))].Output.Post
-      console.log(params)
+      if($(this).attr("data-analog"))
+        if($(this).data("analog").length)
+          params.output.Analog = JSON.parse($(this).data("analog"))
+        console.log(params)
+      ipcRenderer.send('implement',params)
+    })
+    $("a[data-action='clear'],button[data-action='clear']").click(function(){
+      console.log("Resetting all switches to pre configuration");
+      var params = {
+        page:$("meta[name='circuit']").data("page"),
+        output:$("meta[name='circuit']").data("output").Pre,
+        token:$(this).data("token")
+      }
+      console.log(params);
       ipcRenderer.send('implement',params)
     })
     $("a[data-action='changelab']").click(function(){

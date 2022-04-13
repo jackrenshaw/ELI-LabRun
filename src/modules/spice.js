@@ -694,7 +694,74 @@ var Spice = {
                     "top":96,
                     "left":96
                 },
-            }]
+            },{
+            Name:'POTENTIOMETER',
+            Image:'../public/images/vres.svg',
+            Fungible:true,
+            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(../public/images/vres.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Height:100,
+            Width:100,
+            InterPortSpace:[{
+                top:48,
+                height:4,
+                left:34,
+                width:33
+            }],
+            Ports:[{
+                id:'+',
+                top:72,
+                left:32,
+                height:22,
+                width:7,
+                position:1,
+                bindPosition:{
+                    left:-3,
+                    top:0
+                },
+                labelPosition:{
+                    left:-13,
+                    top:-11
+                },
+                CSS:"background:black;position:absolute;"
+            },{
+                id:'-',
+                top:72,
+                left:60,
+                height:22,
+                width:7,
+                position:2,
+                bindPosition:{
+                    left:29,
+                    top:0
+                },
+                labelPosition:{
+                    left:12,
+                    top:-11
+                },
+                CSS:"background:black;position:absolute;"
+            },{
+                id:'P',
+                top:72,
+                left:46,
+                height:22,
+                width:7,
+                position:2,
+                bindPosition:{
+                    left:29,
+                    top:0
+                },
+                labelPosition:{
+                    left:12,
+                    top:-11
+                },
+                CSS:"background:black;position:absolute;"
+            }],
+            Label:{
+                "top":-5,
+                "left":40
+            },
+            Value:3
+        }]
         },
     SPICE_to_Components: function(netlist,alts){
         var components = [];
@@ -826,6 +893,12 @@ var Spice = {
         const AOUTPUT1_PRE = netlist.match(/\* AOUTPUT1_PRE = .+/g); 
         const AOUTPUT0_POST = netlist.match(/\* AOUTPUT0_POST = .+/g); 
         const AOUTPUT1_POST = netlist.match(/\* AOUTPUT1_POST = .+/g); 
+        const AOUTPUT0_DEVICE = netlist.match(/\* AOUTPUT0_DEVICE = .+/g); 
+        const AOUTPUT0_MINV = netlist.match(/\* AOUTPUT0_MINV = .+/g); 
+        const AOUTPUT0_MAXV = netlist.match(/\* AOUTPUT0_MAXV = .+/g); 
+        const AOUTPUT1_DEVICE = netlist.match(/\* AOUTPUT1_DEVICE = .+/g); 
+        const AOUTPUT1_MINV = netlist.match(/\* AOUTPUT1_MINV = .+/g); 
+        const AOUTPUT1_MAXV = netlist.match(/\* AOUTPUT1_MAXV = .+/g); 
         var output = {
             Pre:{
                 "Digital":[],
@@ -834,7 +907,8 @@ var Spice = {
             Post:{
                 "Digital":[],
                 "Analog":[]
-            }
+            },
+            AnalogDevices:[null,null]
         }
         if(DIGOUTPUT0_PRE)
             if(DIGOUTPUT0_PRE.length == 1)
@@ -860,6 +934,20 @@ var Spice = {
         if(AOUTPUT1_POST)
             if(AOUTPUT1_POST.length == 1)
                 output.Post.Analog[1] = AOUTPUT1_POST[0].replace("* AOUTPUT1_POST = ",'');
+        if(AOUTPUT0_DEVICE && AOUTPUT0_MINV && AOUTPUT0_MAXV)
+            if(AOUTPUT0_DEVICE.length == 1)
+                output.AnalogDevices[0] = {
+                    device:AOUTPUT0_DEVICE[0].replace("* AOUTPUT0_DEVICE = ",''),
+                    min:AOUTPUT0_MINV[0].replace("* AOUTPUT0_MINV = ",''),
+                    max:AOUTPUT0_MAXV[0].replace("* AOUTPUT0_MAXV = ",'')
+                };
+        if(AOUTPUT1_DEVICE && AOUTPUT1_MINV && AOUTPUT1_MAXV)
+            if(AOUTPUT1_DEVICE.length == 1)
+                output.AnalogDevices[1] = {
+                    device:AOUTPUT1_DEVICE[0].replace("* AOUTPUT1_DEVICE = ",''),
+                    min:AOUTPUT1_MINV[0].replace("* AOUTPUT1_MINV = ",''),
+                    max:AOUTPUT1_MAXV[0].replace("* AOUTPUT1_MAXV = ",'')
+                };
         return output;
     },
     SPICE_to_SimulationNotes: function(netlist){

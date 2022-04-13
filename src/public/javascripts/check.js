@@ -305,9 +305,9 @@ CheckComponents = function(){
     if(pcount == 1){
       UI.Notification("Success",("Your circuit matched a valid hardware implementation:"),$("meta[name='circuit']").data("alt")[min.index].Name)
       results.matchedALT = min.index;
-      $("nav button[data-action='implement']").attr("data-alt",min.index).prop("disabled", false).css("color","#fff").css("cursor","pointer");
+      $("nav button[data-action='implement']").attr("data-alt",min.index).data("analog",UI.Analog).prop("disabled", false).css("color","#fff").css("cursor","pointer");
     }else if(pcount == 0){
-      $("nav button[data-action='implement']").attr("data-alt",min.index).prop("disabled", true).css("color","#363636").css("cursor","disabled");
+      $("nav button[data-action='implement']").attr("data-alt",min.index).prop("disabled", true).css("color","#aaa").css("cursor","disabled");
       console.log("no matches")
       UI.Notification("Warning","Your circuit failed to match a hardware implementation.","There are at least "+min.value+" ports misconfigured. The closest configuration is: <br><b>"+$("meta[name='circuit']").data("alt")[min.index].Name+"</b><br> Inspect your connections, node voltages and simulation output. The closest configuration is mismatched in the following way:<br>"+results.altresults[min.index].join("<br>"))
     }else{
