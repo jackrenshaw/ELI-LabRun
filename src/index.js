@@ -16,8 +16,9 @@ SPICE.SpiceCommand = "ngspice";
 Actions.ImplementCommand.Analog = "echo";
 Actions.ImplementCommand.Digital = "echo";
 Labs.Creative = true;
-Labs.Procedural = true;
+Labs.Procedural = false;
 Labs.Direct = true;
+Labs.Framework = true;
 const PANETOKEN = "ELEC2133"
 const ACTIONTOKEN = "ELEC2133"
 var LABDIR = "src/labs";
@@ -162,6 +163,12 @@ const createWindow = () => {
     labWindow.hide();
   })
 
+  graphWindow.on('close',function(event){
+    console.log("attempting to close lab window");
+    event.preventDefault();
+    graphWindow.hide();
+  })
+
   app.on('window-all-closed', () => {
     app.quit()
   })
@@ -288,9 +295,14 @@ const createWindow = () => {
     console.log("Simualting Circuit");
     SPICE.ImageSimulate(
       params.circuit,
-      function(svg){
+      function(svg,data){
         console.log("returning simuation image");
         event.reply('simulate-reply',svg)
+        event.reply('simulatedata-reply',data)
+      },function(rawData){
+        console.log("Returning Raw Data");
+        console.log(rawData);
+        event.reply('rawdata-reply',rawData)
       },function(multimeter){
         console.log("returning mutlimeter response");
         console.log(multimeter);
@@ -306,6 +318,10 @@ const createWindow = () => {
         function(token){ console.log("success");event.reply('validate-reply', token)},
         function(error){console.log(error); event.reply('validate-error', error)}
       );
+  })
+  ipcMain.on('openGraphWindow', (event,params) => {
+    console.log("Opening the Graph Window");
+    graphWindow.show();
   })
   ipcMain.on('implement', (event,params) => {
     console.log("Implementing the Circuit");

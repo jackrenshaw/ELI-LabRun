@@ -29,49 +29,35 @@ The procedure, in the broadest terms, is:
 
 */
 class SPICE{
-  constructor(powersupply,signalgenerator,oscilloscope,ground,nodes,components,wires,binds,parts,scopenodes,multimeternodes,subcircuit,models,simulationParams,debugFunction,verboseFunction,complete){
-    console.log(nodes);
-    this.powersupply = powersupply;
-    this.signalgenerator = signalgenerator;
-    this.oscilloscope = oscilloscope;
-    this.ground = ground;
-    this.scopenodes = scopenodes;
-    this.multimeternodes = multimeternodes;
+  constructor(type,parameters,debugFunction,verboseFunction,complete){
+  if(type == "Framework"){
+      verboseFunction("WireFrame provided (no need to manually identify nodes)");
+    console.log(parameters)
+    this.nodes = parameters.nodes;
+    this.components = parameters.components; 
+    this.powersupply = parameters.powersupply;
+    this.signalgenerator = parameters.signalgenerator;
+    this.oscilloscope = parameters.oscilloscope;
+    this.multimeternodes = parameters.multimeternodes;
+    this.components = parameters.components;
+    this.nodes = parameters.nodes
     this.ammeters = [];
-    this.SPICE = "";
     this.dbg = debugFunction;
-    this.vbs = verboseFunction
+    this.vbs = verboseFunction;
 
-    if(!nodes || !components){
-      this.vbs("No WireFrame - must manually identify nodes!");
-      this.wires = wires;
-      this.parts = parts;
-      this.binds = binds;
-      this.components = [];
-      this.nodes = [];
-      this.segments = [];
-      this.getSegmentsAndComponents();
-      this.connectedSegments();
-      this.formNodes();
-      this.labelNodes();
-    }else{
-      this.vbs("WireFrame provided (no need to manually identify nodes)");
-      this.nodes = nodes;
-      this.components = components;
-    }
-    //this.setComponentNodes();
-    this.SPICE += "Test Circuit\n";
-    if(subcircuit)
-      this.SPICE += subcircuit+'\n';
-    //this.spiceConvert_connectionNodes();
+    this.SPICE = "Test Circuit\n";
+    if(parameters.subcircuits)
+      this.SPICE += parameters.subcircuits+'\n';
+    if(parameters.models)
+      this.SPICE += parameters.models.join('\n')+'\n';
     this.spiceConvert_source();
     this.spiceConvert_components();
     this.spiceConvert_ammeters();
-    if(models)
-      this.SPICE += models.join('\n')+'\n';
     this.spiceConvert_simulation();
     this.vbs("Complete!");
     complete(this.SPICE);
+  }else
+    this.vbs("No WireFrame - this mode is not supported at this stage");
 }
 
 //Take the cartesian coordinates of a rectangle, returns true if the rectangles overlap
@@ -368,7 +354,7 @@ labelNodes(){
       }
       console.log(pulseParams)
       if(this.signalgenerator.waveType == "sine")
-        this.SPICE += "V3 "+this.signalgenerator.positive+" "+this.signalgenerator.negative+" SINE(0 "+this.signalgenerator.voltage+" "+this.signalgenerator.frequency+")\n";
+        this.SPICE += "V3 "+this.signalgenerator.positive+" "+this.signalgenerator.negative+" SINE(0 "+this.signalgenerator.voltage+" "+this.signalgenerator.frequency+") ac 1\n";
       else 
         this.SPICE += "V3 "+this.signalgenerator.positive+" "+this.signalgenerator.negative+" PULSE("+pulseParams.V1+" "+pulseParams.V2+" "+pulseParams.Td+" "+pulseParams.Tr+" "+pulseParams.Tf+" "+pulseParams.Pw+" "+pulseParams.Per+" "+pulseParams.Phase+")\n";
     }
@@ -380,8 +366,8 @@ labelNodes(){
         this.vbs("Setting up a transient simulation for Voltage");
         this.SPICE += this.oscilloscope[0].line;
         this.SPICE += '\nrun\n'
-        var printline = 'print'
-        for(var i in this.oscilloscope)
+        var printline = "print";
+        for(var i in this.oscilloscope) if(this.oscilloscope[i].positive != this.oscilloscope[i].negative)
         if(this.oscilloscope[i].positive && this.oscilloscope[i].negative && this.oscilloscope[i].negative != '0')
           if(this.oscilloscope[i].transformation.type)
             if(this.oscilloscope[i].transformation.type == 'log')
@@ -406,7 +392,8 @@ labelNodes(){
               printline += ' v('+this.oscilloscope[i].positive+')'
           else
             printline += ' v('+this.oscilloscope[i].positive+')'
-        this.SPICE += printline+'\n';
+        if(this.oscilloscope[0].positive != this.oscilloscope[i].negative || this.oscilloscope[i].positive != this.oscilloscope[0].negative)
+          this.SPICE += printline+'\n';
       }
       if(this.powersupply[0].positive && this.powersupply[0].negative)
         this.SPICE += "dc V1 "+this.powersupply[0].voltage+" "+this.powersupply[0].voltage+" 0.1\n"

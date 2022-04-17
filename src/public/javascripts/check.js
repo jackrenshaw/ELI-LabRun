@@ -1,5 +1,13 @@
 Simulate = function(){
     SetComponents();
+    $("wire").each(function(){
+      $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+      $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
+    });
+    $("port").each(function(){
+      $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+      $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
+    });
     $("#sidebar .container div[name='SPICE']").html("");
     //$("#sidebar").show();
     html2canvas(document.querySelector("body")).then(canvas1 => {
@@ -110,7 +118,23 @@ checkConnected = function(_wire,_port){
 }
 
 SetComponents = function(){
-
+  $("connectors port").each(function(){
+    const _port = this;
+    const PortSpan = [{
+      horizontal:[$(_port).offset().left,($(_port).offset().left+$(_port).width())],
+      vertical:[$(_port).offset().top,($(_port).offset().top+$(_port).height())]
+    }];
+    $(_port).attr("data-spice-node","999")
+    $("wire").each(function(){
+      const _wire = this;
+      const WireSpan = [{
+        horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
+        vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
+      }];
+      if(UI.inSpan(WireSpan,PortSpan))
+        $(_port).attr("data-spice-node","999")
+    })
+  })
   $("port").each(function(){
     var _port = this;
     var portWidth = $(_port).width();
@@ -217,30 +241,11 @@ CheckComponents = function(){
   console.log(results);
   //Iterate through each port
   $("component port").each(function(){
-    //Ignore ports which don't have a target node
-    if($(this).attr("data-spice-target-node") || $(this).attr("data-spice-target-node") == '0'){
-      //Consider component directionality
-      if($(this).parent("component").data("spice-directional") == false){
-        console.log("We are dealing with a directional node")
-        var reqPorts = [];
-        var conPorts = [];
-        $(this).parent("component").find("port").each(function(){
-          reqPorts.push($(this).attr("data-spice-node"))
-          conPorts.push($(this).attr("data-spice-target-node"))
-        })
-        if(reqPorts.sort().join(" ") == conPorts.sort().join(" "))
-          results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
-        else
-          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).attr("data-spice-target-node")+" but it is actually on node: "+$(this).attr("data-spice-node"))
-      }else{
-        if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
-          results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
-        else
-          results.notmatching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).attr("data-spice-target-node")+" but it is actually on node: "+$(this).attr("data-spice-node"))
-      }
-    if($(this).data("spice-target-alt-node"))
-      if($(this).data("spice-target-alt-node").length == results.altresults.length)
-        for(var a in $(this).data("spice-target-alt-node"))
+    //Ignore ports which don't have a target node array
+    if($(this).attr("data-spice-target-nodes")){
+    if($(this).data("spice-target-nodes"))
+      if($(this).data("spice-target-nodes").length == results.altresults.length)
+        for(var a in $(this).data("spice-target-nodes"))
         if($(this).parent("component").data("spice-directional") == false){
           console.log("We are dealing with a directional component")
           var reqPorts = [];
@@ -248,18 +253,18 @@ CheckComponents = function(){
           $(this).parent("component").find("port").each(function(){
             console.log($(this).attr("data-spice-node"));
             reqPorts.push(parseInt($(this).attr("data-spice-node")))
-            conPorts.push(parseInt($(this).data("spice-target-alt-node")[a]))
+            conPorts.push(parseInt($(this).data("spice-target-nodes")[a]))
           })
           if(reqPorts.sort().join(" ") != conPorts.sort().join(" ")){
             if(!results.altresults[a])
               results.altresults[a] = [];
-            results.altresults[a].push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).data("spice-target-alt-node")[a]+" but it is actually on node: "+$(this).attr("data-spice-node"))
+            results.altresults[a].push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).data("spice-target-nodes")[a]+" but it is actually on node: "+$(this).attr("data-spice-node"))
           }
         }else{
-          if(parseInt($(this).attr("data-spice-node")) != parseInt($(this).data("spice-target-alt-node")[a])){
+          if(parseInt($(this).attr("data-spice-node")) != parseInt($(this).data("spice-target-nodes")[a])){
             if(!results.altresults[a])
               results.altresults[a] = [];
-            results.altresults[a].push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).data("spice-target-alt-node")[a]+" but it is actually on node: "+$(this).attr("data-spice-node"))
+            results.altresults[a].push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name")+" should be on node: "+$(this).data("spice-target-nodes")[a]+" but it is actually on node: "+$(this).attr("data-spice-node"))
           }
         }
       else
@@ -269,15 +274,9 @@ CheckComponents = function(){
   }
   })
   $("connectors port").each(function(){
-    if($(this).attr("data-spice-target-node") || $(this).attr("data-spice-target-node") == '0'){
-      if($(this).attr("data-spice-node") == $(this).attr("data-spice-target-node"))
-      results.matching.push($(this).parent("component").attr("data-spice-name")+" Port: "+$(this).attr("name"))
-    else
-      results.notmatching.push($(this).attr("name")+" should be on node: "+$(this).attr("data-spice-target-node")+" but it is actually on node: "+$(this).attr("data-spice-node"))
-    };
-    for(var a in $(this).data("spice-target-alt-node"))
-      if(parseInt($(this).attr("data-spice-node")) != parseInt($(this).data("spice-target-alt-node")[a])){
-        results.altresults[a].push($(this).data("spice-bench")+" should be connected to node:"+parseInt($(this).data("spice-target-alt-node")[a])+" but it is actually on node:"+parseInt($(this).attr("data-spice-node")))
+    for(var a in $(this).data("spice-target-nodes"))
+      if(parseInt($(this).attr("data-spice-node")) != parseInt($(this).data("spice-target-nodes")[a])){
+        results.altresults[a].push($(this).data("spice-bench")+" should be connected to node:"+parseInt($(this).data("spice-target-nodes")[a])+" but it is actually on node:"+parseInt($(this).attr("data-spice-node")))
       }
   })
   if($("meta[name='circuit']").data("page").prev || $("meta[name='circuit']").data("page").next){

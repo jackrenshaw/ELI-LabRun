@@ -18,6 +18,14 @@ document.onreadystatechange = function () {
 There was an error implementing those changes. Please report this to your lab demonstrator<br>
 <strong>Details:</strong>`+arg+`</div>`);
     })
+    ipcRenderer.on('simulatedata-reply', (_event, arg) => {
+      console.log("Simulation Response:");
+      console.log(arg)
+    })
+    ipcRenderer.on('rawdata-reply', (_event, arg) => {
+      console.log("Raw Data:");
+      console.log(arg)
+    })
     $("a[data-action='implement']").click(function(){
       var output = {
         "Digital":[[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]],

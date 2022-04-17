@@ -5,8 +5,8 @@ var Spice = require("./spice");
 
 var Labs = {
     Creative:true,
-    Procedural:true,
-    Direct:true,
+    Procedural:false,
+    Direct:false,
     Labs:[],
     Simulations:[],
     getSaved: function(lab,part){
@@ -40,9 +40,7 @@ var Labs = {
             error("Lab Directory doesn't exist")
         if(labs) for(var l of labs) if(l.substring(0,1) != "." && fs.lstatSync(inp+"/"+l).isDirectory()){
             verbose(l);
-            var Lab = {Name:l,Settings:{Header:"",Spiel:"",Instructions:""},Parts:[]}
-            if(fs.existsSync(inp+"/"+l+"/settings.json"))
-                Lab.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/settings.json"));
+            var Lab = {Name:l,Parts:[]}
             const parts = fs.readdirSync(inp+"/"+l);
             for(var p of parts) if(p.substring(0,1) != "." && p != "Framework" && fs.lstatSync(inp+"/"+l+"/"+p).isDirectory()){
                 var Part = {Name:p,Sections:[],Implementations:[],Alts:[],Settings:{Header:"",Spiel:"",Instructions:""},FrameworkFile:null,Framework:null,"Questions":null,"Manual":null}
@@ -83,7 +81,7 @@ var Labs = {
                         fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),
                         function(svg,data){
                             Section.Simulation.push(data);Section.SimulationImage.push(svg);
-                        },
+                        },console.log,
                         function(DC){
                             Section.Multimeter.push(DC);
                         },

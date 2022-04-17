@@ -278,7 +278,7 @@ var Spice = {
                     left:-13,
                     top:-11
                 },
-                CSS:"background:black;position:absolute;"
+                CSS:"background:red;position:absolute;"
             },{
                 id:'-',
                 top:72,
@@ -294,7 +294,7 @@ var Spice = {
                     left:12,
                     top:-11
                 },
-                CSS:"background:black;position:absolute;"
+                CSS:"background:red;position:absolute;"
             }],
             Label:{
                 "top":-5,
@@ -346,7 +346,7 @@ var Spice = {
                     left:12,
                     top:-11
                 },
-                CSS:"background:black;position:absolute;"
+                CSS:"background:red;position:absolute;"
             }],
             Label:{
                 "top":-5,
@@ -1132,7 +1132,7 @@ var Spice = {
             if(err) error("Specifically, the output from the NgSPICE test circuit gave a result that was unexpected. The test circuit is:\n\n"+netlist+"\n\nThe result should be "+expectedOutput+"(V) everywhere, however the result was:\n"+JSON.stringify(scopes,null,4))
             if(!err) callback();
         }
-        this.SpiceSimulate(netlist,testData,error);
+        this.SpiceSimulate(netlist,testData,console.log,error);
     },
     SPICE_to_Bench(netlist,alts){
         const V1 = netlist.match(/V1 ([0-9]+ ){2}.+/g);
@@ -1197,9 +1197,12 @@ var Spice = {
             }
         }
     },
-    SpiceSimulate(netlist,callback,errorFunction){
+    SpiceSimulate(netlist,callback,rawCallback,errorFunction){
         tmp.file(function _tempFileCreated(err, path, fd, cleanupCallback) {
-            if(err) errorFunction(err);
+            console.log("Spice Simulate - Called");
+            if(err){
+                errorFunction(err);
+            }
             fs.writeFileSync(path,netlist);
             const ls = spawn(Spice.SpiceCommand, [path]);
             var scopeData = [];
@@ -1207,6 +1210,7 @@ var Spice = {
             var rawData = "";
             ls.stdout.on('data', (data) => {
               rawData += data;
+              console.log(rawData);
             });
             ls.stderr.on('error', (data) => {
                 console.log("ERROR!");
@@ -1217,6 +1221,8 @@ var Spice = {
                 errorFunction(error);
             });
             ls.on('close', (code) => {
+               console.log("Done Simulation!")
+                rawCallback(rawData);
               var scopes = rawData.match(Spice.SpiceRegex);
               if(rawData.match(Spice.DCRegex))
                 DC = rawData.match(Spice.DCRegex);
@@ -1344,8 +1350,12 @@ var Spice = {
             errorFunction(error);
         })
     },
-    ImageSimulate(netlist,callback,multimeterCallback,errorFunction){
+    ImageSimulate(netlist,imageCallback,rawCallback,multimeterCallback,errorFunction){
+        console.log("Simulating Circuit Internal Function")
         var SpiceCallback = function(scopeData,DC){
+            console.log("Recieved Data");
+            console.log(scopeData);
+            console.log(DC);
             if(DC) if(DC.length)
                 multimeterCallback(DC)
             if(scopeData) if(scopeData.length)
@@ -1373,17 +1383,17 @@ var Spice = {
                     scopeData[i].x = scopeData[i].x*1e3;
                     xLabel = "Time (ms)"
                   }
-                graph("Circuit Output",scopeData,xLabel,yLabel,callback,errorFunction);
+                graph("Circuit Output",scopeData,xLabel,yLabel,imageCallback,errorFunction);
             }
             else if(/ac (dec|lin|oct)( [0-9]+(\.[0-9]+)?(f|p|n|u|m|k|Meg)?)+/g.test(netlist)){
                 if(netlist.includes("ac dec")){
-                    graph("Circuit Output",scopeData,"Frequency","Voltage",callback,errorFunction);
+                    graph("Circuit Output",scopeData,"Frequency","Voltage",imageCallback,errorFunction);
                 }else if(netlist.includes("ac lin"))
-                    graph("Circuit Output",scopeData,"Frequency","Voltage",callback,errorFunction);
+                    graph("Circuit Output",scopeData,"Frequency","Voltage",imageCallback,errorFunction);
                 
             }
         }
-        this.SpiceSimulate(netlist,SpiceCallback,errorFunction)
+        this.SpiceSimulate(netlist,SpiceCallback,rawCallback,errorFunction)
     }
 }
 

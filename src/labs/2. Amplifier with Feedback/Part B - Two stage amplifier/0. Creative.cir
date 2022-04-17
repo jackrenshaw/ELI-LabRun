@@ -145,12 +145,8 @@ XU2 11 12 1 4 13 LM741
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 1 1 0 0 0 0 0
 * DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
-* DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 1 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0  
 .control
 tran 20u 20m
 run

@@ -4,36 +4,58 @@
 var UI = {
   Page:null,
   FrameWork: $("meta[name='wireframe']").attr("content"),
-  selectedComponent:null,
   selectedWire:null,
   SPICE:null,
   nodes:[],
   Analog:[0.0,0.0],
-  clear: function(){
-    //clear all bindings, start from a blank slate
-    $("component,wire,ground").off("dblclick");
-    $("wire").off("click");
-    $("component,ground").css("cursor","default");
-  },
-  select: function(){
+  SET: function(){
+    $(".modal .modal-card-foot button:contains(Close),button[aria-label='close'],div.modal-background").click(function(){
+      $(".modal").removeClass("is-active");
+    })
+    if($("wire[data-spice-node='0']").width() == '6')
+      $("ground").offset({top:$("wire[data-spice-node='0']").offset().top+($("wire[data-spice-node='0']").height()-10),left:$("wire[data-spice-node='0']").offset().left-20})  
+    else
+      $("ground").offset({top:$("wire[data-spice-node='0']").offset().top+$("wire[data-spice-node='0']").height()-10,left:$("wire[data-spice-node='0']").offset().left-20})  
+    $(document).on('keyup', function(e) {
+      if (e.key == "Escape")    $(".modal").removeClass("is-active");
+    });
+    $("component").draggable({ containment: "body" });
     console.log("selecting/moving components")
     $("component,ground").css("cursor","pointer");
-    //UI.SelectListen();
-    UI.RotateListen();
+    $("component").bind('click', function(event){ 
+      if(event.altKey){
+        if($(this).hasClass("rotated-90")){
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-0");
+        }
+        else if($(this).hasClass("rotated-180")){
+          $(this).removeClass("rotated-90");
+          $(this).removeClass("rotated-180");
+          $(this).addClass("rotated-270");
+          $(this).removeClass("rotated-0");
+        }
+        else if($(this).hasClass("rotated-270")){
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-0");
+        }else if($(this).hasClass("rotated-0")){
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).addClass("rotated-90");
+          $(this).removeClass("rotated-0");
+        }else{
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-0");
+        }
+      }
+    }); 
     UI.ComponentDrop();
-    UI.DeleteListen();
-  },
-  SelectListen: function(){
-    $("component").click(function(){
-      $("component").each(function(){ 
-        $(this).find("label").css("font-weight","300").css("text-decoration","none");
-      });
-      $(this).find("label").css("font-weight","bold").css("text-decoration","underline");
-      UI.selectedComponent = this;
-    })
-    $("wire").click(function(){
-      $(this).css("background-color","rgba(var(--bs-primary-rgb),var(--bs-bg-opacity))!important")
-    })
+    UI.wire();
   },
   Notification(type,message,details){
     var ctype = 'is-info'
@@ -69,101 +91,30 @@ var UI = {
   SaveVariableResistance(){
     $("input[name='vresistance']").off('click');
   },
-  RotateListen: function(){
-    $("component").bind('click', function(event){ 
-      if(event.altKey){
-        if($(this).hasClass("rotated-90")){
-          $(this).removeClass("rotated-90");
-          $(this).addClass("rotated-180");
-          $(this).removeClass("rotated-270");
-          $(this).removeClass("rotated-0");
-        }
-        else if($(this).hasClass("rotated-180")){
-          $(this).removeClass("rotated-90");
-          $(this).removeClass("rotated-180");
-          $(this).addClass("rotated-270");
-          $(this).removeClass("rotated-0");
-        }
-        else if($(this).hasClass("rotated-270")){
-          $(this).removeClass("rotated-180");
-          $(this).removeClass("rotated-270");
-          $(this).removeClass("rotated-90");
-          $(this).addClass("rotated-0");
-        }else if($(this).hasClass("rotated-0")){
-          $(this).removeClass("rotated-180");
-          $(this).removeClass("rotated-270");
-          $(this).addClass("rotated-90");
-          $(this).removeClass("rotated-0");
-        }else{
-          $(this).removeClass("rotated-180");
-          $(this).removeClass("rotated-270");
-          $(this).removeClass("rotated-90");
-          $(this).addClass("rotated-0");
-        }
-      }
-    }); 
-  },
-  DeleteListen: function(){
-    $("wire").bind('click', function(event){ 
-      console.log(event)
-      if(event.altKey) {
-        if($(this).attr("data-spice-revert-node") && $(this).attr("data-spice-revert-node") != $(this).attr("data-spice-node")){
-          $(this).attr("data-spice-node",$(this).attr("data-spice-revert-node")).attr("data-tooltip",$(this).attr("data-spice-node"))
-        }$(this).css("display","none").css("width","0px").css("height","0px").remove();
-      }
-    });
-  },
-  removeUnusedWires: function(){
-    var wires = [];
-    $("wire").each(function(){
-      var _wire1 = this;
-      var w1span = [{
-        horizontal:[$(_wire1).offset().left,($(_wire1).offset().left+$(_wire1).width())],
-        vertical:[$(_wire1).offset().top,($(_wire1).offset().top+$(_wire1).height())]
-      }];
-      $("wire").each(function(){
-        var _wire2 = this;
-        var w2span = [{
-          horizontal:[$(_wire2).offset().left,($(_wire2).offset().left+$(_wire2).width())],
-          vertical:[$(_wire2).offset().top,($(_wire2).offset().top+$(_wire2).height())]
-        }];
-        if($(_wire1).attr("id") != $(_wire2).attr("id"))
-          if(w1span[0].horizontal[0] >= w2span[0].horizontal[0])
-            if(w1span[0].vertical[0] >= w2span[0].vertical[0])
-              if(w1span[0].horizontal[1] <= w2span[0].horizontal[1])
-                if(w1span[0].vertical[1] <= w2span[0].vertical[1])
-                  $(_wire1).hide();
-      });
-    })
-  },
-  Multimeter: function(){
-    console.log("Simulating Circuit using Mulitmeter");
-    UI.makeSPICE("multimeter",function(error){
-      $("body #Notifications").append(`<div class="notification is-danger  is-light">
-      <button class="delete" onclick='$(this).parent().remove()'></button>
-<strong>Error</strong><br>
-There was an error simulating the circuit. Please check your circuit<br>
-<strong>Details:</strong>`+error+`</div>`);
-    },function(verbose){
-      console.log(verbose);
-    },function(netlist){
-      console.log("Running Multimeter");
-      console.log(netlist);
-      $("body #Notifications").append(`<div class="notification is-info  is-light">
-      <button class="delete" onclick='$(this).parent().remove()'></button>
-<strong>SPICE Circuit</strong><br>
-The circuit is below
-<strong>Details:</strong><br>`+netlist.split('\n').join('<br>')+`</div>`);
-      window.electronAPI.SimulateCircuit(netlist)
-    })
-  },
   wire: function(){
-    console.log("Wiring");
     $("wire,port").css("cursor","crosshair");
-    $("body").css("cursor","default");
     //To start wiring, the student must click on a port or a wire
-    $("wire").click(function(event){console.log("clicked wire"); if($(this).attr("data-spice-node") || $(this).attr("data-spice-node") == '0' || !$("meta[name='circuit']").data("framework")){
-      $("port,wire,bind,body").unbind("click");
+    $("body").on('click','wire',function(event){console.log("clicked wire"); if($(this).attr("data-spice-node") || $(this).attr("data-spice-node") == '0'){
+    if(event.altKey){
+      if($(this).attr("data-spice-revert-node") && $(this).attr("data-spice-revert-node") != $(this).attr("data-spice-node")){
+        $(this).attr("data-spice-node",$(this).attr("data-spice-revert-node")).attr("data-tooltip",$(this).attr("data-spice-node"))
+      }
+      const _wire = this;
+      const WireSpan = [{
+        horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
+        vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
+      }];
+      $("connector port").each(function(){
+        const _port = this;
+        const PortSpan = [{
+          horizontal:[$(_port).offset().left,($(_port).offset().left+$(_port).width())],
+          vertical:[$(_port).offset().top,($(_port).offset().top+$(_port).height())]
+        }];
+        if(UI.inSpan(WireSpan,PortSpan))
+          $(_port).attr("data-spice-node","999")
+      })
+      $(this).css("display","none").css("width","0px").css("height","0px").remove();
+    }else{
       console.log($(this).attr("data-spice-node"));
       console.log($(this).attr("data-spice-collapse-node"));
       console.log($(this).attr("data-spice-revert-node"));
@@ -173,7 +124,6 @@ The circuit is below
       if($(this).attr("data-spice-revert-node"))
         spiceNode += " data-spice-revert-node=\""+$(this).attr("data-spice-revert-node")+"\"";
       console.log(spiceNode);
-      $("body").css("cursor","crosshair");
       var wireid = $('wire').length;
       var bindid = $('bind').length;
       while($("#wire"+wireid).length)
@@ -192,13 +142,7 @@ The circuit is below
           left = $(event.currentTarget).offset().left+$(event.currentTarget).width()/2;
         else
           top = $(event.currentTarget).offset().top+$(event.currentTarget).height()/2;
-      if(!$("meta[name='circuit']").data("framework")){
-        $("main").append("<bind id='bind"+bindid+"' style='z-index:14;display:inline-block;background:#333;position:absolute;width:10px;height:10px;'"+spiceNode+"></bind>");
-        $("main").append("<bind id='bind"+endbind+"' style='z-index:14;display:inline-block;background:#333;position:absolute;width:10px;height:10px;'"+spiceNode+"></bind>");
-        $("#bind"+bindid).show().offset({top:top-2,left:left-2});
-        $("#bind"+endbind).hide().offset({top:top-2,left:left-2});
-      }
-      $("main").append("<wire id='wire"+wireid+"' style='z-index:13;display:inline-block;background:#333;position:absolute;'"+spiceNode+"></wire>");
+      $("#main").append("<wire id='wire"+wireid+"' style='z-index:13;display:inline-block;background:#333;position:absolute;'"+spiceNode+"></wire>");
       $("#wire"+wireid).show().offset({top:top,left:left});
       $(document).mousemove(function(event) {
         var cardinalOffset = [(top-event.clientY),(left-event.clientX),(event.clientY-top),(event.clientX-left)];
@@ -227,11 +171,13 @@ The circuit is below
             void(0);
         }
       })
-    }else{
+    }}else{
       console.log("clicked on a wire but it doesn't have a spice node?")
     }
   });
   $("body").dblclick(function(event){
+    $("wire,port").css("cursor","crosshair");
+    $("body").css("cursor","default");
     var wireid = $('wire').length;
     while($("#wire"+wireid).length)
       wireid++;
@@ -260,9 +206,6 @@ The circuit is below
       $(event.target.id).attr("data-spice-node",$("#wire"+wireid).attr("data-spice-node"));
     }
     $(document).off("mousemove");
-    $("body").off("dblclick");
-    $("wire").off("click");
-    UI.wire();
   });
   },
   ComponentDrop: function(){
@@ -331,15 +274,6 @@ The circuit is below
       }})
     })
   },
- RemoveWiresFromArea: function(span){
-    $("wire").each(function(){
-      const Component = [{
-          horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
-          vertical:[$(this).offset().top,($(this).offset().top+$(this).height())]
-        }];
-      if(UI.inSpan(span,Component)) $(this).hide();
-    })
-  },
   OverlapPoint: function(node,wire){
     var left = Math.abs(wire[0].horizontal[0]-wire[0].horizontal[1]);
     var top = Math.abs(wire[0].vertical[0]-wire[0].vertical[1]);
@@ -370,10 +304,10 @@ The circuit is below
     return !( aLeftOfB || aRightOfB || aAboveB || aBelowB );
   },
   saveBoard: function(){
-    localStorage.setItem("board",$("main").html())
+    localStorage.setItem("board",$("#main").html())
   },
   loadBoard: function(){
-    $("main").html(localStorage.getItem("board"));
+    $("#main").html(localStorage.getItem("board"));
     $("component").draggable({ containment: "parent" });
     UI.select();
   },
@@ -432,7 +366,6 @@ The circuit is below
         signalgenerator.waveType = $(this).attr("name");
     })
     if($("meta[name='circuit']").data("framework")){
-      var scopenodes = {positive:null,negative:null};
       $("wire").each(function(){
         var nodeExists = false;
         var node = $(this).attr("data-spice-node");
@@ -442,21 +375,13 @@ The circuit is below
         $("component").each(function(){
           var component = {
             name:$(this).data("spice-name"),
-            position:$(this).offset(),
-            width:$(this).width(),
-            height:$(this).height(),
             type:$(this).data("spice-type"),
             value:$(this).data("spice-value"),
-            nodes:[],
             ports:[]
           };
           $(this).find("port").each(function(){
             component.ports.push({
               name:$(this).attr("name"),
-              position:$(this).offset(),
-              SpicePosition:parseInt($(this).data("spice-position")),
-              width:$(this).width(),
-              height:$(this).height(),
               nodes:[$(this).attr("data-spice-node")]
             });
           });
@@ -465,136 +390,18 @@ The circuit is below
       var nodes = [];
       for(var n in UI.nodes)
         nodes.push(UI.nodes[n]);
-      this.SPICE = new SPICE(powersupply,signalgenerator,oscilloscope,ground,nodes,UI.components,null,null,null,scopenodes,multimeternodes,$("meta[name='circuit']").data("subcircuit"),$("meta[name='circuit']").data("models"),$("meta[name='circuit']").data("simulationparams"),debugFunction,verboseFunction,callback);
-    }else{
-    var wires = [];
-    var parts = [];
-    var binds = [];
-    $("wire,port").each(function(){
-      var id = null;
-      if($(this)[0].localName == "port") 
-        id = $(this).parent().data("spice-name")+"-"+$(this).data("spice-name");
-      else if($(this)[0].localName == "wire") 
-        id = $(this).attr("id");
-      if($(this).parent()[0].localName == "component" || $(this).parent()[0].localName == "ground" || $(this)[0].localName == "wire" || $(this).parent()[0].localName == "connectors")
-        if($(this).is(":visible") && $(this).width() > 0 && $(this).height() > 0)
-          if($(this).parent().hasClass("rotated-90") || $(this).parent().hasClass("rotated-270"))
-            wires.push({
-              id:id,
-              type:$(this)[0].localName,
-              position:$(this).offset(),
-              width:$(this).height(),
-              height:$(this).width(),
-              connected:[],
-              span:[],
-              segments:[]
-            });
-          else
-            wires.push({
-              id:id,
-              type:$(this)[0].localName,
-              position:$(this).offset(),
-              width:$(this).width(),
-              height:$(this).height(),
-              connected:[],
-              span:[],
-              segments:[]
-            });
-      });
-    $("component").each(function(){
-      var component = {
-        name:$(this).data("spice-name"),
-        position:$(this).offset(),
-        width:$(this).width(),
-        height:$(this).height(),
-        type:$(this).data("spice-type"),
-        ports:[]
-      };
-      $(this).find("port").each(function(){
-        component.ports.push({
-          name:$(this).data("spice-name"),
-          position:$(this).offset(),
-          width:$(this).width(),
-          height:$(this).height(),
-        });
-      });
-      parts.push(component);
-    });
-    $("bind").each(function(){
-      const bindspan = [{
-        horizontal:[$(this).offset().left,($(this).offset().left+$(this).width())],
-        vertical:[$(this).offset().top,($(this).offset().top+$(this).height())]
-      }];
-      binds.push({
-        id:$(this).attr("id"),
-        span:bindspan,
-      })
-    });
-    try{
-      this.SPICE = new SPICE(powersupply,signalgenerator,oscilloscope,ground,null,null,wires,binds,parts,null,null,$("meta[name='circuit']").data("models"),$("meta[name='circuit']").data("simulationparams"),debugFunction,verboseFunction,UI.SimulateCircuit);
-    }catch(e){
-      debugFunction("<b>Error:</b> "+e);
+      this.SPICE = new SPICE("Framework",{
+        powersupply:powersupply,
+        signalgenerator:signalgenerator,
+        oscilloscope:oscilloscope,
+        nodes:nodes,
+        components:UI.components,
+        multimeternodes:multimeternodes,
+        subcircuits:$("meta[name='circuit']").data("subcircuit"),
+        models:$("meta[name='circuit']").data("models")},
+        debugFunction,
+        verboseFunction,
+        callback);
     }
-  }
-  },
-  revealNode: function(n,colour,name){
-    if(typeof(name) == "string")
-      if(name == '0')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (ground node)</p>");
-      else if(name == 'a')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (powersupply 1 +)</p>");
-      else if(name == 'b')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (powersupply 1 -)</p>");
-      else if(name == 'c')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (powersupply 2 +)</p>");
-      else if(name == 'd')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (powersupply 2 -)</p>");
-      else if(name == 'e')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (signalgenerator +)</p>");
-      else if(name == 'f')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (signalgenerator -)</p>");
-      else if(name == 'g')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (oscilloscope +)</p>");
-      else if(name == 'h')
-        $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (oscilloscope -)</p>");
-      else
-      $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+" (other)</p>");
-    else
-      $("#nodelabel").append("<p><div style='display:inline-block;width:50px;height:6px;background:"+colour+";'></div> Node "+name+"</p>");
-    for(var i of UI.SPICE.nodes[n].span){
-      var top = i.vertical[0];
-      var left = i.horizontal[0];
-      var height = i.vertical[1]-top;
-      var width = i.horizontal[1]-left;
-      var positionParams = "top:"+top+"px;left:"+left+"px;height:"+height+"px;width:"+width+"px;"
-      $("body").append("<div class='reveal' style='z-index:15;position:absolute;background:"+colour+";"+positionParams+"'></div>");
-    }
-  },
-  showNodes: function(){
-    $("main").append("<div style='z-index:16;position:absolute;top:0px;right:0px;width:400px;background:#fff;border:1px solid #333;min-height:200px;font-size:10px;' id='nodelabel'></div>")
-    const colours = ["green","blue","yellow","orange","purple","brown","beige","aqua","blueviolet","darkcyan"]
-    for(var i=0;i<UI.SPICE.nodes.length;i++) 
-      UI.revealNode(i,colours[i],UI.SPICE.nodes[i].name)
-  },
-  hideNodes: function(){
-    $("#nodelabel").remove();
-    $("body").find(".reveal").remove();
   }
 }
-$("connectors port").each(function(){
-  var _port = this;
-  const PortSpan = [{
-    horizontal:[$(_port).offset().left,($(_port).offset().left+$(_port).width())],
-    vertical:[$(_port).offset().top,($(_port).offset().top+$(_port).height())]
-  }];
-  $("wire").each(function(){
-    var _wire = this;
-    const WireSpan = [{
-      horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
-      vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
-    }];
-    if(UI.inSpan(PortSpan,WireSpan))
-      if($(_wire).attr("data-spice-node"))
-        $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
-  })
-})

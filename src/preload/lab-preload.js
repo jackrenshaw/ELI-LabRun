@@ -32,7 +32,7 @@ document.onreadystatechange = function () {
         voltage2:$("#Source input[name='voltage2']").val(),
         siggen_frequency:$("#SignalGenerator td[name='frequency']").html(),
         siggen_voltage:$("#SignalGenerator td[name='voltage']").html(),
-        board:$("main").html()
+        board:$("#main").html()
       }
       return preload;
     }
@@ -40,12 +40,24 @@ document.onreadystatechange = function () {
       console.log("Opening the Pane");
       ipcRenderer.send('openPane',{page:{lab:$("meta[name='circuit']").data("page").lab,part:$("meta[name='circuit']").data("page").part,section:$("meta[name='circuit']").data("page").section},preload:null,token:$(this).attr("data-token")})
     })
+    $("a[data-action='simulate']").dblclick(function(){
+      console.log("Opening the Graph Window");
+      ipcRenderer.send('openGraphWindow',null)
+    })
     ipcRenderer.on('graph-reply', (_event, arg) => {
       $("#Simulation .comparison-area").append(arg);
     });
     ipcRenderer.on('simulate-reply', (_event, arg) => {
       $("#Simulation p.sim-result").html(arg);
       $("#Simulation").addClass("is-active");
+    })
+    ipcRenderer.on('simulatedata-reply', (_event, arg) => {
+      console.log("Simulation Response:");
+      console.log(arg)
+    })
+    ipcRenderer.on('rawdata-reply', (_event, arg) => {
+      console.log("Raw Data:");
+      console.log(arg)
     })
     ipcRenderer.on('simulate-error', (_event, arg) => {
       $("body #Notifications").append(`<div class="notification is-warning  is-light">
@@ -57,13 +69,11 @@ The simulation could not be performed<br>
     ipcRenderer.on('multimeter-reply', (_event, arg) => {
       const multimeter = $("meta[name='circuit']").data("multimeter");
       console.log(multimeter);
-      var expectedNodeVoltages = {};
       var expectedAmmeterCurrents = {};
       for(var a of multimeter)
         if(/v\([0-9]+(,[0-9+])?\) = .+/.test(a)){
           var node = a.split(" = ")[0].replace(/[^0-9]/g,'')
           var voltage = parseFloat(a.split(" = ")[1]);
-          expectedNodeVoltages[node] = voltage;
         }
         else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
           var nodes = a.split(" = ")[0].replace(/[^0-9,]/g,'').split(",");
@@ -87,8 +97,8 @@ The simulation could not be performed<br>
       console.log(ammeterCurrents);
       $("wire").each(function(){
         $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
-        if(nodeVoltages.hasOwnProperty($(this).attr("data-spice-node")) && expectedNodeVoltages.hasOwnProperty($(this).attr("data-spice-node")))
-          $(this).attr("data-tooltip",("Node:"+$(this).attr("data-spice-node")+"\nExpected:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nSimulated:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nMeasured:N/A"));
+        if(nodeVoltages.hasOwnProperty(parseInt($(this).attr("data-spice-node"))))
+          $(this).attr("data-tooltip",("Node:"+$(this).attr("data-spice-node")+"\nSimulated:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nMeasured:N/A"));
       });
       $("component[data-spice-type='Ammeter']").each(function(){
         $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
