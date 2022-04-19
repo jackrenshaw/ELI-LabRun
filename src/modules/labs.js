@@ -46,7 +46,7 @@ var Labs = {
                 var Part = {Name:p,Sections:[],Implementations:[],Alts:[],Settings:{Header:"",Spiel:"",Instructions:""},FrameworkFile:null,Framework:null,"Questions":null,"Manual":null}
                 if(fs.existsSync(inp+"/"+l+"/"+p+"/settings.json"))
                     Part.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/"+p+"/settings.json"));
-                Part.FrameworkFile = inp+"/"+l+"/"+p+"/Framework.html";
+                Part.FrameworkFile = inp+"/"+l+"/Framework.html";
                 console.log(Part.FrameworkFile)
                 const QuestionFile = inp+"/"+l+"/"+p+"/Questions.json";
                 if(fs.existsSync(QuestionFile))

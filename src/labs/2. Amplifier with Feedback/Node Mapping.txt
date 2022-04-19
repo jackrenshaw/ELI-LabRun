@@ -1,0 +1,17 @@
+0 = Ground
+1 = 10V Supply Rail, Positive Terminals of Rb, RC1, RC2 and Ammeter
+2 = Multimeter Negative Output
+3 = Collector for Q4, Base for Q3 and Q4
+4 = -10V Supply Rail, Emitter of Q3 and Q4
+5 = Negative Terminal of RC1 and Collector of Q1, Capacitor Leg
+6 = Negative Terminal of RC2 and Collector of Q2, Capacitor Leg
+7 = Emitter of Q1 and Q2, Collector of Q3.
+8 = Positive Signal Generator connection node, leg of R10
+9 = Negative Signal Generator connection node, leg of R7 and R8
+10 = Vi +, Base of Q1 When not grounded
+11 = Vi -, Base of Q2 When not Grounded or in closed loop configuration
+12 = Unused
+13 = Non-Inverting Input of LM741
+14 = Inverting Input of LM741
+15 = Output of LM741, Leg of R2
+16 = Leg of R2 and R1, sometimes of R9 in closed loop configuration

@@ -124,6 +124,19 @@
       background:#000;
       display: inline-block;
       cursor: pointer;
+      z-index: 1!important;
+      opacity: 0.8;
+    }
+    component{
+      z-index: 0!important;
+    }
+    component port{
+      z-index: 2!important;
+      opacity: 0.8;
+    }
+
+    connectors port{
+      z-index: 0!important;
     }
     .resistor{
       background-image: url(images/res.png);
@@ -174,7 +187,6 @@
       height:50px;
       top:100px;
       left:0px;
-      z-index: 10;
       background-repeat: no-repeat;
       background-position-x: center;
       background-position-y: top;
@@ -225,11 +237,6 @@
 <script type="text/javascript" src="../public/javascripts/ui.js" defer></script>
 <script type="text/javascript" src="../public/javascripts/check.js" defer></script>
 <script type="text/javascript" src="../public/javascripts/spice.js" defer></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-  UI.SET();
-})
-</script>
     <!-- Bootstrap core CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
 
@@ -341,7 +348,7 @@ if(Framework){%><%-Framework%><%}%>
     </ground>
 <%if(section) if(section.hasOwnProperty("Components")) for(var c of section.Components)
 if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
-<component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:10;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%><%for(var d in section.Output.AnalogDevices)if(c.Name == section.Output.AnalogDevices[d].device){%>data-spice-analog-device='<%=d%>' data-spice-analog-min='<%=section.Output.AnalogDevices[d].min%>' data-spice-analog-max='<%=section.Output.AnalogDevices[d].max%>' <%}%> data-spice-maxvalue="<%=c.Value%>" ondblclick="UI.VariableResistorChange(this);"<%}%> class="rotated-0">
+<component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:1;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%><%for(var d in section.Output.AnalogDevices)if(c.Name == section.Output.AnalogDevices[d].device){%>data-spice-analog-device='<%=d%>' data-spice-analog-min='<%=section.Output.AnalogDevices[d].min%>' data-spice-analog-max='<%=section.Output.AnalogDevices[d].max%>' <%}%> data-spice-maxvalue="<%=c.Value%>" ondblclick="UI.VariableResistorChange(this);"<%}%> class="rotated-0">
 <% if(c.Value && c.Name){ %>
 <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
 <%}else if(c.Value){ %>
@@ -367,31 +374,31 @@ top = top+200;
 </main>
 <%- include ('partial/modals.ejs') %>
 <connectors>
-<port data-spice-node="999" style='position: absolute;top:650px;left:75px;background: red;height:300px;width:6px;z-index:10;' name="powersupply-1-positive" data-spice-bench="PowerSupply 1" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[0].altnodes.hasOwnProperty('positive')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[0].altnodes.positive)%>'<%}%> >
+<port data-spice-node="999" style='position: absolute;top:650px;left:75px;background: red;height:300px;width:6px;z-index:0;' name="powersupply-1-positive" data-spice-bench="PowerSupply 1" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[0].altnodes.hasOwnProperty('positive')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[0].altnodes.positive)%>'<%}%> >
   <label style="position: relative;left:10px;">Power Supply 1+</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left:175px;background: black;height:300px;width:6px;z-index:10;' name="powersupply-1-negative"  data-spice-bench="PowerSupply 1" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[0].altnodes.hasOwnProperty('negative')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[0].altnodes.negative)%>'<%}%>>
+<port data-spice-node="999" style='position: absolute;top:650px;left:175px;background: black;height:300px;width:6px;z-index:0;' name="powersupply-1-negative"  data-spice-bench="PowerSupply 1" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[0].altnodes.hasOwnProperty('negative')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[0].altnodes.negative)%>'<%}%>>
   <label  style="position: relative;left:10px;">Power Supply 1-</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left:275px;background: red;height: 300px;width:6px;z-index:10;' name="powersupply-2-positive"  data-spice-bench="PowerSupply 2" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[1].altnodes.hasOwnProperty('positive')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[1].altnodes.positive)%>'<%}%>>
+<port data-spice-node="999" style='position: absolute;top:650px;left:275px;background: red;height: 300px;width:6px;z-index:0;' name="powersupply-2-positive"  data-spice-bench="PowerSupply 2" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[1].altnodes.hasOwnProperty('positive')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[1].altnodes.positive)%>'<%}%>>
   <label  style="position: relative;left:10px;">Power Supply 2+</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left:375px;background: black;height:300px;width:6px;z-index:10;' name="powersupply-2-negative" data-spice-bench="PowerSupply 2" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[1].altnodes.hasOwnProperty('negative')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[1].altnodes.negative)%>'<%}%>>
+<port data-spice-node="999" style='position: absolute;top:650px;left:375px;background: black;height:300px;width:6px;z-index:0;' name="powersupply-2-negative" data-spice-bench="PowerSupply 2" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[1].altnodes.hasOwnProperty('negative')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[1].altnodes.negative)%>'<%}%>>
   <label  style="position: relative;left:10px;">Power Supply 2-</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left:600px;background: red;height:300px;width:6px;z-index:10;' name="signalgenerator-positive" data-spice-bench="Signal Generator" <%if(section.Bench.signalgenerator.hasOwnProperty('altnodes')) if(section.Bench.signalgenerator.altnodes.hasOwnProperty('positive')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.signalgenerator.altnodes.positive)%>'<%}%>>
+<port data-spice-node="999" style='position: absolute;top:650px;left:600px;background: red;height:300px;width:6px;z-index:0;' name="signalgenerator-positive" data-spice-bench="Signal Generator" <%if(section.Bench.signalgenerator.hasOwnProperty('altnodes')) if(section.Bench.signalgenerator.altnodes.hasOwnProperty('positive')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.signalgenerator.altnodes.positive)%>'<%}%>>
   <label  style="position: relative;left:10px;">Signal Generator V+</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left:700px;background: black;height:300px;width:6px;z-index:10;' name="signalgenerator-negative" data-spice-bench="Signal Generator" <%if(section.Bench.signalgenerator.hasOwnProperty('altnodes')) if(section.Bench.signalgenerator.altnodes.hasOwnProperty('negative')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.signalgenerator.altnodes.negative)%>'<%}%>>
+<port data-spice-node="999" style='position: absolute;top:650px;left:700px;background: black;height:300px;width:6px;z-index:0;' name="signalgenerator-negative" data-spice-bench="Signal Generator" <%if(section.Bench.signalgenerator.hasOwnProperty('altnodes')) if(section.Bench.signalgenerator.altnodes.hasOwnProperty('negative')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.signalgenerator.altnodes.negative)%>'<%}%>>
   <label  style="position: relative;left:10px;">Signal Generator V-</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left:1000px;background: red;height:300px;width:6px;z-index:10;' name="oscilloscope-1-positive">
+<port data-spice-node="999" style='position: absolute;top:650px;left:1000px;background: red;height:300px;width:6px;z-index:0;' name="oscilloscope-1-positive">
   <label  style="position: relative;left:10px;">Scope V+</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left: 1060px;background: black;height:300px;width:6px;z-index:10;' name="oscilloscope-1-negative">
+<port data-spice-node="999" style='position: absolute;top:650px;left: 1060px;background: black;height:300px;width:6px;z-index:0;' name="oscilloscope-1-negative">
   <label  style="position: relative;left:10px;">Scope V-</label>
 </port>
-<port data-spice-node="999" style='position: absolute;top:650px;left:1120px;background: red;height:300px;width:6px;z-index:10;' name="oscilloscope-2-positive">
+<port data-spice-node="999" style='position: absolute;top:650px;left:1120px;background: red;height:300px;width:6px;z-index:0;' name="oscilloscope-2-positive">
   <label  style="position: relative;left:10px;">Scope V+</label>
 </port>
 <port data-spice-node="999" style='position: absolute;top:650px;left:1180px;background: black;height:300px;width:6px;z-index:10;' name="oscilloscope-2-negative">
@@ -417,5 +424,10 @@ top = top+200;
     </div>
   </div>
 </footer>
+<script type="text/javascript">
+  $(document).ready(function(){
+  UI.SET();
+})
+</script>
   </body>
 </html>

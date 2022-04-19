@@ -19,11 +19,11 @@ var UI = {
     $(document).on('keyup', function(e) {
       if (e.key == "Escape")    $(".modal").removeClass("is-active");
     });
-    $("component").draggable({ containment: "body" });
+    $("component[disabled!='disabled']").draggable({ containment: "body" });
     console.log("selecting/moving components")
-    $("component,ground").css("cursor","pointer");
+    $("component[disabled!='disabled']").css("cursor","pointer");
     $("component").bind('click', function(event){ 
-      if(event.altKey){
+      if(event.altKey && $(this).attr("disabled") != "disabled"){
         if($(this).hasClass("rotated-90")){
           $(this).removeClass("rotated-90");
           $(this).addClass("rotated-180");
@@ -142,7 +142,7 @@ var UI = {
           left = $(event.currentTarget).offset().left+$(event.currentTarget).width()/2;
         else
           top = $(event.currentTarget).offset().top+$(event.currentTarget).height()/2;
-      $("#main").append("<wire id='wire"+wireid+"' style='z-index:13;display:inline-block;background:#333;position:absolute;'"+spiceNode+"></wire>");
+      $("#main").append("<wire id='wire"+wireid+"' style='display:inline-block;background:#333;position:absolute;'"+spiceNode+"></wire>");
       $("#wire"+wireid).show().offset({top:top,left:left});
       $(document).mousemove(function(event) {
         var cardinalOffset = [(top-event.clientY),(left-event.clientX),(event.clientY-top),(event.clientX-left)];
@@ -308,7 +308,7 @@ var UI = {
   },
   loadBoard: function(){
     $("#main").html(localStorage.getItem("board"));
-    $("component").draggable({ containment: "parent" });
+    $("component[disabled!='disabled']").draggable({ containment: "parent" });
     UI.select();
   },
   makeSPICE: function(type,debugFunction,verboseFunction,callback){
@@ -356,7 +356,7 @@ var UI = {
         multimeternodes.push($(this).attr("data-spice-node"));
     })
     $("component[data-spice-type='Ammeter']").each(function(){
-      multimeternodes.push({'+':$(this).find("port[name='+']").attr("data-spice-node"),'-':$(this).find("port[name='+']").attr("data-spice-node"),'value':$(this).data("spice-value")})
+      multimeternodes.push({'+':$(this).find("port[name='+']").attr("data-spice-node"),'-':$(this).find("port[name='-']").attr("data-spice-node"),'value':$(this).data("spice-value")})
     })
     multimeternodes = [...new Set(multimeternodes)];
     if(signalgenerator.freqMultiple == "kHz")

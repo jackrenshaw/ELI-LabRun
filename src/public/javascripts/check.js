@@ -155,7 +155,7 @@ SetComponents = function(){
         horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
         vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
       }];
-      if(inSpan(PortSpan,WireSpan)){
+      if(inSpan(PortSpan,WireSpan) && $(_port).width() > 0 && $(_port).height() > 0){
         console.log("found a match for"+$(_port).parent("component").attr("data-spice-name")+" port:"+$(_port).attr("id"));
         match = true;
         console.log($(_wire).attr("data-spice-node"));

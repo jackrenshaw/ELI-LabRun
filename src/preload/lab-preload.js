@@ -85,13 +85,24 @@ The simulation could not be performed<br>
       var ammeterCurrents = {};
       for(var a of arg)
         if(/v\([0-9]+(,[0-9+])?\) = .+/.test(a)){
-          var node = a.split(" = ")[0].replace(/[^0-9]/g,'')
+          var node = parseInt(a.split(" = ")[0].replace(/[^0-9]/g,''))
           var voltage = parseFloat(a.split(" = ")[1]);
           nodeVoltages[node] = voltage;
         }
         else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
-          var nodes = a.split(" = ")[0].replace(/[^0-9,]/g,'').split(",");
-          var current = parseFloat(a.split(" = ")[1])*1000;
+          const nodes = a.split(" = ")[0].replace('/1m','').replace(/[^0-9,]/g,'').split(",");
+          const current = Math.round(parseFloat(a.split(" = ")[1])*100000)/100;
+          $("component[data-spice-type='Ammeter']").each(function(){
+            console.log(nodes);
+            console.log(parseInt($(this).find("port[name='+']").attr("data-spice-node")));
+            console.log(parseInt($(this).find("port[name='-']").attr("data-spice-node")));
+            if(parseInt($(this).find("port[name='+']").attr("data-spice-node")) == parseInt(nodes[0]))
+              if(parseInt($(this).find("port[name='-']").attr("data-spice-node")) == parseInt(nodes[1])){
+                console.log("Found the Ammeter we're interested in")
+                $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+                $(this).attr("data-tooltip",("Ammeter:"+$(this).attr("data-spice-name")+"\nSimulated:"+current+"mA\nMeasured:N/A"));
+              }
+          })
         }
       console.log(nodeVoltages)
       console.log(ammeterCurrents);
@@ -100,10 +111,6 @@ The simulation could not be performed<br>
         if(nodeVoltages.hasOwnProperty(parseInt($(this).attr("data-spice-node"))))
           $(this).attr("data-tooltip",("Node:"+$(this).attr("data-spice-node")+"\nSimulated:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nMeasured:N/A"));
       });
-      $("component[data-spice-type='Ammeter']").each(function(){
-        $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
-        $(this).attr("data-tooltip","Expected:0.1V\nSimulated:0.02V\nMeasured:0.01V");
-      })
     })
     ipcRenderer.on('implement-error', (_event, arg) => {
       console.log("There was an error in implementation");

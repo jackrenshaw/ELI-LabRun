@@ -1,0 +1,27 @@
+<script type="text/javascript">
+function setAnalog1(){
+  const value = parseFloat($("component[data-spice-name='RVariable1']").attr("data-spice-value"))/(parseFloat($("component[data-spice-name='RVariable1']").attr("data-spice-value"))+parseFloat($("component[data-spice-name='RVariable2']").attr("data-spice-value")));
+  const maxVoltage = 15.0;
+  const minVoltage = -15.0;
+  const analogValue = maxVoltage - value*(maxVoltage-minVoltage);
+  if(analogValue < 0.0)
+    analogValue = 0.0;
+  if(analogValue > 5.0)
+    analogValue = 5.0;
+  return analogValue;
+}
+$("button[data-action='check']").click(function(){
+  UI.ANALOG[0] = setAnalog1();
+})
+</script>
+<wire id='wire0' data-spice-node="0" data-spice-collapse-node='false' style="position: absolute;left:150px;width:50px;top:250px;height:6px;z-index: 0;background:black"></wire>
+<wire id='wire1' data-spice-node="10" data-spice-collapse-node='false' style="position: absolute;left:150px;width:50px;top:280px;height:6px;z-index: 0;background:black"></wire>
+<wire id='wire2' data-spice-node="8" data-spice-collapse-node='false' style="position: absolute;left:300px;width: 50px;top:280px;height:6px;z-index: 0;background:black"></wire>
+
+<wire id='wire3' data-spice-node="6" data-spice-collapse-node='false' style="position: absolute;left:650px;width:50px;top:250px;height:6px;z-index: 0;background:black"></wire>
+<wire id='wire4' data-spice-node="5" data-spice-collapse-node='false' style="position: absolute;left:650px;width:50px;top:280px;height:6px;z-index: 0;background:black"></wire>
+<wire id='wire5' data-spice-node="6" data-spice-collapse-node='false' style="position: absolute;left:800px;width: 50px;top:280px;height:6px;z-index: 0;background:black"></wire>
+
+<wire id='wire0' data-spice-node="11" data-spice-collapse-node='false' style="position: absolute;left:1000px;height:450px;top:100px;width:6px;z-index: 0;background:black"></wire>
+<wire id='wire1' data-spice-node="4" data-spice-collapse-node='false' style="position: absolute;left:75px;height:450px;top:100px;width:6px;z-index: 0;background:black"></wire>
+<wire id='wire1' data-spice-node="5" data-spice-collapse-node='false' style="position: absolute;left:375px;height:6px;top:544px;width:200px;z-index: 0;background:black"></wire>

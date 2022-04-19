@@ -425,49 +425,49 @@ var Spice = {
                     left:31,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'NII',
                     top:55,
                     left:31,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'V+',
                     top:55,
                     left:150,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'V-',
                     top:125,
                     left:31,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'O',
                     top:89,
                     left:150,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'C1',
                     top:21,
                     left:31,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:none;position:absolute;"
                 },{
                     id:'C2',
                     top:21,
                     left:150,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 }],
                 Value:null,
                 Label:{
@@ -493,35 +493,35 @@ var Spice = {
                     left:31,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'II',
                     top:55,
                     left:31,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'V+',
                     top:55,
                     left:150,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'V-',
                     top:125,
                     left:31,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 },{
                     id:'O',
                     top:89,
                     left:150,
                     height:14,
                     width:20,
-                    CSS:"background:black;position:absolute;"
+                    CSS:"background:#aaa;position:absolute;"
                 }],
                 Value:null,
                 Label:{
@@ -550,7 +550,7 @@ var Spice = {
                     left:77,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:1,
                     type:0
                 },{
@@ -559,7 +559,7 @@ var Spice = {
                     left:77,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:2,
                     type:0
                 },{
@@ -568,7 +568,7 @@ var Spice = {
                     left:77,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:2,
                     type:1
                 },{
@@ -577,17 +577,17 @@ var Spice = {
                     left:77,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:2,
                     type:2
                 },{
                     id:'',
-                    top:159,
+                    top:154,
                     left:77,
-                    height:18,
-                    width:18,
-                    CSS:"background:black;position:absolute;",
+                    height:0,
+                    width:0,
                     group:0,
+                    CSS:"background:none;position:absolute;display:none;",
                     type:0
                 },{
                     id:'Q3B',
@@ -595,7 +595,7 @@ var Spice = {
                     left:77,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:3,
                     type:1
                 },{
@@ -604,7 +604,7 @@ var Spice = {
                     left:77,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:3,
                     type:0
                 },{
@@ -613,7 +613,7 @@ var Spice = {
                     left:77,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:3,
                     type:2
                 },{
@@ -622,7 +622,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:4,
                     type:0
                 },{
@@ -631,7 +631,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:4,
                     type:1
                 },{
@@ -640,7 +640,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:4,
                     type:2
                 },{
@@ -649,7 +649,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:5,
                     type:2
                 },{
@@ -658,7 +658,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:5,
                     type:1
                 },{
@@ -667,7 +667,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:5,
                     type:0
                 },{
@@ -676,7 +676,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:1,
                     type:2
                 },{
@@ -685,7 +685,7 @@ var Spice = {
                     left:192,
                     height:18,
                     width:18,
-                    CSS:"background:black;position:absolute;",
+                    CSS:"background:#aaa;position:absolute;",
                     group:4,
                     type:1
                 }],
