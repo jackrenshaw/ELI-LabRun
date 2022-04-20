@@ -7,8 +7,6 @@ const rectanglesIntersect = function(minAx,minAy,maxAx,maxAy,minBx,minBy,maxBx,m
 }
 
 const inSpan = function(spans1,spans2){
-  console.log(spans1)
-  console.log(spans2)
   if(spans1) for(var s1 of spans1)
     if(spans2) for(var s2 of spans2)
       //Horizontally aligned

@@ -42,5 +42,4 @@ module.exports.formatBytes = formatBytes;
 module.exports.walk = walk;
 module.exports.generateToken = generateToken;
 module.exports.generateActionToken = generateActionToken;
-module.exports.validateToken = validateToken;
 module.exports.SALT = SALT;

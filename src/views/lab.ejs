@@ -85,12 +85,12 @@
                 edit
                 </span>
               </a>
-                <a class="navbar-item" onclick="validate();$('#SaveLocal').addClass('is-active');" data-action="getload" data-page='<%-JSON.stringify(page)%>'>
+                <a class="navbar-item" onclick="Check.Validate();$('#SaveLocal').addClass('is-active');" data-action="getload" data-page='<%-JSON.stringify(page)%>'>
                   <span class="material-icons">
                     save
                     </span>
                   </a>
-                  <a class="navbar-item" onclick="validate();$('#SyncGlobal').addClass('is-active');">
+                  <a class="navbar-item" onclick="Check.Validate();$('#SyncGlobal').addClass('is-active');">
                     <span class="material-icons">
                       cloud_sync
                       </span>
@@ -100,7 +100,7 @@
                         play_circle
                         </span>
                         </a>  
-                        <a class="navbar-item" onclick="validate();" data-action="check">
+                        <a class="navbar-item" onclick="Check.Validate();" data-action="check">
                         <span class="material-icons">
                           check_circle
                           </span>  
