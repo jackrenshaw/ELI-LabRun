@@ -19,9 +19,7 @@
 <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-esm-min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-    console.log("testing");
     var settings = JSON.parse(`<%-JSON.stringify(part.Settings)%>`);
-    console.log(settings)
     $("input[type='checkbox']").click(function(){
       if($(this).attr("checked"))
         $(this).removeAttr("checked");

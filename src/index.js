@@ -25,18 +25,6 @@ var LABDIR = "src/labs";
 var HALTSTARTUP = false;
 
 const isMac = process.platform === 'darwin'
-const BASE = 'https://unsw-eli.herokuapp.com/'
-
-function login(form,callback,errorCallback){
-  axios
-  .post(BASE+'auth/login',form)
-  .then(res => {
-    callback(res.data);
-  })
-  .catch(error => {
-    errorCallback(error)
-  })
-}
 
 function startup(event,callback){
   SPICE.test(async function(){
@@ -67,55 +55,6 @@ function implementCircuit(params,callback,errorCallback){
     errorCallback("invalid token")
 }
 
-function circuitValidate(params,callback,errorCallback){
-  console.log("validating the circuit");
-  var found = false;
-  console.log(params);
-  for(var l of Labs.Labs)
-    if(l.Name == params.lab){
-      for(var p of l.Parts)
-        if(p.Name == params.part){
-          if(params.section){
-            console.log("Validating a circuit with a section")
-            for(var s of p.Sections){
-              if(s.Name == params.section){
-                validCircuit = function(res){
-                  console.log("Circuit is valid, producing action token");
-                  const token = Functions.generateActionToken();
-                  Actions.Tokens[token] = {page:params,output:s.Output}
-                  callback({token:token,output:s.Output,res:res})
-                  console.log(Actions.Tokens)
-                }
-                SPICE.ValidateCircuit(params.circuit,s.Solution,validCircuit,errorCallback)
-                found = true;
-            }}
-          }else{
-            console.log("validating a circuit without a section")
-            var t=0;
-            for(var i=0;i<p.Implementations.length;i++){
-              allError = function(res){
-                t++;
-                if(t == i)
-                  errorCallback("No Valid Lab Found");
-              }
-              validCircuit = function(res){
-                console.log("Circuit is valid, producing action token");
-                const token = Functions.generateActionToken();
-                Actions.Tokens[token] = {page:params,output:p.Implementations[i].Output}
-                callback({token:token,output:p.Implementations[i].Output,res:res})
-                console.log(Actions.Tokens)
-              }
-              SPICE.ValidateCircuit(params.circuit,s.Solution,validCircuit,allError)
-            } 
-          }
-        }
-    }
-  if(!found){
-    console.log("Lab Doesn't Exist");
-    errorCallback("The Laboratory Provided Doesn't Exist");
-  }
-}
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   // eslint-disable-line global-require
@@ -142,7 +81,6 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload/preload.js')
   }
   });
-
   const graphWindow = new BrowserWindow({
     show:false,
     width: 1200,
@@ -152,9 +90,6 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload/graphsim-preload.js')
   }
   });
-  graphWindow.webContents.openDevTools();
-  graphWindow.loadFile(path.join(__dirname, 'views/graphsim.ejs'))
-
 
   labWindow.on('close',function(event){
     console.log("attempting to close lab window");
@@ -269,10 +204,7 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
     }
   }
-  mainWindow.webContents.openDevTools();
-  ipcMain.on('getCompletions', (event,page) => {
-    getCompletions(page,function(response){ event.reply('completion-reply', response)},function(error){event.reply('completion-error', error)});
-  })
+  //BEGIN ipc SET
   ipcMain.on('graph', (event,params) => {
     Graph("Function",params.signals,params.xlabel,params.ylabel,function(svg){event.reply('graph-reply', svg)},function(error){event.reply('graph-reply', error)});
   })
@@ -313,12 +245,6 @@ const createWindow = () => {
         event.reply('simulate-error',error)
       });
   })
-  ipcMain.on('validate', (event,params) => {
-      circuitValidate(params,
-        function(token){ console.log("success");event.reply('validate-reply', token)},
-        function(error){console.log(error); event.reply('validate-error', error)}
-      );
-  })
   ipcMain.on('openGraphWindow', (event,params) => {
     console.log("Opening the Graph Window");
     graphWindow.show();
@@ -340,6 +266,7 @@ const createWindow = () => {
   ipcMain.on('startup', (event,page) => {
     startup(event,loadView);
   })
+  //END ipc SET
 };
 
 // This method will be called when Electron has finished

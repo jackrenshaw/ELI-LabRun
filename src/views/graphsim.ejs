@@ -73,16 +73,12 @@ print v(4) v(5)
   $(document).ready(function(){
     $(".sim-area a").click(function(){
       console.log("attemping to simulate SPICE circuit");
-      console.log($(".sim-area textarea").val());
       window.electronAPI.Simulate($(".sim-area textarea").val())
     })
     $(".graph-area textarea").keyup(function(){
       var axes = $(this).val().split("\n")[0];
       var functions = $(this).val().match(/[A-z0-9]+,f\([a-z],[0-9]+,[0-9]+(\.[0-9]+)?\) ?= ?.+/g)
       var lines = $(this).val().match(/\n([A-z0-9]+,[+-]?([0-9]*[.])?[0-9]+,[+-]?([0-9]*[.])?[0-9]+)/g);
-      console.log(lines);
-      console.log(axes);
-      console.log(functions);
       var signals = [];
       if(functions)
         if(functions.length) for(var f of functions){
@@ -107,7 +103,6 @@ print v(4) v(5)
               signal[i].y = math.evaluate(expression.replaceAll(v,signal[i].x))
           signals = signals.concat(signal)
         }
-      console.log(signals);
       if(lines)
         if(lines.length)
           for(var l of lines)

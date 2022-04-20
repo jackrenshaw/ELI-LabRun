@@ -20,7 +20,6 @@ var UI = {
       if (e.key == "Escape")    $(".modal").removeClass("is-active");
     });
     $("component[disabled!='disabled']").draggable({ containment: "body" });
-    console.log("selecting/moving components")
     $("component[disabled!='disabled']").css("cursor","pointer");
     $("component").bind('click', function(event){ 
       if(event.altKey && $(this).attr("disabled") != "disabled"){
@@ -80,7 +79,6 @@ var UI = {
     $("#VariableResistor h5").html($(_vresist).attr("data-spice-value"));
     $("#VariableResistor").addClass("is-active");
     $("input[name='vresistance']").click(function(){
-      console.log("Changing Value?");
       const newVal = ($(this).val()*maxVal)/100+suffix;
       $(_vresist).data("spice-value",newVal);
       $(_vresist).data("spice-analog-value",newVal);
@@ -110,20 +108,16 @@ var UI = {
           horizontal:[$(_port).offset().left,($(_port).offset().left+$(_port).width())],
           vertical:[$(_port).offset().top,($(_port).offset().top+$(_port).height())]
         }];
-        if(UI.inSpan(WireSpan,PortSpan))
+        if(inSpan(WireSpan,PortSpan))
           $(_port).attr("data-spice-node","999")
       })
       $(this).css("display","none").css("width","0px").css("height","0px").remove();
     }else{
-      console.log($(this).attr("data-spice-node"));
-      console.log($(this).attr("data-spice-collapse-node"));
-      console.log($(this).attr("data-spice-revert-node"));
       var spiceNode = " data-spice-node=\""+$(this).attr("data-spice-node")+"\"";
       if($(this).attr("data-spice-collapse-node"))
         spiceNode += " data-spice-collapse-node=\""+$(this).attr("data-spice-collapse-node")+"\"";
       if($(this).attr("data-spice-revert-node"))
         spiceNode += " data-spice-revert-node=\""+$(this).attr("data-spice-revert-node")+"\"";
-      console.log(spiceNode);
       var wireid = $('wire').length;
       var bindid = $('bind').length;
       while($("#wire"+wireid).length)
@@ -171,9 +165,7 @@ var UI = {
             void(0);
         }
       })
-    }}else{
-      console.log("clicked on a wire but it doesn't have a spice node?")
-    }
+    }}
   });
   $("body").dblclick(function(event){
     $("wire,port").css("cursor","crosshair");
@@ -182,11 +174,7 @@ var UI = {
     while($("#wire"+wireid).length)
       wireid++;
     wireid--;
-    console.log(event.target.id)
-    console.log(event.target.nodeName.toLocaleLowerCase());
-    console.log(wireid);
     if(event.target.nodeName.toLocaleLowerCase() == "wire"){
-      console.log("clicked on a wire")
       if($("#"+event.target.id).attr("data-spice-node") == $("#wire"+wireid).attr("data-spice-node")){
         console.log("You're allowed to join these nodes");
         //UI.Notification("Success","These nodes can be joined!","These wires were already on the same node.");
@@ -195,7 +183,6 @@ var UI = {
         var supernode = $("#"+event.target.id).attr("data-spice-node")
         if(!$("#wire"+wireid).data("spice-collapse-node"))
           supernode = $("#wire"+wireid).attr("data-spice-node");
-        console.log(supernode);
         $("wire[data-spice-node='"+$("#"+event.target.id).attr("data-spice-node")+"']").attr("data-spice-node",supernode);
         $("wire[data-spice-node='"+$("#wire"+wireid).attr("data-spice-node")+"']").attr("data-spice-node",supernode);
       }else{
@@ -254,7 +241,7 @@ var UI = {
             horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
             vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
           }];
-          if(UI.inSpan(Port,wirespan) && !wired){
+          if(inSpan(Port,wirespan) && !wired){
             console.log("Dropping Component on a wire");
             wired = true;    
             $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
@@ -273,35 +260,6 @@ var UI = {
         })
       }})
     })
-  },
-  OverlapPoint: function(node,wire){
-    var left = Math.abs(wire[0].horizontal[0]-wire[0].horizontal[1]);
-    var top = Math.abs(wire[0].vertical[0]-wire[0].vertical[1]);
-    var bottom = Math.abs(wire[0].horizontal[1]-wire[0].horizontal[0]);
-    var right = Math.abs(wire[0].vertical[1]-wire[0].vertical[0]);
-  },
-  inSpan: function(spans1,spans2){
-    if(spans1) for(var s1 of spans1)
-      if(spans2) for(var s2 of spans2)
-        //Horizontally aligned
-        if(UI.rectanglesIntersect(
-          s1.horizontal[0],
-          s1.vertical[0],
-          s1.horizontal[1],
-          s1.vertical[1],
-          s2.horizontal[0],
-          s2.vertical[0],
-          s2.horizontal[1],
-          s2.vertical[1])
-          ) return true;
-        return false;
-    },
-  rectanglesIntersect: function(minAx,minAy,maxAx,maxAy,minBx,minBy,maxBx,maxBy ) {
-    var aLeftOfB = maxAx < minBx;
-    var aRightOfB = minAx > maxBx;
-    var aAboveB = minAy > maxBy;
-    var aBelowB = maxAy < minBy;
-    return !( aLeftOfB || aRightOfB || aAboveB || aBelowB );
   },
   saveBoard: function(){
     localStorage.setItem("board",$("#main").html())

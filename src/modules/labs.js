@@ -10,14 +10,10 @@ var Labs = {
     Labs:[],
     Simulations:[],
     getSaved: function(lab,part){
-        console.log(lab);
-        console.log(part);
         const labs = fs.readdirSync("save");
-        console.log(labs);
         for(var s of labs)
             if(s == lab){
                 const parts = fs.readdirSync("save/"+s);
-                console.log(parts);
                 for(var p of parts)
                     if(p == part){
                         return fs.readdirSync("save/"+s+"/"+p);
@@ -47,7 +43,6 @@ var Labs = {
                 if(fs.existsSync(inp+"/"+l+"/"+p+"/settings.json"))
                     Part.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/"+p+"/settings.json"));
                 Part.FrameworkFile = inp+"/"+l+"/Framework.html";
-                console.log(Part.FrameworkFile)
                 const QuestionFile = inp+"/"+l+"/"+p+"/Questions.json";
                 if(fs.existsSync(QuestionFile))
                     Part.Questions = JSON.parse(fs.readFileSync(QuestionFile,"utf-8"));
@@ -59,7 +54,6 @@ var Labs = {
                     const Map = fs.readFileSync(inp+"/"+l+"/"+p+"/HardwareMap.cir","utf-8").replace(/\x00/g, "");
                     const Names = Map.match(/\*\*\*.+\*\*\*/g);
                     const Solutions = Map.split(/\*\*\*.+\*\*\*/g).slice(1);
-                    console.log(Names)
                     if(Names && Solutions)
                         if(Names.length == Solutions.length)
                             for(var a=0;a<Solutions.length;a++)
@@ -71,7 +65,6 @@ var Labs = {
                                     Output:Spice.SPICE_to_OUTPUT(Solutions[a])
                                 });
                 }
-                console.log(Part.Alts.length);
                 for(var s of sections) if(s.substring(0,1) != "." && s.substring(0,15) != "HardwareMap.cir" && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
                     const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:[],Bench:{}}
                     Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");

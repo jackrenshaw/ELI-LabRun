@@ -32,7 +32,6 @@ class SPICE{
   constructor(type,parameters,debugFunction,verboseFunction,complete){
   if(type == "Framework"){
       verboseFunction("WireFrame provided (no need to manually identify nodes)");
-    console.log(parameters)
     this.nodes = parameters.nodes;
     this.components = parameters.components; 
     this.powersupply = parameters.powersupply;
@@ -291,7 +290,6 @@ labelNodes(){
         if(c.ports[0].nodes.length && c.ports[1].nodes.length && c.value)
           this.ammeters.push({positive:c.ports[0].nodes[0],negative:c.ports[1].nodes[0],value:c.value});
     }
-    console.log(this.ammeters);
   }
 
   spiceConvert_connectionNodes(){
@@ -310,13 +308,9 @@ labelNodes(){
       if(UI.inSpan(n.span,this.signalgenerator.negative.span)) 
         this.connectionnodes.siggen_negativenode = n.name;
     }
-    console.log(this.connectionnodes);
   }
 
   spiceConvert_source(){
-    console.log(this.powersupply)
-    console.log(this.oscilloscope)
-    console.log(this.signalgenerator);
     if(!this.powersupply[0].positive && !this.powersupply[0].positive && !this.powersupply[0].negative && !this.signalgenerator.positive){
       this.dbg("<b>Error:</b> There are no sources connected to your circuit. No simulation can be produced");
       throw 'Source node error';
@@ -352,7 +346,6 @@ labelNodes(){
         pulseParams.Pw = 0;
         pulseParams.Per = 1/(this.signalgenerator.frequency);
       }
-      console.log(pulseParams)
       if(this.signalgenerator.waveType == "sine")
         this.SPICE += "V3 "+this.signalgenerator.positive+" "+this.signalgenerator.negative+" SINE(0 "+this.signalgenerator.voltage+" "+this.signalgenerator.frequency+") ac 1\n";
       else 

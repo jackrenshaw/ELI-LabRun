@@ -1041,76 +1041,6 @@ var Spice = {
                     return parseInt(terms[i])*Spice.Shorthand[multFactor[0]]
         return input
     },
-    ValidateCircuit(netlist1,netlist2,callback,errorCallback){
-        var match = true;
-        var feedback = "";
-        console.log("Performing Circuit Validation")
-        var c = [{
-            components:netlist1.match(/^(R|C|L|(XU))[A-z0-9]( [A-z0-9]){2,8} (([0-9]+(f|p|n|u|m|k|Meg|G|T)?)|([A-z0-9]+))$/gm),
-            sources:netlist1.match(/^V[A-z0-9]( [A-z0-9]){2} (([0-9]+(f|p|n|u|m|k)?)|((SINE|EXP|PULSE)\([A-z0-9 .]+\)))$/gm)
-        },{
-            components:netlist2.match(/^(R|C|L|(XU))[A-z0-9]( [A-z0-9]){2,8} (([0-9]+(f|p|n|u|m|k|Meg|G|T)?)|([A-z0-9]+))$/gm),
-            sources:netlist2.match(/^V[A-z0-9]( [A-z0-9]){2} (([0-9]+(f|p|n|u|m|k|Meg|G|T)?)|((SINE|EXP|PULSE)\([A-z0-9 .]+\)))$/gm)
-        }]
-        //eliminate null components (all ports are grounded)
-        if(c[0].components)
-            for(var i=0;i<c[0].components.length;i++)
-                if(/^(R|C|L|XU)[A-z0-9]( 0){2,8} [0-9]+(f|p|n|u|m|k)?$/gm.test(c[0].components[i]))
-                    delete c[0].components[i]
-        if(c[1].components)
-            for(var i=0;i<c[1].components.length;i++)
-                if(/^(R|C|L|XU)[A-z0-9]( 0){2,8} [0-9]+(f|p|n|u|m|k)?$/gm.test(c[1].components[i]))
-                    delete c[1].components[i]
-        console.log(c[0].components)
-        console.log(c[1].components)
-
-        if(c[0].components && c[1].components && match) //ensure that each circuit has components
-            if(c[0].components.length == c[1].components.length){ //ensure that the number of components is equal
-                for(var i=0;i<c[0].components.length;i++) if(c[0].components[i]){ // iterate through each component in the solution circuit
-                    var matchFound = false; //assume that the component doesn't have a match (variable tracks whether a specific component has a match)
-                    var c1 = { // establish circuit parameters
-                        type:c[0].components[i].substring(0,1), // type (resistor, capacitor, opamp)
-                        nodes:c[0].components[i].split(" "),
-                        value:Spice.spice_shorthand(c[0].components[i].split(" ").pop()) //get value (final position)
-                    }
-                    c1.nodes.shift();
-                    c1.nodes.pop();
-                    for(var j=0;j<c[1].components.length;j++) if(c[1].components[j]){ //iterate through each component in submission circuit
-                        var c2 = { //establish circuit parameters
-                            type:c[1].components[j].substring(0,1),
-                            nodes:c[1].components[j].split(" "),
-                            value:Spice.spice_shorthand(c[1].components[j].split(" ").pop())
-                        }
-                        c2.nodes.shift();
-                        c2.nodes.pop();
-                        if(c1.type == c2.type && c1.value == c2.value) //if the submission circuit component in question has the same value and is of the same type
-                            if(this.simple.hasOwnProperty(c1.type)){ //check to see if the circuit is directional or not 
-                                var isDirectional = true; //assume it is unless specified otherwise
-                                if(this.simple[c1.type].hasOwnProperty('Directional'))
-                                    if(this.simple[c1.type].Directional == false)
-                                        isDirectional = false;
-                                if(!isDirectional){ // if the circuit isn't directional
-                                    if(c1.nodes.sort().join(" ") == c2.nodes.sort().join(" ")) //check for equality between the nodes
-                                        matchFound = true; //if the nodes exactly match after sorting then the component exists in both in precisely the same configuration
-                                }
-                                else
-                                   if(c1.nodes.join(" ") == c2.nodes.join(" ")) //check for equality
-                                        matchFound = true; //if the nodes match exactly then the component exists in both circuits in precisely the same configuration
-                            }
-                    }
-                    if(!matchFound){ //if a match hasn't been found after iterating through the entire circuit then we can say that there is a mismatched component
-                        match = false; // and the circuit doesn't match
-                        feedback += c[0].components[i].split(" ")[0] + " failed to match\n"
-                    }
-                }
-            }
-        if(match){
-            console.log("Basic Matching Passes - checking inputs and outputs");
-            Spice.Output_Comparison(netlist1,netlist2,callback,errorCallback);
-        }
-        else
-            errorCallback("Failed basic component matching: "+feedback);
-    },
     test(callback,error){
         const expectedOutput = 2.5;
         const netlist = `Test Circuit for Validation Purposes
@@ -1210,7 +1140,6 @@ var Spice = {
             var rawData = "";
             ls.stdout.on('data', (data) => {
               rawData += data;
-              console.log(rawData);
             });
             ls.stderr.on('error', (data) => {
                 console.log("ERROR!");
@@ -1236,7 +1165,6 @@ var Spice = {
                 console.log("Found custom labels");
                 var specLabels = netlist.match(Spice.LabelRegex)[0];
                 labels = specLabels.replace('* INDEX = ','').split(",");
-                console.log(labels)
               }
               else
                 console.log("No custom labels");
@@ -1269,93 +1197,10 @@ var Spice = {
             });
         });
     },
-    Output_Comparison(netlist1,netlist2,callback,errorFunction){
-        console.log("Within Output Comparison Function");
-        console.log(netlist1);
-        console.log(netlist2);
-        Spice.SpiceSimulate(netlist1,function(scopeData1){
-            Spice.SpiceSimulate(netlist2,function(scopeData2){
-                console.log("Performing Signal Comparison");
-                var signals = [{
-                    input:[],
-                    output:[],
-                    time:[scopeData1[0].x,scopeData1.pop().x],
-                    range:{
-                        input:[],
-                        output:[]
-                    }
-                },{
-                    input:[],
-                    output:[],
-                    time:[scopeData2[0].x,scopeData2.pop().x],
-                    range:{
-                        input:[],
-                        output:[]
-                    }
-                }]
-                for(var i=0;i<scopeData1.length;i++)
-                    if(scopeData1[i].c == 'Input')
-                        signals[0].input.push(scopeData1[i].y)
-                    else if(scopeData1[i].c == 'Output')
-                        signals[0].output.push(scopeData1[i].y)
-                for(var i=0;i<scopeData2.length;i++)
-                    if(scopeData2[i].c == 'Input')
-                        signals[1].input.push(scopeData2[i].y)
-                    else if(scopeData2[i].c == 'Output')
-                        signals[1].output.push(scopeData2[i].y)                 
-                signals[0].range.input = [Math.min.apply(null,signals[0].input),Math.max.apply(null,signals[0].input)]
-                signals[0].range.output = [Math.min.apply(null,signals[0].output),Math.max.apply(null,signals[0].output)]
-                signals[1].range.input = [Math.min.apply(null,signals[1].input),Math.max.apply(null,signals[1].input)]
-                signals[1].range.output = [Math.min.apply(null,signals[1].output),Math.max.apply(null,signals[1].output)]
-                var SignalStats = {
-                    Signals:[scopeData1,scopeData2],
-                    Polling_Length:Math.min(signals[0].input.length,signals[1].input.length),
-                    Vector_Length_Error:Math.max(signals[0].input.length,signals[1].input.length)-Math.min(signals[0].input.length,signals[1].input.length),
-                    Time_Error:Math.max(signals[0].time[1],signals[1].time[1])/Math.min(signals[0].time[1],signals[1].time[1])-1,
-                    Input:{
-                        Divisor:Math.min(signals[0].range.input[1],signals[1].range.input[1]),
-                        Max_Value_Error:Math.max(signals[0].range.input[1],signals[1].range.input[1])/Math.min(signals[0].range.input[1],signals[1].range.input[1])-1,
-                        Min_Value_Error:Math.max(signals[0].range.input[0],signals[1].range.input[0])/Math.min(signals[0].range.input[0],signals[1].range.input[0])-1,
-                        Total_Error:0,
-                        Normalised_Error:0
-                    },
-                    Output:{
-                        Divisor:Math.min(signals[0].range.output[1],signals[1].range.output[1]),
-                        Max_Value_Error:Math.max(signals[0].range.output[1],signals[1].range.output[1])/Math.min(signals[0].range.output[1],signals[1].range.output[1])-1,
-                        Min_Value_Error:Math.max(signals[0].range.output[0],signals[1].range.output[0])/Math.min(signals[0].range.output[0],signals[1].range.output[0])-1,
-                        Total_Error:0,
-                        Normalised_Error:0
-                    }
-                }
-                for(var i=0;i<SignalStats.Polling_Length;i++){
-                    SignalStats.Input.Total_Error += Math.abs(signals[0].input[i]-signals[1].input[i])
-                    SignalStats.Output.Total_Error += Math.abs(signals[0].output[i]-signals[1].output[i])
-                }
-                SignalStats.Input.Normalised_Error = SignalStats.Input.Total_Error/SignalStats.Input.Divisor
-                SignalStats.Output.Normalised_Error = SignalStats.Output.Total_Error/SignalStats.Output.Divisor
-                console.log(SignalStats);
-                if(SignalStats.Input.Normalised_Error < 1 && SignalStats.Output.Normalised_Error < 1){
-                    console.log("Valid Circuit");
-                    callback(SignalStats);
-                }else{
-                    console.log("invalid Circuit");
-                    errorFunction(SignalStats)
-                }
-            },function(error){
-                console.log(error);
-                errorFunction(error);
-            })
-        },function(error){
-            console.log(error)
-            errorFunction(error);
-        })
-    },
     ImageSimulate(netlist,imageCallback,rawCallback,multimeterCallback,errorFunction){
         console.log("Simulating Circuit Internal Function")
         var SpiceCallback = function(scopeData,DC){
             console.log("Recieved Data");
-            console.log(scopeData);
-            console.log(DC);
             if(DC) if(DC.length)
                 multimeterCallback(DC)
             if(scopeData) if(scopeData.length)

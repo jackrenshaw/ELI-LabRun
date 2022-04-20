@@ -1,55 +1,5 @@
-Simulate = function(){
-    SetComponents();
-    $("wire").each(function(){
-      $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
-      $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
-    });
-    $("port").each(function(){
-      $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
-      $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
-    });
-    $("#sidebar .container div[name='SPICE']").html("");
-    //$("#sidebar").show();
-    html2canvas(document.querySelector("body")).then(canvas1 => {
-      //$("#sidebar .container div[name='SPICE']").append("<br><h2>Circuit Image</h2><p>You can right click on this image to save it</p>");
-      //$("#sidebar .container div[name='SPICE']").append(canvas1);
-      //$("#sidebar .container div[name='SPICE']").append("<hr>");
-  
-      $("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");
-    $("#sidebar .container div[name='SPICE']").append("<br><h2 class='subtitle'>Conversion Output</h2>");
-    UI.makeSPICE("simulation",function(error){
-      $("#sidebar .container div[name='SPICE']").append(error+"<br>");
-      $("body #Notifications").append(`<div class="notification is-danger  is-light">
-        <button class="delete" onclick='$(this).parent().remove()'></button>
-  <strong>Error</strong><br>
-  There was an error simulating the circuit. Please check your circuit<br>
-  <strong>Details:</strong><br>`+error+`</div>`);
-    },function(input){
-      $("#sidebar .container div[name='SPICE']").append(input+"<br>");
-    },function(netlist,normalised){
-      console.log("Simualting and Validating Circuit");
-      window.electronAPI.SimulateCircuit(netlist);
-      console.log(netlist)
-      $("body #Notifications").append(`<div class="notification is-info  is-light">
-      <button class="delete" onclick='$(this).parent().remove()'></button>
-<strong>SPICE Circuit</strong><br>
-The circuit is below
-<strong>Details:</strong><br>`+netlist.replace(/\n/g,'<br>')+`</div>`);
-    });
-    $("a[href='#output-netlist'],a[href='#output-nodal']").removeClass("disabled");
-    $("#sidebar .container div[name='SPICE']").append("<hr><h2 id='output-netlist' class='subtitle'>SPICE Output</h2><i>You can run this in a command line simulator like ngSPICE</i><br>"+UI.SPICE.SPICE.replace(/\n/g,'<br>')+"<hr>");
-    $("#sidebar .container div[name='SPICE']").append("<h2 id='output-nodal' class='subtitle'>Nodes</h4>")
-      UI.showNodes();
-      html2canvas(document.querySelector("body")).then(canvas2 => {
-        //$("#sidebar .container div[name='SPICE']").append(canvas2);
-        //$("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");;
-        UI.hideNodes()
-      });
-    });
-  
-}
-
-validate = function(){
+var Check = {
+  Validate:function(){
   console.log("Validating Circuit");
   $("wire").each(function(){
     $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
@@ -59,11 +9,11 @@ validate = function(){
     $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
     $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
   });
-  var continuityErrors = checkCircuitContinuity();
+  var continuityErrors = [];//checkCircuitContinuity();
   if(!continuityErrors.length){
     console.log("Continuity Check passed!");
-    SetComponents();
-    var checkResult = CheckComponents();
+    Check.SetComponents();
+    var checkResult = Check.CheckComponents();
     console.log(checkResult);
     if(checkResult.matchedALT)
       console.log(checkResult.matchedALT);
@@ -77,9 +27,8 @@ validate = function(){
       })
     }
   }
-}
-
-checkCircuitContinuity = function(){
+},
+checkCircuitContinuity:function(){
   var nodeSpans = {};
   var continuityErrors = [];
   $("wire").each(function(){ if($(this).width() > 5 && $(this).height() > 5){
@@ -96,9 +45,8 @@ checkCircuitContinuity = function(){
     else
       continuityErrors.push(s)
   return continuityErrors;
-}
-
-checkConnected = function(_wire,_port){
+},
+checkConnected:function(_wire,_port){
   console
   const WireSpan = [{
     horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
@@ -115,9 +63,8 @@ checkConnected = function(_wire,_port){
     vertical:[$(_port).offset().top,($(_port).offset().top+portHeight)]
   }];
   console.log(inSpan(WireSpan,PortSpan));
-}
-
-SetComponents = function(){
+},
+SetComponents:function(){
   $("connectors port").each(function(){
     const _port = this;
     const PortSpan = [{
@@ -131,7 +78,7 @@ SetComponents = function(){
         horizontal:[$(_wire).offset().left,($(_wire).offset().left+$(_wire).width())],
         vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
       }];
-      if(UI.inSpan(WireSpan,PortSpan))
+      if(inSpan(WireSpan,PortSpan))
         $(_port).attr("data-spice-node","999")
     })
   })
@@ -169,66 +116,8 @@ SetComponents = function(){
     }
   })
   return true;
-}
-
-rectanglesIntersect = function(minAx,minAy,maxAx,maxAy,minBx,minBy,maxBx,maxBy ) {
-  var aLeftOfB = maxAx < minBx;
-  var aRightOfB = minAx > maxBx;
-  var aAboveB = minAy > maxBy;
-  var aBelowB = maxAy < minBy;
-  return !( aLeftOfB || aRightOfB || aAboveB || aBelowB );
 },
-
-inSpan = function(spans1,spans2){
-  console.log(spans1)
-  console.log(spans2)
-  if(spans1) for(var s1 of spans1)
-    if(spans2) for(var s2 of spans2)
-      //Horizontally aligned
-      if(rectanglesIntersect(
-        s1.horizontal[0],
-        s1.vertical[0],
-        s1.horizontal[1],
-        s1.vertical[1],
-        s2.horizontal[0],
-        s2.vertical[0],
-        s2.horizontal[1],
-        s2.vertical[1])
-        ) return true;
-      return false;
-  },
-
-CheckContinuity = function(wirespans){
-  var exclusions = [0];
-  var w = [wirespans[0]];
-  for(var i=0;i<wirespans.length;i++)
-  for(var s in wirespans){
-    if(inSpan(w,[wirespans[s]]) && s != 0 && !exclusions.includes(s)){
-      w.push(wirespans[s]);
-      exclusions.push(s)
-    }
-  }
-  if(w.length < wirespans.length)
-    return false;
-  else
-    return true;
-}
-
-console.log(CheckContinuity([{
-  vertical:[0,100],
-  horizontal:[0,6]
-},{
-  vertical:[101,200],
-  horizontal:[0,6]
-},{
-  vertical:[98,101],
-  horizontal:[0,6]
-},{
-  vertical:[98,101],
-  horizontal:[5,10]
-}]));
-
-CheckComponents = function(){
+CheckComponents:function(){
   //Setup results object;
   var results = {
     matching:[],
@@ -314,4 +203,5 @@ CheckComponents = function(){
     }
   }
   return results;
+}
 }

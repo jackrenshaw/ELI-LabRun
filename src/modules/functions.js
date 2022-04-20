@@ -38,16 +38,6 @@ function generateActionToken(){
   return crypto.createHash("sha256").update(Date.now().toString(), "binary").digest("base64");
 }
 
-function validateToken(session,auth){
-  console.log(session)
-  if(session) if(session.token)
-  for(var u of auth) if(generateToken(u.Email+u.Password+SALT) == session.token){
-    if(u.Admin == true) return {user:u,token:session.token,admin:true};
-    return {user:u,token:session.token,admin:false};
-  }
-  return false;
-}
-
 module.exports.formatBytes = formatBytes;
 module.exports.walk = walk;
 module.exports.generateToken = generateToken;
