@@ -7,7 +7,7 @@ var Check = {
   });
   $("port").each(function(){
     $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
-    $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
+    $(this).attr("data-tooltip","Name:"+$(this).attr("name")+"\nNode:"+$(this).attr("data-spice-node"));
   });
   var continuityErrors = [];//checkCircuitContinuity();
   if(!continuityErrors.length){
