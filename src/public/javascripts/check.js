@@ -136,11 +136,9 @@ CheckComponents:function(){
       if($(this).data("spice-target-nodes").length == results.altresults.length)
         for(var a in $(this).data("spice-target-nodes"))
         if($(this).parent("component").data("spice-directional") == false){
-          console.log("We are dealing with a directional component")
           var reqPorts = [];
           var conPorts = [];
           $(this).parent("component").find("port").each(function(){
-            console.log($(this).attr("data-spice-node"));
             reqPorts.push(parseInt($(this).attr("data-spice-node")))
             conPorts.push(parseInt($(this).data("spice-target-nodes")[a]))
           })

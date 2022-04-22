@@ -1,17 +1,24 @@
 <script type="text/javascript">
 function setAnalog1(){
-  const value = parseFloat($("component[data-spice-name='RVariable1']").attr("data-spice-value"))/(parseFloat($("component[data-spice-name='RVariable1']").attr("data-spice-value"))+parseFloat($("component[data-spice-name='RVariable2']").attr("data-spice-value")));
+  const rVal1 =  parseFloat($("component[data-spice-name='RVariable1']").attr("data-spice-value").replace(/[^0-9\.]/g,''));
+  const rVal2 =  parseFloat($("component[data-spice-name='RVariable2']").attr("data-spice-value").replace(/[^0-9\.]/g,''));
+  console.log(rVal1);
+  console.log(rVal2);
+  var ratio = rVal1/rVal2;
+  console.log(ratio);
   const maxVoltage = 15.0;
   const minVoltage = -15.0;
-  const analogValue = maxVoltage - value*(maxVoltage-minVoltage);
+  var analogValue = maxVoltage - ratio*(maxVoltage-minVoltage);
+  console.log(analogValue);
   if(analogValue < 0.0)
     analogValue = 0.0;
   if(analogValue > 5.0)
     analogValue = 5.0;
   return analogValue;
 }
-$("button[data-action='check']").click(function(){
-  UI.ANALOG[0] = setAnalog1();
+$("a[data-action='check']").click(function(){
+  console.log("Setting Analog Value:"+setAnalog1());
+  $("button[data-action='implement']").attr("data-analog",JSON.stringify([setAnalog1(),0.0]));
 })
 </script>
 <wire id='wire0' data-spice-node="0" data-spice-collapse-node='false' style="position: absolute;left:150px;width:50px;top:250px;height:6px;z-index: 0;background:black"></wire>

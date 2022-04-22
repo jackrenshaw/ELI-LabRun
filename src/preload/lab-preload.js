@@ -156,10 +156,8 @@ The simulation could not be performed<br>
       console.log($(this).attr("data-alt"))
       if($(this).attr("data-alt"))
         params.output = $("meta[name='circuit']").data("alt")[parseInt($(this).attr("data-alt"))].Output.Post
-      if($(this).attr("data-analog"))
-        if($(this).data("analog").length)
-          params.output.Analog = JSON.parse($(this).data("analog"))
-        console.log(params)
+      params.output.Analog = JSON.parse($(this).attr("data-analog"));
+      console.log(params)
       ipcRenderer.send('implement',params)
     })
     $("a[data-action='clear'],button[data-action='clear']").click(function(){

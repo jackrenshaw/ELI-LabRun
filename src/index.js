@@ -12,16 +12,18 @@ const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
 
-SPICE.SpiceCommand = "ngspice";
-Actions.ImplementCommand.Analog = "echo";
-Actions.ImplementCommand.Digital = "echo";
+
+Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\bin"
+const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\labs";
+//SPICE.SpiceCommand = "ngspice";
+//Actions.ImplementCommand.Analog = "echo";
+//Actions.ImplementCommand.Digital = "echo";
 Labs.Creative = true;
 Labs.Procedural = false;
 Labs.Direct = true;
 Labs.Framework = true;
-const PANETOKEN = "ELEC2133"
-const ACTIONTOKEN = "ELEC2133"
-var LABDIR = "src/labs";
+const PANETOKEN = "ELEC2133";
+const ACTIONTOKEN = "ELEC2133";
 var HALTSTARTUP = false;
 
 const isMac = process.platform === 'darwin'
@@ -197,7 +199,7 @@ const createWindow = () => {
 
   var loadView = function(){
     if(!HALTSTARTUP){
-    fs.writeFileSync("src/labs/labs.json",JSON.stringify(Labs.Labs))
+    fs.writeFileSync((LABDIR+"\\labs.json"),JSON.stringify(Labs.Labs))
     const ejse = require('ejs-electron')
     .data({labs:Labs.Labs,actions:Actions.Actions})
     .options('debug', false)
