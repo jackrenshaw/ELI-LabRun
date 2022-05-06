@@ -9,14 +9,14 @@ var Labs = {
     Direct:false,
     Labs:[],
     Simulations:[],
-    getSaved: function(lab,part){
-        const labs = fs.readdirSync("save");
+    getSaved: function(SAVEDIR,lab,part){
+        const labs = fs.readdirSync(SAVEDIR+"\\");
         for(var s of labs)
             if(s == lab){
-                const parts = fs.readdirSync("save/"+s);
+                const parts = fs.readdirSync(SAVEDIR+"\\"+s);
                 for(var p of parts)
                     if(p == part){
-                        return fs.readdirSync("save/"+s+"/"+p);
+                        return fs.readdirSync(SAVEDIR+"\\"+s+"\\"+p);
                     }
 
             }

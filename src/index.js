@@ -15,6 +15,8 @@ const { eventNames } = require('process');
 
 Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\bin"
 const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\labs";
+const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
+
 //SPICE.SpiceCommand = "ngspice";
 //Actions.ImplementCommand.Analog = "echo";
 //Actions.ImplementCommand.Digital = "echo";
@@ -212,18 +214,18 @@ const createWindow = () => {
   })
   ipcMain.on('save',(event,params) =>{
     console.log(params)
-    fs.mkdir("save/"+params.page.lab+"/"+params.page.part,{ recursive: true },function(){
-      fs.writeFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+Date.now()+".json",JSON.stringify(params.preload));
+    fs.mkdir(SAVEDIR+"\\"+params.page.lab+"\\"+params.page.part,{ recursive: true },function(){
+      fs.writeFileSync(SAVEDIR+"\\"+params.page.lab+"\\"+params.page.part+"\\"+Date.now()+".json",JSON.stringify(params.preload));
       event.reply('save-reply','success')
     })
   })
   ipcMain.on('getload',(event,params) =>{
     console.log(params)
-    event.reply('getload-reply',Labs.getSaved(params.page.lab,params.page.part));
+    event.reply('getload-reply',Labs.getSaved(SAVEDIR,params.page.lab,params.page.part));
   })
   ipcMain.on('load',(event,params) =>{
     console.log(params)
-    openLab(params.page,JSON.parse(fs.readFileSync("save/"+params.page.lab+"/"+params.page.part+"/"+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
+    openLab(params.page,JSON.parse(fs.readFileSync(SAVEDIR+"\\"+params.page.lab+"\\"+params.page.part+"\\"+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
   })
   ipcMain.on('simulate', (event,params) => {
     console.log("Simualting Circuit");

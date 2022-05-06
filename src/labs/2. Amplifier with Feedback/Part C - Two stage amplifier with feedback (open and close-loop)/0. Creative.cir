@@ -142,7 +142,9 @@ R5 6 13 1k
 R3 14 15 1k
 R2 15 16 1k
 R1 16 0 1k
-R9 16 11 1k
+R7 11 9 1k
+R8 11 9 1k 
+R10 10 8 1k
 .MODEL QM1 NPN(IS=8e-16 BF=66670)
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware

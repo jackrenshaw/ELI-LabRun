@@ -55,6 +55,17 @@ var UI = {
     }); 
     UI.ComponentDrop();
     UI.wire();
+    UI.FillSavedAlts();
+  },
+  FillSavedAlts(){
+    console.log("Updating ALTS");
+    const components = $("meta[name='circuit']").data("components");
+    for(var c of components)
+      for(var p of c.Ports){
+        if(JSON.stringify(p.altnodes) != $("component[data-spice-name='"+c.Name+"'] port[name='"+p.id+"']").attr("data-spice-target-nodes"))
+          console.log("There has been a change in configuration");
+        $("component[data-spice-name='"+c.Name+"'] port[name='"+p.id+"']").attr("data-spice-target-nodes",JSON.stringify(p.altnodes));
+      }
   },
   Notification(type,message,details){
     var ctype = 'is-info'

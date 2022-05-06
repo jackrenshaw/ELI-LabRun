@@ -15,6 +15,7 @@ var Check = {
     Check.SetComponents();
     var checkResult = Check.CheckComponents();
     console.log(checkResult);
+    $("#loading").hide();
     if(checkResult.matchedALT)
       console.log(checkResult.matchedALT);
   }else{
