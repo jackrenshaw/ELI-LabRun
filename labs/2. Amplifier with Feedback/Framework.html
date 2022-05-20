@@ -31,7 +31,11 @@
 <wire id="wire12" data-spice-node="15" data-spice-collapse-node="false" style="position: absolute;left:775px;width:50px;top:285px;height:6px;z-index: 0;background:black"></wire>
 <!--Feedback Node-->
 <wire id="wire13" data-spice-node="16" data-spice-collapse-node="false" style="position: absolute;left:625px;width:50px;top:430px;height:6px;z-index: 0;background:black"></wire>
-
+<!--Output Switch-->
+<div class="field" style="position: absolute;left:800px;top:800px;border: 1px solid #aaa;background-color: white;z-index: 10;padding: 10px;font-weight: bold;">
+  <input id="oscilloscopeSwitch" type="checkbox" name="oscilloscopeSwitch" class="switch">
+  <label for="oscilloscopeSwitch">Oscilloscope Switch</label>
+</div>
 <script type="text/javascript">
   $(document).ready(function(){
     $("component[data-spice-name='RAmmeter1']").css("top","253px").css("left","65px").attr("disabled",true);
@@ -40,6 +44,14 @@
     $("component[data-spice-name='R10']").addClass("rotated-90").css("top","515px").css("left","553px").attr("disabled",true);
     $("component[data-spice-name='R7']").addClass("rotated-90").css("top","515px").css("left","628px").attr("disabled",true);
     $("component[data-spice-name='R8']").addClass("rotated-90").css("top","515px").css("left","678px").attr("disabled",true);
-
+    $("#oscilloscopeSwitch").click(function(){
+      console.log("Switching oscilloscope value (S1)")
+      console.log($(this).is(":checked"))
+      if($(this).is(":checked"))
+        $("button[data-action='implement']").attr("data-overwrite",JSON.stringify([[1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1]]))
+      else
+        $("button[data-action='implement']").attr("data-overwrite",JSON.stringify([[0,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1]]))
+      console.log($("button[data-action='implement']").attr("data-overwrite"))
+    })
   })
 </script>

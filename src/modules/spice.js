@@ -1062,7 +1062,7 @@ var Spice = {
             if(err) error("Specifically, the output from the NgSPICE test circuit gave a result that was unexpected. The test circuit is:\n\n"+netlist+"\n\nThe result should be "+expectedOutput+"(V) everywhere, however the result was:\n"+JSON.stringify(scopes,null,4))
             if(!err) callback();
         }
-        this.SpiceSimulate(netlist,testData,console.log,error);
+        this.SpiceSimulate(netlist,testData,function(data){},error);
     },
     SPICE_to_Bench(netlist,alts){
         const V1 = netlist.match(/V1 ([0-9]+ ){2}.+/g);

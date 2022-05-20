@@ -4,19 +4,20 @@ var functions = require("./functions");
 var Spice = require("./spice");
 
 var Labs = {
+    DIRSLASH:"\\",
     Creative:true,
     Procedural:false,
     Direct:false,
     Labs:[],
     Simulations:[],
     getSaved: function(SAVEDIR,lab,part){
-        const labs = fs.readdirSync(SAVEDIR+"\\");
+        const labs = fs.readdirSync(SAVEDIR+this.DIRSLASH);
         for(var s of labs)
             if(s == lab){
-                const parts = fs.readdirSync(SAVEDIR+"\\"+s);
+                const parts = fs.readdirSync(SAVEDIR+this.DIRSLASH+s);
                 for(var p of parts)
                     if(p == part){
-                        return fs.readdirSync(SAVEDIR+"\\"+s+"\\"+p);
+                        return fs.readdirSync(SAVEDIR+this.DIRSLASH+s+this.DIRSLASH+p);
                     }
 
             }
@@ -34,24 +35,45 @@ var Labs = {
                 error("There was an issue opening the lab directory")
         else
             error("Lab Directory doesn't exist")
-        if(labs) for(var l of labs) if(l.substring(0,1) != "." && fs.lstatSync(inp+"/"+l).isDirectory()){
+        if(labs) for(var l of labs) if(l.substring(0,1) != "." && fs.lstatSync(inp+this.DIRSLASH+l).isDirectory()){
             verbose(l);
             var Lab = {Name:l,Parts:[]}
-            const parts = fs.readdirSync(inp+"/"+l);
-            for(var p of parts) if(p.substring(0,1) != "." && p != "Framework" && fs.lstatSync(inp+"/"+l+"/"+p).isDirectory()){
+            const parts = fs.readdirSync(inp+this.DIRSLASH+l);
+            for(var p of parts) if(p.substring(0,1) != "." && p != "Framework" && fs.lstatSync(inp+this.DIRSLASH+l+this.DIRSLASH+p).isDirectory()){
                 var Part = {Name:p,Sections:[],Implementations:[],Alts:[],Settings:{Header:"",Spiel:"",Instructions:""},FrameworkFile:null,Framework:null,"Questions":null,"Manual":null}
-                if(fs.existsSync(inp+"/"+l+"/"+p+"/settings.json"))
-                    Part.Settings = JSON.parse(fs.readFileSync(inp+"/"+l+"/"+p+"/settings.json"));
-                Part.FrameworkFile = inp+"/"+l+"/Framework.html";
-                const QuestionFile = inp+"/"+l+"/"+p+"/Questions.json";
+                if(fs.existsSync(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+"settings.json"))
+                    Part.Settings = JSON.parse(fs.readFileSync(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+"settings.json"));
+                Part.FrameworkFile = inp+this.DIRSLASH+l+this.DIRSLASH+"Framework.html";
+                const QuestionFile = inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+"Questions.json";
                 if(fs.existsSync(QuestionFile))
                     Part.Questions = JSON.parse(fs.readFileSync(QuestionFile,"utf-8"));
-                const ManualFile = inp+"/"+l+"/"+p+"/Manual.pdf";
+                const ManualFile = inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+"Manual.pdf";
                     if(fs.existsSync(ManualFile))
                         Part.Manual = ManualFile;
-                const sections = fs.readdirSync(inp+"/"+l+"/"+p);
-                if(fs.existsSync(inp+"/"+l+"/"+p+"/HardwareMap.cir")){
-                    const Map = fs.readFileSync(inp+"/"+l+"/"+p+"/HardwareMap.cir","utf-8").replace(/\x00/g, "");
+                const Mapping = inp+this.DIRSLASH+l+this.DIRSLASH+"Mapping.txt";
+                console.log("Checking for Mapping")
+                    if(fs.existsSync(Mapping)){
+                        console.log("Mapping Exists")
+                        var MapArray = [new Array(8),new Array(8)];
+                        var mappingFile = fs.readFileSync(Mapping,"utf-8");
+                        var mappingLines = mappingFile.match(/[0-9]{2} = .+/g);
+                        console.log(parseInt(mappingLines[0].substring(1,2)));
+                        console.log(parseInt(mappingLines[0].substring(0,1)));
+                        for(var m of mappingLines)
+                            if(parseInt(m.substring(1,2)) >= 0 && parseInt(m.substring(1,2)) <= 7)
+                                if(m.substring(0,1) == 0)
+                                    MapArray[0][parseInt(m.substring(1,2))] = m.replace(/[0-9]{2} = /,"");
+                                else if(m.substring(0,1) == 1)
+                                    MapArray[1][parseInt(m.substring(1,2))] = m.replace(/[0-9]{2} = /,"");
+                        Part.Mapping = MapArray
+                        console.log(Part.Mapping)
+                    }
+                const Nodes = inp+this.DIRSLASH+l+this.DIRSLASH+"Nodes.txt";
+                    if(fs.existsSync(Nodes))
+                        Part.Nodes = fs.readFileSync(Nodes,"utf-8");
+                const sections = fs.readdirSync(inp+this.DIRSLASH+l+this.DIRSLASH+p);
+                if(fs.existsSync(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+"HardwareMap.cir")){
+                    const Map = fs.readFileSync(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+"HardwareMap.cir","utf-8").replace(/\x00/g, "");
                     const Names = Map.match(/\*\*\*.+\*\*\*/g);
                     const Solutions = Map.split(/\*\*\*.+\*\*\*/g).slice(1);
                     if(Names && Solutions)
@@ -65,16 +87,16 @@ var Labs = {
                                     Output:Spice.SPICE_to_OUTPUT(Solutions[a])
                                 });
                 }
-                for(var s of sections) if(s.substring(0,1) != "." && s.substring(0,15) != "HardwareMap.cir" && fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
-                    const Section = {File:(inp+"/"+l+"/"+p+"/"+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:[],Bench:{}}
-                    Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
+                for(var s of sections) if(s.substring(0,1) != "." && s.substring(0,15) != "HardwareMap.cir" && fs.lstatSync(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
+                    const Section = {File:(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+s),Name:s.replace(/.(cir|net)/g,''),Solution:"",Components:[],Simulation:[],SimulationImage:[],Models:[],Multimeter:[],Bench:{}}
+                    Section.Solution = fs.readFileSync((inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+s),"utf-8").replace(/\x00/g, "");
                     var code = s.split(".");
                     code.pop();
                     Spice.ImageSimulate(
-                        fs.readFileSync(inp+"/"+l+"/"+p+"/"+s,'utf-8'),
+                        fs.readFileSync(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+s,'utf-8'),
                         function(svg,data){
                             Section.Simulation.push(data);Section.SimulationImage.push(svg);
-                        },console.log,
+                        },function(rawScopeData){},
                         function(DC){
                             Section.Multimeter.push(DC);
                         },
@@ -91,9 +113,9 @@ var Labs = {
                     Section.Models = Spice.SPICE_Models(Section.Solution);
                     Part.Sections.push(Section);
                 }
-                for(var s of sections) if(fs.lstatSync(inp+"/"+l+"/"+p+"/"+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
+                for(var s of sections) if(fs.lstatSync(inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)){
                     const Section = {};
-                    Section.Solution = fs.readFileSync((inp+"/"+l+"/"+p+"/"+s),"utf-8").replace(/\x00/g, "");
+                    Section.Solution = fs.readFileSync((inp+this.DIRSLASH+l+this.DIRSLASH+p+this.DIRSLASH+s),"utf-8").replace(/\x00/g, "");
                     Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);
                     Part.Implementations.push(Section);
                 }

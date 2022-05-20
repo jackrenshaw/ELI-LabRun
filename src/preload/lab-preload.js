@@ -147,6 +147,8 @@ The simulation could not be performed<br>
       }
     })
     $("a[data-action='implement'],button[data-action='implement']").click(function(){
+      const Mapping = $("meta[name='circuit']").data("mapping");
+      $("#confirm-modal").addClass("is-active");
       console.log("implementing");
       var params = {
         page:$("meta[name='circuit']").data("page"),
@@ -156,8 +158,27 @@ The simulation could not be performed<br>
       console.log($(this).attr("data-alt"))
       if($(this).attr("data-alt"))
         params.output = $("meta[name='circuit']").data("alt")[parseInt($(this).attr("data-alt"))].Output.Post
+      if($(this).attr("data-overwrite")){
+        var overwriteData = JSON.parse($(this).attr("data-overwrite"));
+        if(overwriteData.length == 2 && overwriteData[0].length == 8 && overwriteData[1].length == 8)
+          for(var i=0;i<2;i++)
+            for(var p=0;p<8;p++)
+              if(overwriteData[i][p] == 0 || overwriteData[i][p] == 1)
+                params.output.Digital[i][p] = overwriteData[i][p]
+      }
       params.output.Analog = JSON.parse($(this).attr("data-analog"));
-      console.log(params)
+      console.log(params);
+      $("#confirm-modal tbody").html("");
+      for(var a=0;a<8;a++){
+        var tableline = "<tr><td>"+a+"</td><td>"+params.output.Digital[0][a];
+        if(Mapping[0][a])
+          tableline += " <b>("+Mapping[0][a]+")</b>";
+        tableline += "</td><td>"+params.output.Digital[1][a]
+        if(Mapping[1][a])
+          tableline += " <b>("+Mapping[1][a]+")</b>";
+        tableline += "</td></tr>"
+        $("#confirm-modal tbody").append(tableline);
+      }
       ipcRenderer.send('implement',params)
     })
     $("a[data-action='clear'],button[data-action='clear']").click(function(){

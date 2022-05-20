@@ -4,14 +4,15 @@ var exec = require('child_process').exec,child;
 var ImplementCommand = {
   BINDIR:"",
   Digital:"digitalWrite.exe",
-  Analog:"analogWriteNew.exe"
+  Analog:"analogWriteNew.exe",
+  DIRSLASH:"\\"
 };
 
 var Tokens = {};
 
 function ImplementDigital(port,value,callback,errorFunction){
   console.log("Digital Output:"+value+" at pin:"+port);
-  child = exec(("\""+ImplementCommand.BINDIR+"\\"+ImplementCommand.Digital+"\" "+port+" "+value),
+  child = exec(("\""+ImplementCommand.BINDIR+ImplementCommand.DIRSLASH+ImplementCommand.Digital+"\" "+port+" "+value),
   function (error, stdout, stderr) {
     console.log(error)
     console.log(stderr)
@@ -31,7 +32,7 @@ function ImplementAnalog(port,value,callback,errorFunction){
   console.log("Analog Output:"+value+" at pin:"+port);
   if(value > 5 || value < 0)
     errorFunction("Analog Value Error");
-  child = exec(("\""+ImplementCommand.BINDIR+"\\"+ImplementCommand.Analog+"\" "+port.toString()+" "+value.toString()),
+  child = exec(("\""+ImplementCommand.BINDIR+ImplementCommand.DIRSLASH+ImplementCommand.Analog+"\" "+port.toString()+" "+value.toString()),
   function (error, stdout, stderr) {
     console.log(error)
     console.log(stderr)

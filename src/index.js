@@ -12,14 +12,25 @@ const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
 
+/*WINDOWS (Production) IMPLEMENTATION*/
+//const DIRSLASH = "\\"
+//Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\bin"
+//const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\labs";
+//const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
+/*END WINDOWS IMPLEMENTATION*/
 
-Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\bin"
-const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\labs";
-const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
+/*MAC IMPLEMENTATION*/
+const DIRSLASH = "/"
+Labs.DIRSLASH = DIRSLASH;
+Actions.ImplementCommand.BINDIR = ""
+Actions.ImplementCommand.DIRSLASH = ""
+const LABDIR = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs/dev/dev/ELI-LabRun/labs";
+const SAVEDIR = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs/dev/dev/ELI-LabRun/save";
+SPICE.SpiceCommand = "ngspice";
+Actions.ImplementCommand.Analog = "echo";
+Actions.ImplementCommand.Digital = "echo";
+/*END MAC IMPLEMENTATION*/
 
-//SPICE.SpiceCommand = "ngspice";
-//Actions.ImplementCommand.Analog = "echo";
-//Actions.ImplementCommand.Digital = "echo";
 Labs.Creative = true;
 Labs.Procedural = false;
 Labs.Direct = true;
@@ -201,7 +212,7 @@ const createWindow = () => {
 
   var loadView = function(){
     if(!HALTSTARTUP){
-    fs.writeFileSync((LABDIR+"\\labs.json"),JSON.stringify(Labs.Labs))
+    fs.writeFileSync((LABDIR+DIRSLASH+"labs.json"),JSON.stringify(Labs.Labs))
     const ejse = require('ejs-electron')
     .data({labs:Labs.Labs,actions:Actions.Actions})
     .options('debug', false)
@@ -214,8 +225,8 @@ const createWindow = () => {
   })
   ipcMain.on('save',(event,params) =>{
     console.log(params)
-    fs.mkdir(SAVEDIR+"\\"+params.page.lab+"\\"+params.page.part,{ recursive: true },function(){
-      fs.writeFileSync(SAVEDIR+"\\"+params.page.lab+"\\"+params.page.part+"\\"+Date.now()+".json",JSON.stringify(params.preload));
+    fs.mkdir(SAVEDIR+DIRSLASH+params.page.lab+DIRSLASH+params.page.part,{ recursive: true },function(){
+      fs.writeFileSync(SAVEDIR+DIRSLASH+params.page.lab+DIRSLASH+params.page.part+DIRSLASH+Date.now()+".json",JSON.stringify(params.preload));
       event.reply('save-reply','success')
     })
   })
@@ -225,7 +236,7 @@ const createWindow = () => {
   })
   ipcMain.on('load',(event,params) =>{
     console.log(params)
-    openLab(params.page,JSON.parse(fs.readFileSync(SAVEDIR+"\\"+params.page.lab+"\\"+params.page.part+"\\"+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
+    openLab(params.page,JSON.parse(fs.readFileSync(SAVEDIR+DIRSLASH+params.page.lab+DIRSLASH+params.page.part+DIRSLASH+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
   })
   ipcMain.on('simulate', (event,params) => {
     console.log("Simualting Circuit");
