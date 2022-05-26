@@ -128,10 +128,8 @@ VU2$U5$V10$1 U2$U5$V10_PIN_1 U2$U5$V10_PIN_2
 .MODEL d1 D(IS=18.8n RS=0 BV=400 IBV=5u CJO=30 M=0.333 N=2)
 * XA 3 2 4 11 1 LM741
 XB 5 6 4 11 6 LM741
-XC 10 9 4 11 8 LM741
+XC 10 0 4 11 8 LM741
 * XD 12 13 4 11 14 LM741
-V1 4 0 15
-V2 0 11 15
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 6 10 1k
@@ -148,18 +146,8 @@ V3 999 999 0
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
 * DIGOUTPUT1_PRE = 0 0 0 0 0 0 0 0
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
-* AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0
-* AOUTPUT0_DEVICE = RVariable1
-* AOUTPUT0_MINV = 0.0
-* AOUTPUT0_MAXV = 5.0
-* AOUTPUT1_DEVICE = RVariable1
-* AOUTPUT1_MINV = 0.0
-* AOUTPUT1_MAXV = 5.0
 .control
 tran 20u 20m
 run

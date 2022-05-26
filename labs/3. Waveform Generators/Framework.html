@@ -1,4 +1,5 @@
 <script type="text/javascript">
+  $(document).ready(function(){
 function setAnalog1(){
   const rVal1 =  parseFloat($("component[data-spice-name='RVariable1']").attr("data-spice-value").replace(/[^0-9\.]/g,''));
   const rVal2 =  parseFloat($("component[data-spice-name='RVariable2']").attr("data-spice-value").replace(/[^0-9\.]/g,''));
@@ -20,6 +21,14 @@ $("a[data-action='check']").click(function(){
   console.log("Setting Analog Value:"+setAnalog1());
   $("button[data-action='implement']").attr("data-analog",JSON.stringify([setAnalog1(),0.0]));
 })
+$("component[data-spice-name='XA']").css("top","152px").css("left","231px").attr("disabled",true);
+$("component[data-spice-name='XB']").css("top","189px").css("left","650px").attr("disabled",true);
+$("component[data-spice-name='XC']").css("top","189px").css("left","150px").attr("disabled",true);
+$("component[data-spice-name='XD']").css("top","152px").css("left","231px").attr("disabled",true);
+$("component[data-spice-name='RVariable1']").attr("data-spice-maxvalue","10k");
+$("component[data-spice-name='RVariable2']").attr("data-spice-maxvalue","10k");
+})
+
 </script>
 <wire id='wire0' data-spice-node="0" data-spice-collapse-node='false' style="position: absolute;left:150px;width:50px;top:250px;height:6px;z-index: 0;background:black"></wire>
 <wire id='wire1' data-spice-node="10" data-spice-collapse-node='false' style="position: absolute;left:150px;width:50px;top:280px;height:6px;z-index: 0;background:black"></wire>
@@ -29,6 +38,6 @@ $("a[data-action='check']").click(function(){
 <wire id='wire4' data-spice-node="5" data-spice-collapse-node='false' style="position: absolute;left:650px;width:50px;top:280px;height:6px;z-index: 0;background:black"></wire>
 <wire id='wire5' data-spice-node="6" data-spice-collapse-node='false' style="position: absolute;left:800px;width: 50px;top:280px;height:6px;z-index: 0;background:black"></wire>
 
-<wire id='wire0' data-spice-node="11" data-spice-collapse-node='false' style="position: absolute;left:1000px;height:450px;top:100px;width:6px;z-index: 0;background:black"></wire>
-<wire id='wire1' data-spice-node="4" data-spice-collapse-node='false' style="position: absolute;left:75px;height:450px;top:100px;width:6px;z-index: 0;background:black"></wire>
+<wire id='wire0' data-spice-node="11" data-spice-collapse-node='false' style="position: absolute;left:1000px;height:150px;top:400px;width:6px;z-index: 0;background:black"></wire>
+<wire id='wire1' data-spice-node="4" data-spice-collapse-node='false' style="position: absolute;left:75px;height:150px;top:100px;width:6px;z-index: 0;background:black"></wire>
 <wire id='wire1' data-spice-node="5" data-spice-collapse-node='false' style="position: absolute;left:375px;height:6px;top:544px;width:200px;z-index: 0;background:black"></wire>

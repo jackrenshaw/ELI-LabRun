@@ -11,8 +11,8 @@ Terms can only be seperated by spaces not commas
 */
 var Spice = {
     SpiceCommand:"C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\bin\\ngspice_con.exe",
-    SpiceRegex:/[0-9]{1,4}\t[0-9]+\.[0-9]+(e(\+|\-)[0-9]+)?.+/g,
-    DCRegex:/(v|i)\([0-9](,[0-9])?\)((\+|\-|\*|\/)[0-9]+(f|p|n|u|m|k|Meg|G))? = \-?[0-9]+\.[0-9]+(e(\+|\-)[0-9]+)?.+/g,
+    SpiceRegex:/-?[0-9]{1,4}\t[0-9]+\.[0-9]+(e(\+|\-)[0-9]+)?.+/g,
+    DCRegex:/(v|i)\([0-9]+(,[0-9]+)?\)((\+|\-|\*|\/)[0-9]+(f|p|n|u|m|k|Meg|G))? = \-?[0-9]+\.[0-9]+(e(\+|\-)[0-9]+)?.+/g,
     ShorthandRegex:/[0-9]+(f|p|n|u|m|k|Meg|G)/g,
     Shorthand:{
       'f':1e9,
