@@ -13,13 +13,14 @@ const Actions = require("./actions.js");
 const { eventNames } = require('process');
 
 /*WINDOWS (Production) IMPLEMENTATION*/
-//const DIRSLASH = "\\"
-//Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\bin"
-//const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\src\\labs";
-//const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
+const DIRSLASH = "\\"
+Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
+const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\labs";
+const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
+SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";
 /*END WINDOWS IMPLEMENTATION*/
 
-/*MAC IMPLEMENTATION*/
+/*MAC IMPLEMENTATION
 const DIRSLASH = "/"
 Labs.DIRSLASH = DIRSLASH;
 Actions.ImplementCommand.BINDIR = ""
@@ -29,7 +30,7 @@ const SAVEDIR = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs
 SPICE.SpiceCommand = "ngspice";
 Actions.ImplementCommand.Analog = "echo";
 Actions.ImplementCommand.Digital = "echo";
-/*END MAC IMPLEMENTATION*/
+END MAC IMPLEMENTATION*/
 
 Labs.Creative = true;
 Labs.Procedural = false;
@@ -143,7 +144,7 @@ const createWindow = () => {
                   preload: path.join(__dirname, 'preload/pane-preload.js')
                 }
               });
-              paneWindow.webContents.openDevTools();
+              //paneWindow.webContents.openDevTools();
               const ejse = require('ejs-electron')
               .data({part:p})
               .options('debug', false)
@@ -185,7 +186,7 @@ const createWindow = () => {
                     found = true;
                       console.log("Implementing Pre Actions");
                       Actions.Implement(s.Output.Pre,function(response){
-                        labWindow.webContents.openDevTools();
+                        //labWindow.webContents.openDevTools();
                         const ejse = require('ejs-electron')
                         .data({meta:{Creative:Labs.Creative,Procedural:Labs.Procedural,Direct:Labs.Direct},section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload,Framework:Framework})
                         .options('debug', false)
