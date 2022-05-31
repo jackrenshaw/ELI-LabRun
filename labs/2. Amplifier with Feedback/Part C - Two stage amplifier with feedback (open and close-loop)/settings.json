@@ -6,8 +6,8 @@
     "PaneImage":"images/panes/lab2.png",
     "Output":{
         "Digital":[
-            ["S1","S2","S3","S4","S5",null,null,null],
-            [null,null,null,"Power",null,null,null,null]
+            ["S1","S2","S3","S4","S5","S6","S7","S8"],
+            ["S9","S10","S11","Power",null,null,null,null]
         ],
         "Analog":[null,null]
     }

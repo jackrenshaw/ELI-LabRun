@@ -40,7 +40,7 @@ There was an error implementing those changes. Please report this to your lab de
         output.Analog.push($(this).val());
        })
       console.log(output);
-      ipcRenderer.send('implement',{token:'password',output:output})
+      ipcRenderer.send('implement',{token:'ELEC2133',output:output})
     })
   }
 }

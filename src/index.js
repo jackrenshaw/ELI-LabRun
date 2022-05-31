@@ -12,7 +12,7 @@ const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
 
-/*WINDOWS (Production) IMPLEMENTATION
+/*WINDOWS (Production) IMPLEMENTATION*/
 const DIRSLASH = "\\"
 Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
 const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\labs";
@@ -20,7 +20,7 @@ const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
 SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";
 /*END WINDOWS IMPLEMENTATION*/
 
-/*MAC IMPLEMENTATION*/
+/*MAC IMPLEMENTATION
 const DIRSLASH = "/"
 Labs.DIRSLASH = DIRSLASH;
 Actions.ImplementCommand.BINDIR = ""
