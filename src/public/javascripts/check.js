@@ -15,7 +15,7 @@ var Check = {
     Check.SetComponents();
     var checkResult = Check.CheckComponents();
     console.log(checkResult);
-    $("#loading").hide();
+    console.log("Circuit Matched");
     if(checkResult.matchedALT)
       console.log(checkResult.matchedALT);
   }else{
@@ -87,6 +87,7 @@ SetComponents:function(){
     var _port = this;
     var portWidth = $(_port).width();
     var portHeight = $(_port).height();
+    $(_port).attr("data-spice-node",999);
     if($(this).parent("component").hasClass("rotated-270") || $(this).parent("component").hasClass("rotated-90")){
       portWidth = $(_port).height();
       portHeight = $(_port).width();
@@ -104,21 +105,20 @@ SetComponents:function(){
         vertical:[$(_wire).offset().top,($(_wire).offset().top+$(_wire).height())]
       }];
       if(inSpan(PortSpan,WireSpan) && $(_port).width() > 0 && $(_port).height() > 0){
-        console.log("found a match for"+$(_port).parent("component").attr("data-spice-name")+" port:"+$(_port).attr("id"));
+        //console.log("found a match for"+$(_port).parent("component").attr("data-spice-name")+" port:"+$(_port).attr("id"));
         match = true;
-        console.log($(_wire).attr("data-spice-node"));
+        //console.log($(_wire).attr("data-spice-node"));
         $(_port).attr("data-spice-node",$(_wire).attr("data-spice-node"));
       }
     });
     if(!match){
-      console.log($(_port).parent("component").attr("data-spice-name")+" isn't on a node");
-      console
+      //console.log($(_port).parent("component").attr("data-spice-name")+" isn't on a node");
       //$(_port).attr("data-spice-node",'-1');
     }
   })
   return true;
 },
-CheckComponents:function(){
+CheckComponents: function(){
   var results = {
     matching:[],
     notmatching:[],
@@ -222,19 +222,9 @@ CheckComponentsPT:function(){
       const CURRENT_NODE = $(this).attr("data-spice-node");
       const TARGET_NODES = JSON.parse($(this).attr("data-spice-target-nodes"));
       const DIRECTIONAL = $(this).parent("component").attr("data-spice-directional");
-      console.log("Component:"+COMPONENT);
-      console.log("Port:"+PORT)
-      console.log("Current Node:"+CURRENT_NODE);
-      console.log("Target Array:");
-      console.log(TARGET_NODES);
-      console.log("Directional?:")
-      console.log(DIRECTIONAL);
-      console.log("Alt Length:"+results.altresults.length);
       if(TARGET_NODES.length == results.altresults.length){
         for(var a=0;a<results.altresults.length;a++)
         if(DIRECTIONAL == 'false'){
-          console.log("Iteration:"+a)
-          console.log("Non Directional Component that is not consolidated");
           var reqPorts = [];
           var conPorts = [];
           $(this).parent("component").find("port").each(function(){
@@ -247,18 +237,12 @@ CheckComponentsPT:function(){
             else
               reqPorts.push(parseInt(OTHER_TARGET_NODES[a]));
           })
-          console.log("Required Ports:");
-          console.log(reqPorts);
-          console.log("Connected Ports");
-          console.log(conPorts);
-          console.log(reqPorts.sort().join(" ")+" "+conPorts.sort().join(" "));
           if(reqPorts.sort().join(" ") != conPorts.sort().join(" ")){
             if(!results.altresults[a])
               results.altresults[a] = [];
             results.altresults[a].push(COMPONENT+" Should Have Node Connections: "+reqPorts.sort().join(" ")+" but it is actually on node: "+conPorts.sort().join(" "))
           }
         }else{
-          console.log("Directional Component that is not consolidated");
             if(CURRENT_NODE != parseInt(TARGET_NODES[a])){
               if(!results.altresults[a])
                 results.altresults[a] = [];
@@ -271,9 +255,6 @@ CheckComponentsPT:function(){
           var conPorts = [];
           $(this).parent("component").find("port").each(function(){
             const OTHER_TARGET_NODES = JSON.parse($(this).attr("data-spice-target-nodes"));
-            console.log(OTHER_TARGET_NODES[0]);
-            console.log("Other Target Nodes:")
-            console.log(OTHER_TARGET_NODES);
             conPorts.push(parseInt($(this).attr("data-spice-node")));
             if(OTHER_TARGET_NODES.length == 1)
               reqPorts.push(parseInt(OTHER_TARGET_NODES[0]));
@@ -327,7 +308,6 @@ CheckComponentsPT:function(){
     if(results.altresults[0])
       min.value = results.altresults[0].length;
     var pcount = 0;
-    console.log(results);
     for(var a in results.altresults){
       if(results.altresults[a].length == 0)
         pcount++;

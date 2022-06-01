@@ -22,6 +22,9 @@ body{
   z-index: 99;
   position: fixed;
 }
+#loading.is-visible{
+  display: block;
+}
 board{
 position: absolute;
 top: 0px;
