@@ -145,7 +145,7 @@ R1 16 0 1k
 R9 11 16 1k
 V1 1 0 dc 1
 V2 0 4 dc 1
-V3 8 0 SINE(0 40m 10k)
+V3 8 0 SINE(0 40m 1k)
 RAmmeter1 1 2 1m
 * DIGOUTPUT0_PRE = 1 0 1 0 1 1 0 0
 * DIGOUTPUT1_PRE = 0 1 0 1 0 0 0 0
@@ -154,7 +154,7 @@ RAmmeter1 1 2 1m
 .control
 tran 20u 20m
 run
-print v(15)
+print v(5,6)
 dc V1 10 10 0.1
 dc V2 10 10 0.1
 run

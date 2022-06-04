@@ -11,26 +11,31 @@ const Labs = require("./modules/labs");
 const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
+require('dotenv').config()
+console.log(process.env);
 
-/*WINDOWS (Production) IMPLEMENTATION*/
-const DIRSLASH = "\\"
-Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
-const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\labs";
-const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
-SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";
-/*END WINDOWS IMPLEMENTATION*/
+const DIRSLASH = process.env.DIRSLASH;
+const LABDIR = process.env.LABDIR;
+const SAVEDIR = process.env.SAVEDIR;
+//const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\labs";
+//const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
 
-/*MAC IMPLEMENTATION
-const DIRSLASH = "/"
-Labs.DIRSLASH = DIRSLASH;
-Actions.ImplementCommand.BINDIR = ""
-Actions.ImplementCommand.DIRSLASH = ""
-const LABDIR = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs/dev/dev/ELI-LabRun/labs";
-const SAVEDIR = "/Users/jackrenshaw/Library/Mobile Documents/com~apple~CloudDocs/dev/dev/ELI-LabRun/save";
-SPICE.SpiceCommand = "ngspice";
-Actions.ImplementCommand.Analog = "echo";
-Actions.ImplementCommand.Digital = "echo";
-/*END MAC IMPLEMENTATION*/
+
+if(process.env.ENVIRONMENT == "Prod"){
+  Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
+  SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";
+}else if(process.env.ENVIRONMENT == "Testing"){
+  const DIRSLASH = "\\"
+  Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
+  SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";
+}else{
+  Labs.DIRSLASH = DIRSLASH;
+  Actions.ImplementCommand.BINDIR = ""
+  Actions.ImplementCommand.DIRSLASH = ""
+  SPICE.SpiceCommand = "ngspice";
+  Actions.ImplementCommand.Analog = "echo";
+  Actions.ImplementCommand.Digital = "echo";
+}
 
 Labs.Creative = true;
 Labs.Procedural = false;
@@ -81,7 +86,7 @@ const createWindow = () => {
   //Create the lab window
   var labWindow = new BrowserWindow({
     show:false,
-    width: 1500,
+    width: 1400,
     height: 1000,
     webPreferences: {
       nodeIntegration: true,

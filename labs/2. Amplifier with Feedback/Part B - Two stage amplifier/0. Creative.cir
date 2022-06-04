@@ -151,7 +151,7 @@ RAmmeter1 1 2 1m
 .control
 tran 20u 20m
 run
-print v(15)
+print v(5,6)
 dc V1 10 10 0.1
 dc V2 10 10 0.1
 run

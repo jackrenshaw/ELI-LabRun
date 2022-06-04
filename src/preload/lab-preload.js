@@ -179,6 +179,9 @@ The simulation could not be performed<br>
         tableline += "</td></tr>"
         $("#confirm-modal tbody").append(tableline);
       }
+      var analog1 = "<tr><td>Analog Output 1</td><td>"+params.output.Analog[0];
+      var analog2 = "<tr><td>Analog Output 2</td><td>"+params.output.Analog[1];
+      $("#confirm-modal tbody").append(analog1).append(analog2);
       ipcRenderer.send('implement',params)
     })
     $("a[data-action='clear'],button[data-action='clear']").click(function(){
