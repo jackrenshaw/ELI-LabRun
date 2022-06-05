@@ -1,0 +1,15 @@
+0 = Ground
+1 = Opamp A Output / Leg of diode D1
+2 = Opamp A NI Input / connected to R41,R32,R31 / legs of resistors R21-R24 / legs of diodes D1 and D2
+3 = Unused
+4 = 15V Rail
+5 = Tap point of potentiometer (between two variable resistors)
+6 = Opamp B NI Input (sometimes) / one leg of capacitor C1
+7 = Output of Opamp B / One leg of resistors R11-Rx16
+8 = Output of Opamp C / other leg of capacitor C1 / One leg of resistor R21
+9 = Unused
+10 = Opamp C NI Input, other leg of resistor R21
+11 = -15V Rail
+12 = Unused
+13 = II of opamp D
+14 = output of opamp D / leg of diode D2

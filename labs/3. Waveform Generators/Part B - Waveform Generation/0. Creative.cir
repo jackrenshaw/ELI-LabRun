@@ -125,7 +125,7 @@ XB 0 6 4 11 7 LM741
 XC 10 0 4 11 8 LM741
 * XD 12 13 4 11 14 LM741
 RVariable1 4 5 10k
-RVariable2 5 11 10k
+RVariable2 5 0 10k
 C1 6 8 10p
 Rx11 7 10 1k
 Rx12 7 10 1k

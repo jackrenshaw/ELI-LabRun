@@ -4,12 +4,12 @@ body{
   linear-gradient(to right, #ddd 1px, transparent 1px),
   linear-gradient(to bottom, #ddd 1px, transparent 1px);
   width: 1400px;
-  height: 1080px;
-  min-height: 800px;
-  min-width: 1200px;
-  overflow-y: hidden!important;
+  height: 950px;
+  min-height: 950px;
+  min-width: 1400px;
+  overflow: clip!important;
   max-width: 1400px;
-  max-height: 1080px;
+  max-height: 950px;
 }
 #loading{
   width: 100%;

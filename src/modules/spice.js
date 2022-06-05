@@ -215,7 +215,7 @@ var Spice = {
                 width:35
             }],
             Ports:[{
-                id:1,
+                id:'+',
                 top:47,
                 left:2,
                 height:6,
@@ -226,7 +226,7 @@ var Spice = {
                     top:0
                 }
             },{
-                id:2,
+                id:'-',
                 top:47,
                 left:65,
                 height:6,
