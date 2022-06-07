@@ -11,20 +11,25 @@ const Labs = require("./modules/labs");
 const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
-require('dotenv').config()
-console.log(process.env);
+//require('dotenv').config()
+//console.log(process.env);
 
-const DIRSLASH = process.env.DIRSLASH;
-const LABDIR = process.env.LABDIR;
-const SAVEDIR = process.env.SAVEDIR;
+
+const ENVIRONMENT ="Prod";
+const DIRSLASH="\\"
+const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
+const SAVEDIR="C:\\Elec2133New\\Saved"
+//const DIRSLASH = "";//process.env.DIRSLASH;
+//const LABDIR = "";//process.env.LABDIR;
+//const SAVEDIR = "";//process.env.SAVEDIR;
 //const LABDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\labs";
 //const SAVEDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\Saved";
 
 
-if(process.env.ENVIRONMENT == "Prod"){
-  Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
+if(ENVIRONMENT == "Prod"){
+  Actions.ImplementCommand.BINDIR = "C:\\ELEC2133New\\ELI-LabRun\\bin"
   SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";
-}else if(process.env.ENVIRONMENT == "Testing"){
+}else if(ENVIRONMENT == "Testing"){
   const DIRSLASH = "\\"
   Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
   SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";

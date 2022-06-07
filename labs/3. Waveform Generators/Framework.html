@@ -25,27 +25,24 @@ $("a[data-action='check']").click(function(){
   console.log("Setting Analog Value:"+setAnalog1());
   $("button[data-action='implement']").attr("data-analog",JSON.stringify([setAnalog1(),0.0]));
 })
-$("component[data-spice-name='XA']").css("top","400px").css("left","150px").attr("disabled",true);
-$("component[data-spice-name='XB']").css("top","189px").css("left","650px").attr("disabled",true);
-$("component[data-spice-name='XC']").css("top","189px").css("left","150px").attr("disabled",true);
-$("component[data-spice-name='XD']").css("top","400px").css("left","700px").attr("disabled",true);
+$("component[data-spice-name='XA']").css("top","175px").css("left","340px").attr("disabled",true);
 $("component[data-spice-name='RVariable1']").attr("data-spice-maxvalue","10k");
 $("component[data-spice-name='RVariable2']").attr("data-spice-maxvalue","10k");
 })
 
 </script>
-<wire id='wire0' data-spice-node="0" data-spice-collapse-node='false' style="position: absolute;left:150px;width:50px;top:250px;height:6px;z-index: 0;background:black"></wire>
-<wire id='wire1' data-spice-node="10" data-spice-collapse-node='false' style="position: absolute;left:150px;width:50px;top:280px;height:6px;z-index: 0;background:black"></wire>
-<wire id='wire2' data-spice-node="8" data-spice-collapse-node='false' style="position: absolute;left:300px;width: 50px;top:280px;height:6px;z-index: 0;background:black"></wire>
+<wire id='wire0' data-spice-node="0" data-spice-collapse-node='false' style="position: absolute;left:565px;width:50px;top:400px;height:6px;z-index: 0;background:black"></wire>
+<wire id='wire1' data-spice-node="10" data-spice-collapse-node='false' style="position: absolute;left:565px;width:50px;top:280px;height:6px;z-index: 0;background:black"></wire>
+<wire id='wire2' data-spice-node="8" data-spice-collapse-node='false' style="position: absolute;left:565px;width: 50px;top:280px;height:6px;z-index: 0;background:black"></wire>
 
 <wire id='wire3' data-spice-node="6" data-spice-collapse-node='false' style="position: absolute;left:550px;width:50px;top:250px;height:6px;z-index: 0;background:black"></wire>
 <wire id='wire4' data-spice-node="7" data-spice-collapse-node='false' style="position: absolute;left:800px;width: 50px;top:280px;height:6px;z-index: 0;background:black"></wire>
 
 <wire id='wire3' data-spice-node="2" data-spice-collapse-node='false' style="position: absolute;left:450px;width:50px;top:250px;height:6px;z-index: 0;background:black"></wire>
 
-<wire id='wire5' data-spice-node="11" data-spice-collapse-node='false' style="position: absolute;left:1000px;height:150px;top:400px;width:6px;z-index: 0;background:black"></wire>
-<wire id='wire6' data-spice-node="4" data-spice-collapse-node='false' style="position: absolute;left:75px;height:150px;top:100px;width:6px;z-index: 0;background:black"></wire>
-<wire id='wire7' data-spice-node="5" data-spice-collapse-node='false' style="position: absolute;left:425px;height:6px;top:420px;width:125px;z-index: 0;background:black"></wire>
+<wire id='wire5' data-spice-node="11" data-spice-collapse-node='false' style="position: absolute;left:565px;height:6px;top:300px;width:50px;z-index: 0;background:black"></wire>
+<wire id='wire6' data-spice-node="4" data-spice-collapse-node='false' style="position: absolute;left:366px;height:6px;top:350px;width:50px;z-index: 0;background:black"></wire>
+<wire id='wire7' data-spice-node="5" data-spice-collapse-node='false' style="position: absolute;left:425px;height:6px;top:520px;width:75px;z-index: 0;background:black"></wire>
 <wire id='wire8' data-spice-node="1" data-spice-collapse-node='false' style="position: absolute;left:300px;height:6px;top:495px;width:50px;z-index: 0;background:black"></wire>
 <wire id='wire9' data-spice-node="14" data-spice-collapse-node='false' style="position: absolute;left:850px;height:6px;top:495px;width:50px;z-index: 0;background:black"></wire>
 
