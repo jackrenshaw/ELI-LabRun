@@ -1,8 +1,5 @@
-*** S5 S6 S7 all OFF ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S5 S6 S7 all OFF / S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 999 999 1k
@@ -12,10 +9,9 @@ Rx14 7 10 1k
 Rx15 999 999 1k
 Rx16 7 10 1k
 R21 10 8 1k
-R31 2 6 1k
+R31 999 999 1k
 R32 2 6 1k
-R41 8 2 1k
-C1 6 8 10p
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
@@ -25,11 +21,8 @@ V3 999 999 0
 * DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
-*** S5 S6 S7 all ON ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S5 S6 S7 all ON /S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 7 10 1k
@@ -38,11 +31,10 @@ Rx13 7 10 1k
 Rx14 999 999 1k
 Rx15 7 10 1k
 Rx16 999 999 1k
-R31 2 6 1k
-R32 2 6 1k
-R41 8 2 1k
 R21 10 8 1k
-C1 6 8 10p
+R31 999 999 1k
+R32 2 6 1k
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
@@ -54,11 +46,8 @@ V3 999 999 0
 * DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
-*** S5 ON ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S5 ON / S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 999 999 1k
@@ -68,10 +57,9 @@ Rx14 999 999 1k
 Rx15 999 999 1k
 Rx16 7 10 1k
 R21 10 8 1k
-R31 2 6 1k
+R31 999 999 1k
 R32 2 6 1k
-R41 8 2 1k
-C1 6 8 10p
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
@@ -83,11 +71,8 @@ V3 999 999 0
 * DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
-*** S6 ON ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S6 ON / S9 OFF***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 7 10 1k
@@ -97,10 +82,9 @@ Rx14 7 10 1k
 Rx15 999 999 1k
 Rx16 7 10 1k
 R21 10 8 1k
-R31 2 6 1k
+R31 999 999 1k
 R32 2 6 1k
-R41 8 2 1k
-C1 6 8 10p
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
@@ -112,11 +96,8 @@ V3 999 999 0
 * DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
-*** S7 ON ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S7 ON / S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 999 999 1k
@@ -126,10 +107,9 @@ Rx14 7 10 1k
 Rx15 7 10 1k
 Rx16 999 999 1k
 R21 10 8 1k
-R31 2 6 1k
+R31 999 999 1k
 R32 2 6 1k
-R41 8 2 1k
-C1 6 8 10p
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
@@ -142,24 +122,20 @@ V3 999 999 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 * AOUTPUT1_MAXV = 5.0
-*** S7 OFF ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S7 OFF / S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 7 10 1k
 Rx12 999 999 1k
 Rx13 7 10 1k
 Rx14 999 999 1k
-Rx15 7 10 1k
-Rx16 999 999 1k
+Rx15 999 999 1k
+Rx16 7 10 1k
 R21 10 8 1k
-R31 2 6 1k
+R31 999 999 1k
 R32 2 6 1k
-R41 8 2 1k
-C1 6 8 10p
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
@@ -171,11 +147,203 @@ V3 999 999 0
 * DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
-*** S6 OFF ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S6 OFF / S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 100k
+RVariable2 5 11 100k
+Rx11 999 999 1k
+Rx12 7 10 1k
+Rx13 7 10 1k
+Rx14 999 999 1k
+Rx15 7 10 1k
+Rx16 999 999 1k
+R21 10 8 1k
+R31 999 999 1k
+R32 2 6 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** S5 OFF /S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 10k
+RVariable2 5 11 10k
+Rx11 7 10 1k
+Rx12 999 999 1k
+Rx13 999 999 1k
+Rx14 7 10 1k
+Rx15 7 10 1k
+Rx16 999 999 1k
+R21 10 8 1k
+R31 999 999 1k
+R32 2 6 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** S5 S6 S7 all OFF / S9 ON ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 100k
+RVariable2 5 11 100k
+Rx11 999 999 1k
+Rx12 7 10 1k
+Rx13 999 999 1k
+Rx14 7 10 1k
+Rx15 999 999 1k
+Rx16 7 10 1k
+R21 10 8 1k
+R31 2 6 1k
+R32 999 999 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** S5 S6 S7 all ON /S9 ON ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 100k
+RVariable2 5 11 100k
+Rx11 7 10 1k
+Rx12 999 999 1k
+Rx13 7 10 1k
+Rx14 999 999 1k
+Rx15 7 10 1k
+Rx16 999 999 1k
+R21 10 8 1k
+R31 2 6 1k
+R32 999 999 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** S5 ON / S9 ON ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 100k
+RVariable2 5 11 100k
+Rx11 999 999 1k
+Rx12 7 10 1k
+Rx13 7 10 1k
+Rx14 999 999 1k
+Rx15 999 999 1k
+Rx16 7 10 1k
+R21 10 8 1k
+R31 2 6 1k
+R32 999 999 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** S6 ON / S9 ON ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 100k
+RVariable2 5 11 100k
+Rx11 7 10 1k
+Rx12 999 999 1k
+Rx13 999 999 1k
+Rx14 7 10 1k
+Rx15 999 999 1k
+Rx16 7 10 1k
+R21 10 8 1k
+R31 2 6 1k
+R32 999 999 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** S7 ON / S9 ON ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 100k
+RVariable2 5 11 100k
+Rx11 999 999 1k
+Rx12 7 10 1k
+Rx13 999 999 1k
+Rx14 7 10 1k
+Rx15 7 10 1k
+Rx16 999 999 1k
+R21 10 8 1k
+R31 2 6 1k
+R32 999 999 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+* AOUTPUT1_MAXV = 5.0
+*** S7 OFF / S9 ON ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
+RVariable1 4 5 100k
+RVariable2 5 11 100k
+Rx11 7 10 1k
+Rx12 999 999 1k
+Rx13 7 10 1k
+Rx14 999 999 1k
+Rx15 999 999 1k
+Rx16 7 10 1k
+R21 10 8 1k
+R31 2 6 1k
+R32 999 999 1k
+C1 6 7 10p
+V1 4 0 15
+V2 0 11 15
+V3 999 999 0
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* AOUTPUT0_POST = 0.0 
+* AOUTPUT1_POST = 0.0
+*** S6 OFF / S9 OFF ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 100k
 RVariable2 5 11 100k
 Rx11 999 999 1k
@@ -186,9 +354,8 @@ Rx15 7 10 1k
 Rx16 999 999 1k
 R21 10 8 1k
 R31 2 6 1k
-R32 2 6 1k
-R41 8 2 1k
-C1 6 8 10p
+R32 999 999 1k
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
@@ -198,11 +365,8 @@ V3 999 999 0
 * DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
-*** S5 OFF ***
-* XA 3 2 4 11 1 LM741
-XB 0 6 4 11 7 LM741
-XC 10 0 4 11 8 LM741
-* XD 12 13 4 11 14 LM741
+*** S5 OFF /S9 ON ***
+XA 1 999 999 4 0 7 7 8 0 10 11 0 13 14 LM348N
 RVariable1 4 5 10k
 RVariable2 5 11 10k
 Rx11 7 10 1k
@@ -213,9 +377,8 @@ Rx15 7 10 1k
 Rx16 999 999 1k
 R21 10 8 1k
 R31 2 6 1k
-R32 2 6 1k
-R41 8 2 1k
-C1 6 8 10p
+R32 999 999 1k
+C1 6 7 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0

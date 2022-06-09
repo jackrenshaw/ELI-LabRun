@@ -726,7 +726,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:2,
+                    group:1,
                     type:0
                 },{
                     id:'A+',
@@ -735,7 +735,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:2,
+                    group:1,
                     type:1
                 },{
                     id:'VCC',
@@ -744,17 +744,17 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:2,
+                    group:0,
                     type:2
                 },{
                     id:'B+',
                     top:179,
                     left:59,
-                    height:0,
-                    width:0,
-                    group:0,
-                    CSS:"background:none;position:absolute;display:none;",
-                    type:0
+                    height:18,
+                    width:18,
+                    group:2,
+                    CSS:"background:#aaa;position:absolute;",
+                    type:2
                 },{
                     id:'B-',
                     top:216,
@@ -762,7 +762,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:3,
+                    group:2,
                     type:1
                 },{
                     id:'BOUT',
@@ -771,7 +771,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:3,
+                    group:2,
                     type:0
                 },{
                     id:'COUT',
@@ -789,7 +789,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:4,
+                    group:3,
                     type:0
                 },{
                     id:'C+',
@@ -798,7 +798,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:4,
+                    group:3,
                     type:1
                 },{
                     id:'-VCC',
@@ -807,7 +807,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:4,
+                    group:0,
                     type:2
                 },{
                     id:'D+',
@@ -816,7 +816,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:5,
+                    group:4,
                     type:2
                 },{
                     id:'D-',
@@ -825,7 +825,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:5,
+                    group:4,
                     type:1
                 },{
                     id:'DOUT',
@@ -834,7 +834,7 @@ var Spice = {
                     height:18,
                     width:18,
                     CSS:"background:#aaa;position:absolute;",
-                    group:5,
+                    group:4,
                     type:0
                 }],
                 Value:null,
