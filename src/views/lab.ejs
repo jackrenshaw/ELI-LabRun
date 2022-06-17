@@ -234,11 +234,13 @@ top = top+200;
     })
     $("a[data-action='download']").click(function(){
       download("save.json",JSON.stringify({
+        meta:$("meta[name='circuit']").data(),
         voltage1:null,
         voltage2:null,
         siggen_frequency:null,
         siggen_voltage:null,
-        board:$("#main").html()
+        board:$("#main").html(),
+        connectors:$("connectors").html()
       }));
     });
   })
