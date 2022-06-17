@@ -215,8 +215,34 @@ The simulation could not be performed<br>
     })
     $("tr[data-action='load']").click(function(){
       if($("meta[name='circuit']").data("page")){
-        ipcRenderer.send('load',{page:$("meta[name='circuit']").data("page"),file:$(this).data("file")});
+        ipcRenderer.send('load',{page:$("meta[name='circuit']").data("page"),file:$(this).data("file"),data:null});
       }
     })
+    $("html").on("dragover", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).addClass('dragging');
+  });
+  
+  $("html").on("dragleave", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).removeClass('dragging');
+  });
+  
+  $("html").on("drop", function(ev) {
+      ev.preventDefault();  
+      ev.stopPropagation();
+      console.log("Dropped!");
+      var file = ev.originalEvent.dataTransfer.files[0];
+      reader = new FileReader();
+      reader.onload = function(event) {
+          console.log(event.target);
+          ipcRenderer.send('load',{page:$("meta[name='circuit']").data("page"),file:null,data:JSON.parse(event.target.result)});
+          //$("main").html(event.target.result);
+      };
+      var txt = reader.readAsText(file);
+      //if($("#SaveLocal").hasClass("is-active"))
+  });
   }
 }

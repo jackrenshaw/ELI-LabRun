@@ -14,11 +14,10 @@ const { eventNames } = require('process');
 //require('dotenv').config()
 //console.log(process.env);
 
-
-const ENVIRONMENT ="Prod";
-const DIRSLASH="\\"
-const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
-const SAVEDIR="C:\\Elec2133New\\Saved"
+const ENVIRONMENT =null;//"Prod";
+const DIRSLASH="/"//"\\"
+const LABDIR="labs"//"C:\\Elec2133New\\ELI-LabRun\\labs"
+const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved";//"C:\\Elec2133New\\Saved"
 //const DIRSLASH = "";//process.env.DIRSLASH;
 //const LABDIR = "";//process.env.LABDIR;
 //const SAVEDIR = "";//process.env.SAVEDIR;
@@ -247,7 +246,10 @@ const createWindow = () => {
   })
   ipcMain.on('load',(event,params) =>{
     console.log(params)
-    openLab(params.page,JSON.parse(fs.readFileSync(SAVEDIR+DIRSLASH+params.page.lab+DIRSLASH+params.page.part+DIRSLASH+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
+    if(params.file)
+      openLab(params.page,JSON.parse(fs.readFileSync(SAVEDIR+DIRSLASH+params.page.lab+DIRSLASH+params.page.part+DIRSLASH+params.file)),function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
+    else if(params.data)
+      openLab(params.page,params.data,function(response){ event.reply('load-reply', response)},function(error){event.reply('load-error', 'error')},labWindow)
   })
   ipcMain.on('simulate', (event,params) => {
     console.log("Simualting Circuit");

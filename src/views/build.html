@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>ELI - UNSW ELEC2133</title>
+    <link rel="stylesheet" href="../../node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
+    <script src="../../node_modules/bulma-extensions/dist/js/bulma-extensions.min.js"></script>
+    <link rel="stylesheet" href="../../node_modules/@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css">
+    <script src="../public/javascripts/math.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
+    <link href="../public/stylesheets/custom.css"rel="stylesheet">
+
+<script src="../public/javascripts/jquery.min.js"></script>
+<script src="../public/javascripts/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-esm-min.js"></script>
+<script type="text/javascript" src="../public/javascripts/generalFunctions.js"></script>
+<script type="text/javascript" src="../public/javascripts/ui.js" defer></script>
+<script type="text/javascript" src="../public/javascripts/check.js" defer></script>
+<script type="text/javascript" src="../public/javascripts/spice.js" defer></script>
+    <!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
+
+<script src="../../node_modules/html2canvas/dist/html2canvas.min.js"></script>
+
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="../public/stylesheets/jquery-ui.min.css">
+</head>
+<body>
+  <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="#">
+        <h1>UNSW ELI</h1>
+      </a>
+  
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" data-action="download" data-page='<%-JSON.stringify(page)%>'>
+          <span class="material-icons">
+            download
+            </span>
+          </a>
+        </div>
+    </div>
+  </nav>
+</head>
+  <body> 
+    <div id="Notifications"></div>
+<main id='main'>
+  </main>
+  <connectors>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:75px;background: red;height:300px;width:6px;z-index:0;' name="powersupply-1-positive" data-spice-bench="PowerSupply 1">
+      <label style="position: relative;left:10px;">Power Supply 1+</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:175px;background: black;height:300px;width:6px;z-index:0;' name="powersupply-1-negative"  data-spice-bench="PowerSupply 1">
+      <label  style="position: relative;left:10px;">Power Supply 1-</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:275px;background: red;height: 300px;width:6px;z-index:0;' name="powersupply-2-positive"  data-spice-bench="PowerSupply 2">
+      <label  style="position: relative;left:10px;">Power Supply 2+</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:375px;background: black;height:300px;width:6px;z-index:0;' name="powersupply-2-negative" data-spice-bench="PowerSupply 2">
+      <label  style="position: relative;left:10px;">Power Supply 2-</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:600px;background: red;height:300px;width:6px;z-index:0;' name="signalgenerator-positive" data-spice-bench="Signal Generator">
+      <label  style="position: relative;left:10px;">Signal Generator V+</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:700px;background: black;height:300px;width:6px;z-index:0;' name="signalgenerator-negative" data-spice-bench="Signal Generator">
+      <label  style="position: relative;left:10px;">Signal Generator V-</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:1000px;background: red;height:300px;width:6px;z-index:0;' name="oscilloscope-1-positive">
+      <label  style="position: relative;left:10px;">Scope V+</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left: 1060px;background: black;height:300px;width:6px;z-index:0;' name="oscilloscope-1-negative">
+      <label  style="position: relative;left:10px;">Scope V-</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:1120px;background: red;height:300px;width:6px;z-index:0;' name="oscilloscope-2-positive">
+      <label  style="position: relative;left:10px;">Scope V+</label>
+    </port>
+    <port data-spice-node="999" style='position: absolute;top:650px;left:1180px;background: black;height:300px;width:6px;z-index:10;' name="oscilloscope-2-negative">
+      <label  style="position: relative;left:10px;">Scope V-</label>
+    </port>
+    <div style="position: absolute;height:200px;width:0px;border-left:2px dashed #777;left:500px;top:700px;"></div>
+    <div style="position: absolute;height:0px;width:100%;border-top:2px dashed #777;left:0px;top:700px;"></div>
+    <div style="position: absolute;height: 200px;width:0px;border-left:2px dashed #777;left:900px;top:700px;"></div>
+    </connectors>
+  <footer class="main-footer" data-html2canvas-ignore>
+  <div class="container content has-text-centered">
+  </div>
+</footer>
+
+<div class="modal" id="LoadFile">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Save/Load a Previous Circuit</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="columns is-vcentered">
+        <div class="column has-text-centered">
+          <p>Drag your working file here</p>
+        </div>
+      </div>
+      <table class="table">
+        <tbody>
+
+        </tbody>
+      </table>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-info">Confirm</button>
+    </footer>
+  </div>
+</div>
+
+<div id="loading"></div>
+<script type="text/javascript">
+
+$("a[data-action='download']").click(function(){
+  download("save.json",JSON.stringify(generatePreload()));
+})
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+function generatePreload(){
+      var preload = {
+        voltage1:null,
+        voltage2:null,
+        siggen_frequency:null,
+        siggen_voltage:null,
+        board:$("#main").html()
+      }
+      return preload
+    }
+  $("html").on("dragover", function(event) {
+    event.preventDefault();  
+    event.stopPropagation();
+    $(this).addClass('dragging');
+});
+
+$("html").on("dragleave", function(event) {
+    event.preventDefault();  
+    event.stopPropagation();
+    $(this).removeClass('dragging');
+});
+
+$("html").on("drop", function(ev) {
+    ev.preventDefault();  
+    ev.stopPropagation();
+    console.log("Dropped!");
+    var file = ev.originalEvent.dataTransfer.files[0];
+    reader = new FileReader();
+    reader.onload = function(event) {
+        console.log(event.target);
+        $("main").html(JSON.parse(event.target.result).board);
+          UI.SET();
+          $("#LoadFile").removeClass("is-active");
+    };
+    var txt = reader.readAsText(file);
+
+});
+
+  $(document).ready(function(){
+    $("#LoadFile").addClass("is-active");
+    $("button.delete,.modal-background").click(function(){
+      $("#LoadFile").removeClass("is-active");
+    })
+  })
+</script>
+  </body>
+</html>

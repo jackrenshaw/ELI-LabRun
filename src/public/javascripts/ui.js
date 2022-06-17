@@ -55,7 +55,7 @@ var UI = {
     }); 
     UI.ComponentDrop();
     UI.wire();
-    UI.FillSavedAlts();
+    //UI.FillSavedAlts();
   },
   FillSavedAlts(){
     console.log("Updating ALTS");
@@ -122,7 +122,8 @@ var UI = {
         if(inSpan(WireSpan,PortSpan))
           $(_port).attr("data-spice-node","999")
       })
-      $(this).css("display","none").css("width","0px").css("height","0px").remove();
+      if($(this).data("candelete") != false)
+        $(this).css("display","none").css("width","0px").css("height","0px").remove();
     }else{
       var spiceNode = " data-spice-node=\""+$(this).attr("data-spice-node")+"\"";
       if($(this).attr("data-spice-collapse-node"))

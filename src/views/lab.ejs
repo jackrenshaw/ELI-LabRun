@@ -87,7 +87,7 @@
                 edit
                 </span>
               </a>
-                <a class="navbar-item" onclick="Check.Validate();$('#SaveLocal').addClass('is-active');" data-action="getload" data-page='<%-JSON.stringify(page)%>'>
+                <a class="navbar-item" onclick="//download('save.json',generatePreload())//Check.Validate();$('#SaveLocal').addClass('is-active');" data-action="download" data-page='<%-JSON.stringify(page)%>'>
                   <span class="material-icons">
                     save
                     </span>
@@ -232,6 +232,15 @@ top = top+200;
     $("#loading").click(function(){
       $(this).hide();
     })
+    $("a[data-action='download']").click(function(){
+      download("save.json",JSON.stringify({
+        voltage1:null,
+        voltage2:null,
+        siggen_frequency:null,
+        siggen_voltage:null,
+        board:$("#main").html()
+      }));
+    });
   })
 </script>
   </body>
