@@ -69,5 +69,33 @@ There was an error the requested Laboratory. This error likely relates to settin
           $("#login-form p.feedback").html("Login Failed!")
       })
     });
+    $("html").on("dragover", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).addClass('dragging');
+  });
+  
+  $("html").on("dragleave", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).removeClass('dragging');
+  });
+  
+  $("html").on("drop", function(ev) {
+      ev.preventDefault();  
+      ev.stopPropagation();
+      console.log("Dropped!");
+      var file = ev.originalEvent.dataTransfer.files[0];
+      reader = new FileReader();
+      reader.onload = function(event) {
+          console.log(event.target);
+          let Circuit = JSON.parse(event.target.result);
+          if(Circuit.output)
+          ipcRenderer.send('implement',{token:"ELEC2133",output:JSON.parse(event.target.result).output});
+          //$("main").html(event.target.result);
+      };
+      var txt = reader.readAsText(file);
+      //if($("#SaveLocal").hasClass("is-active"))
+  });
   }
 }

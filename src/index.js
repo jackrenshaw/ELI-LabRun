@@ -86,6 +86,10 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+app.on('window-all-closed', () => {
+  app.quit()
+})
+
 const createWindow = () => {
   //Create the lab window
   var labWindow = new BrowserWindow({
@@ -121,6 +125,10 @@ const createWindow = () => {
     Actions.Restore();
     event.preventDefault();
     labWindow.hide();
+  })
+
+  mainWindow.on('close',function(event){
+    app.quit();
   })
 
   graphWindow.on('close',function(event){
@@ -318,6 +326,35 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+
+const express = require('express')
+var cors = require('cors')
+const ws = express()
+ws.use(cors())
+const port = 3001
+
+ws.get('/implement', (req, res) => {
+  let responses = [];
+  let errorSent = false;
+  console.log(req.query);
+  implementCircuit(req.query,function(response){ 
+    responses.push(response);
+    console.log(responses);
+    if(responses.length == 4)
+      res.send(responses);
+  },function(error){
+    if(!errorSent){
+      errorSent = true;
+      res.status(400).send(error);
+    }
+    console.log("Error:"+error)
+  });
+})
+
+ws.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

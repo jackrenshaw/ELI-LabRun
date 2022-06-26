@@ -22,7 +22,7 @@ function ImplementDigital(port,value,callback,errorFunction){
     else if(stderr)
       errorFunction(stderr)
     else{
-      callback(stdout);
+      callback({type:"Digital",port:port,value:value,response:stdout});
       console.log(stdout);
     }
   });
@@ -42,7 +42,7 @@ function ImplementAnalog(port,value,callback,errorFunction){
     else if(stderr)
       errorFunction(stderr)
     else{
-      callback(stdout);
+      callback({type:"Analog",port:port,value:value,response:stdout});
       console.log(stdout);
     }
   });
