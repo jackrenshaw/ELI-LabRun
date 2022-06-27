@@ -1384,7 +1384,12 @@ var Spice = {
                 }else if(netlist.includes("ac lin"))
                     graph("Circuit Output",scopeData,"Frequency","Voltage",imageCallback,errorFunction);
                 
-            }
+            }else{
+                imageCallback("No Simulation Response");
+            }else
+                imageCallback("No Simulation Response");
+            else
+                imageCallback("No Simulation Response");
         }
         this.SpiceSimulate(netlist,SpiceCallback,rawCallback,errorFunction)
     }

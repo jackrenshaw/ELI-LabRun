@@ -14,10 +14,10 @@ const { eventNames } = require('process');
 //require('dotenv').config()
 //console.log(process.env);
 
-const ENVIRONMENT ="Prod";//"Prod";
-const DIRSLASH="\\"//"\\"
+const ENVIRONMENT ="Mac";//"Prod";
+const DIRSLASH="/"//"\\"
 const LABDIR="labs"//"C:\\Elec2133New\\ELI-LabRun\\labs"
-const SAVEDIR="C:\\Elec2133New\\Saved"
+const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved"
 //const DIRSLASH = "";//process.env.DIRSLASH;
 //const LABDIR = "";//process.env.LABDIR;
 //const SAVEDIR = "";//process.env.SAVEDIR;
@@ -350,6 +350,39 @@ ws.get('/implement', (req, res) => {
     }
     console.log("Error:"+error)
   });
+})
+
+ws.get("/simulate", (req,res) =>{
+  console.log("Simulating Circuit")
+  console.log(req.query.circuit)
+  let response = {
+    rawData:null,
+    multimeter:null,
+    simulate:null
+  }
+  let ErrorSent = false;
+  SPICE.ImageSimulate(
+    req.query.circuit,
+    function(svg,data){
+      console.log("returning simuation image");
+      response.simulate = svg;
+      if(response.multimeter && response.simulate && response.rawData)
+        res.send(response);
+    },function(rawData){
+      console.log("Returning Raw Data");
+      response.rawData = rawData;
+      if(response.multimeter && response.simulate && response.rawData)
+        res.send(response);
+    },function(multimeter){
+      response.multimeter = multimeter;
+      if(response.multimeter && response.simulate && response.rawData)
+        res.send(response);
+    },function(error){
+      console.log("Error:")
+      console.log(error)
+      if(!ErrorSent)
+        res.status(400).send(error)
+    });
 })
 
 ws.listen(port, () => {
