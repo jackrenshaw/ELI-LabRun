@@ -14,10 +14,10 @@ const { eventNames } = require('process');
 //require('dotenv').config()
 //console.log(process.env);
 
-const ENVIRONMENT ="Mac";//"Prod";
-const DIRSLASH="/"//"\\"
-const LABDIR="labs"//"C:\\Elec2133New\\ELI-LabRun\\labs"
-const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved"
+const ENVIRONMENT = "Prod";
+const DIRSLASH="\\"
+const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
+const SAVEDIR="C:\\Elec2133New\\Saved"
 //const DIRSLASH = "";//process.env.DIRSLASH;
 //const LABDIR = "";//process.env.LABDIR;
 //const SAVEDIR = "";//process.env.SAVEDIR;
