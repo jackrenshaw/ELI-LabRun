@@ -1298,7 +1298,6 @@ var Spice = {
                 errorFunction(error);
             });
             ls.on('close', (code) => {
-               console.log("Done Simulation!")
                 rawCallback(rawData);
               var scopes = rawData.match(Spice.SpiceRegex);
               if(rawData.match(Spice.DCRegex))
@@ -1310,12 +1309,12 @@ var Spice = {
                 if(includedLabels)
                     labels = includedLabels[0].replace(/(Index|Time)/gi,'').replace(/\s+/g,' ').trim().split(' ');
               if(Spice.LabelRegex.test(netlist)){
-                console.log("Found custom labels");
                 var specLabels = netlist.match(Spice.LabelRegex)[0];
                 labels = specLabels.replace('* INDEX = ','').split(",");
               }
-              else
-                console.log("No custom labels");
+              else{
+
+              }
               var scopeData = [];
               if(scopes) if(scopes.length){
                 var sampleStep = 1;
@@ -1348,7 +1347,6 @@ var Spice = {
     ImageSimulate(netlist,imageCallback,rawCallback,multimeterCallback,errorFunction){
         console.log("Simulating Circuit Internal Function")
         var SpiceCallback = function(scopeData,DC){
-            console.log("Recieved Data");
             if(DC) if(DC.length)
                 multimeterCallback(DC)
             if(scopeData) if(scopeData.length)

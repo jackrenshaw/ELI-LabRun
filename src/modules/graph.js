@@ -30,7 +30,6 @@ pickn = function(a, n, sigs) {
 
 function makeSVG(title,data,xLabel,yLabel,callback,errorFunction){
   if(validateData(data)){
-    console.log("Valid Data");
   var sampledX = pickn(data,10,1);
   var scale = [Math.min.apply(Math, data.map(function(o) { return o.y; })),Math.max.apply(Math, data.map(function(o) { return o.y; }))*1.25];
   for(var i=0;i<sampledX.length;i++)
