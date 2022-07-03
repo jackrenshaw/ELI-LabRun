@@ -5,7 +5,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   login: (form) => ipcRenderer.send('login',form),
   getCompletions: (page) => ipcRenderer.send('getCompletions',page),
   startup: () => ipcRenderer.send('startup','begin'),
-  setDirectory: (directory) => ipcRenderer('set-directory',directory)
+  setDirectory: (directory) => ipcRenderer.send('set-directory',directory),
+  setCourse: (CourseIndex) => ipcRenderer.send('set-course',CourseIndex)
 })
 
 document.onreadystatechange = function () {
@@ -14,6 +15,11 @@ document.onreadystatechange = function () {
     $(document).add('*').off();
     ipcRenderer.on('startup-reply', (_event, arg) => {
       $(".container center").append(arg);
+    });
+    ipcRenderer.on('startup-coursechoice', (_event, arg) => {
+      $(".container center").append("<br>");
+      for(var c=0;c<arg.length;c++)
+        $(".container center").append("<a href='#' class='button is-info setcourse' data-courseid='"+c+"' onclick='window.electronAPI.setCourse("+c+")'>"+arg[c].Name+"</a>");
     });
     ipcRenderer.on('startup-error', (_event, arg) => {
       console.log("There was a startup error");

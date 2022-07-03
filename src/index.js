@@ -24,6 +24,8 @@ const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
 const SAVEDIR="C:\\Elec2133New\\Saved"
 */
 
+let CourseIndex = 0;
+
 
 if(ENVIRONMENT == "Prod"){
   Actions.ImplementCommand.BINDIR = "C:\\ELEC2133New\\ELI-LabRun\\bin"
@@ -61,7 +63,8 @@ function startup(event,callback){
       console.log("Lab Parse error")
       event.reply('startup-error', (error+"<br>"))
     })
-    setTimeout(callback, 5000);
+    event.reply("startup-coursechoice",Labs.Courses);
+    //setTimeout(callback, 5000);
   },function(){
     event.reply('startup-reply', "SPICE doesn't work Locally. ELI can not run!")
   }) 
@@ -147,7 +150,7 @@ const createWindow = () => {
     console.log(page);
     var found = false;
     if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section') && token == PANETOKEN)
-      for(var l of Labs.Labs)
+        for(var l of Labs.Courses[CourseIndex].Labs)
         if(l.Name == page.lab)
           for(var p of l.Parts)
             if(p.Name == page.part){
@@ -179,7 +182,7 @@ const createWindow = () => {
     console.log(preload);
     var found = false;
     if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section'))
-      for(const l of Labs.Labs)
+      for(const l of Labs.Courses[CourseIndex].Labs)
         if(l.Name == page.lab)
           for(const p of l.Parts)
             if(p.Name == page.part)
@@ -230,9 +233,9 @@ const createWindow = () => {
 
   var loadView = function(){
     if(!HALTSTARTUP){
-    fs.writeFileSync((LABDIR+DIRSLASH+"labs.json"),JSON.stringify(Labs.Labs))
+      console.log(Labs.Courses[CourseIndex].Labs);
     const ejse = require('ejs-electron')
-    .data({labs:Labs.Labs,actions:Actions.Actions})
+    .data({labs:Labs.Courses[CourseIndex].Labs,actions:Actions.Actions})
     .options('debug', false)
     mainWindow.loadFile(path.join(__dirname, 'views/select.ejs'));
     }
@@ -247,6 +250,10 @@ const createWindow = () => {
       fs.writeFileSync(SAVEDIR+DIRSLASH+params.page.lab+DIRSLASH+params.page.part+DIRSLASH+Date.now()+".json",JSON.stringify(params.preload));
       event.reply('save-reply','success')
     })
+  })
+  ipcMain.on('set-course',(event,params) =>{
+    CourseIndex = params;
+    loadView();
   })
   ipcMain.on('getload',(event,params) =>{
     console.log(params)
@@ -329,7 +336,8 @@ app.on('activate', () => {
 
 
 const express = require('express')
-var cors = require('cors')
+var cors = require('cors');
+const { start } = require('repl');
 const ws = express()
 ws.use(cors())
 const port = 3001
