@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const axios = require('axios')
 const ejse = require('ejs-electron')
+const ejs = require('ejs-electron');
 var fs = require("fs");
 const { post } = require('jquery');
 
