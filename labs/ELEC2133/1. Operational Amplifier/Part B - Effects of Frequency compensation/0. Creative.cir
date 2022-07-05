@@ -39,15 +39,17 @@ DSUB 4 7 DM2
 .MODEL DM2 D(IS=8e-16)
 .ENDS LT1008
 XU1 0 6 3 7 4 1 2 LT1008
-V1 3 0 15
-V2 0 7 15
-V3 5 0 SINE(0 0.35 1k)
-R1 4 6 50k
-R2 6 5 1k
+V1 3 0 15 dc 1
+V2 0 7 15 dc 1
+V3 5 0 SINE(0 0.1 1k) ac 1
+Rf1 6 4 50k
+Rf2 0 0 1k
+Ri 6 5 1k
 C1 0 0 30p
-* INSTRUCTIONS: Check that your 1 kHz sinusoidal input voltage amplitude is below 100mV and the output voltage is also sinusoidal (not slew rate limited). Measure the gain.
-* SIMULATION NOTES: For the purposes of simulation, set the amplitude of the input signal to exactly 100mV. The simulation time should be 2 milliseconds
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON, and the relay controlling the feedback resistor will switch to RF1 (S2 - Port 0 Line 1 OFF). Upon successful completion of this lab, the Function generator switch will turn ON (S1 - Port 0 Line 0 ON). All capacitance switches (S3 - Port 0 Line 2 - OFF)(S4 - Port 0 Line 4 - OFF)(S5 - Port 0 Line 5 - OFF) will remain OFF
+C2 0 0 10p
+C3 0 0 20p
+* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
+* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
 * DIGOUTPUT1_PRE = 0 0 0 1 0 0 0 0
 * DIGOUTPUT0_POST = 1 0 0 0 0 0 0 0
@@ -55,7 +57,7 @@ C1 0 0 30p
 * AOUTPUT0_PRE = 0.0
 * AOUTPUT1_PRE = 0.0
 * AOUTPUT0_POST = 0.0 
-* AOUTPUT1_POST = 0.0  
+* AOUTPUT1_POST = 0.0 
 * INDEX = Input*50,Output
 .control
 tran 5u 2m

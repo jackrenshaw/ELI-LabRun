@@ -16,7 +16,7 @@ V3 999 999 0
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 *** S5 S6 S7 all ON ***
@@ -34,12 +34,8 @@ C1 999 999 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 0 0 1 1 1 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 *** S5 ON ***
@@ -57,12 +53,8 @@ C1 999 999 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 0 0 1 0 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 *** S6 ON ***
@@ -80,12 +72,8 @@ C1 999 999 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 0 0 0 1 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 *** S7 ON ***
@@ -103,12 +91,8 @@ C1 999 999 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 0 0 0 0 1 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 * AOUTPUT1_MAXV = 5.0
@@ -127,12 +111,8 @@ C1 999 999 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 0 0 1 1 0 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 *** S6 OFF ***
@@ -150,10 +130,8 @@ C1 999 999 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 0 0 1 0 1 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
 *** S5 OFF ***
@@ -171,9 +149,7 @@ C1 999 999 10p
 V1 4 0 15
 V2 0 11 15
 V3 999 999 0
-* INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
-* IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
-* DIGOUTPUT0_POST = 0 0 0 0 0 0 0 0
-* DIGOUTPUT1_POST = 0 0 0 0 0 0 0 0
+* DIGOUTPUT0_POST = 0 0 0 0 0 1 1 0
+* DIGOUTPUT1_POST = 0 0 0 0 1 0 0 0
 * AOUTPUT0_POST = 0.0 
 * AOUTPUT1_POST = 0.0
