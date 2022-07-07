@@ -85,6 +85,8 @@ typings/
 # Webpack
 .webpack/
 
+compiledHTML/
+
 # Electron-Forge
 out/
 

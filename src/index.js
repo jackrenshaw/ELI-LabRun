@@ -13,17 +13,18 @@ const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
 
-
+/*
 const ENVIRONMENT = "Mac";
 const DIRSLASH="/"
 const LABDIR="Labs"
 const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved"
-/* UNCOMMENT FOR PRODUCTION
+*/
+/* UNCOMMENT FOR PRODUCTION*/
 const ENVIRONMENT = "Prod";
 const DIRSLASH="\\"
 const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
 const SAVEDIR="C:\\Elec2133New\\Saved"
-*/
+/**/
 
 let CourseIndex = 0;
 
@@ -342,6 +343,11 @@ const { start } = require('repl');
 const ws = express()
 ws.use(cors())
 const port = 3001
+
+ws.get('/labs.json', (req, res) => {
+  fs.writeFile("C:\\Elec2133New\\labs.json",JSON.stringify(Labs.Courses))
+  res.send("Done!");
+})
 
 ws.get('/implement', (req, res) => {
   let responses = [];

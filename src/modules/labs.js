@@ -2,7 +2,7 @@ var fs = require("fs");
 var path = require("path");
 var functions = require("./functions");
 var Spice = require("./spice");
-const ejs = require('ejs-electron');
+const ejs = require('ejs');
 
 var Labs = {
     DIRSLASH: "\\",
@@ -126,6 +126,7 @@ var Labs = {
                                             Section.SimulationParams = Spice.SPICE_SimulationParameters(Section.Solution);
                                             Section.Subcircuit = Spice.SPICE_Subcircuit(Section.Solution);
                                             Section.Models = Spice.SPICE_Models(Section.Solution);
+                                            Section.Compiled = [];
                                             Part.Sections.push(Section);
                                         }
                                     for (var s of sections)
@@ -142,6 +143,46 @@ var Labs = {
                     Labs.Courses.push({Name:c.course,Labs:CourseLabs});
             }
             console.log(Labs.Courses);
+        for(var c=0;c<Labs.Courses.length;c++){
+            for(var l=0;l<Labs.Courses[c].Labs.length;l++){
+                for(var p=0;p<Labs.Courses[c].Labs[l].Parts.length;p++){
+                    for(var s=0;s<Labs.Courses[c].Labs[l].Parts[p].Sections.length;s++){
+                        console.log("Attempting to Compile!");
+                        let Framework = fs.readFileSync(Labs.Courses[c].Labs[l].Parts[p].FrameworkFile);
+                        let preload = 
+                        {
+                            meta:{
+                                Creative:Labs.Creative,
+                                Procedural:Labs.Procedural,
+                                Direct:Labs.Direct
+                            },
+                            section:Labs.Courses[c].Labs[l].Parts[p].Sections[s],
+                            part:Labs.Courses[c].Labs[l].Parts[p],
+                            page:{
+                                lab:Labs.Courses[c].Labs[l],
+                                part:Labs.Courses[c].Labs[l].Parts[p],
+                                section:Labs.Courses[c].Labs[l],
+                                prev:null,
+                                next:null
+                            },
+                            preload:null,
+                            Framework:Framework
+                        }
+                        let EJSFile = "src"+Labs.DIRSLASH+"views"+Labs.DIRSLASH+"compile.ejs";
+                        let CompilationOutput = "compiledHTML"+Labs.DIRSLASH+
+                            Labs.Courses[c].Name+Labs.DIRSLASH+
+                            Labs.Courses[c].Labs[l].Name+Labs.DIRSLASH+
+                            Labs.Courses[c].Labs[l].Parts[p].Name+Labs.DIRSLASH;
+                        console.log(CompilationOutput);
+                            if (err) throw err;
+                            ejs.renderFile(EJSFile, preload, null, function(err, html) {
+                                console.log(err);
+                                fs.writeFileSync(CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html",html);
+                            })  
+                }
+            }
+        }
+    }
     }
 }
 
