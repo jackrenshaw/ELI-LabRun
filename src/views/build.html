@@ -179,7 +179,7 @@ $("html").on("drop", function(ev) {
     reader = new FileReader();
     reader.onload = function(event) {
         console.log(event.target);
-        $("main").html(JSON.parse(event.target.result).board);
+        $("main").html(JSON.parse(event.target.result).export);
           UI.SET();
           $("#LoadFile").removeClass("is-active");
     };

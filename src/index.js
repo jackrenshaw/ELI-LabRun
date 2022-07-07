@@ -13,18 +13,18 @@ const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 const { eventNames } = require('process');
 
-/*
+/* UNCOMMENT FOR MAC*/
 const ENVIRONMENT = "Mac";
 const DIRSLASH="/"
 const LABDIR="Labs"
 const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved"
-*/
-/* UNCOMMENT FOR PRODUCTION*/
+/**/
+/* UNCOMMENT FOR PRODUCTION
 const ENVIRONMENT = "Prod";
 const DIRSLASH="\\"
 const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
 const SAVEDIR="C:\\Elec2133New\\Saved"
-/**/
+*/
 
 let CourseIndex = 0;
 
@@ -189,13 +189,13 @@ const createWindow = () => {
           for(const p of l.Parts)
             if(p.Name == page.part)
                 for(var si=0;si<p.Sections.length;si++){
-                  var Framework = null;
-                  console.log(p.FrameworkFile)
-                  if(fs.existsSync(p.FrameworkFile))
-                    Framework = fs.readFileSync(p.FrameworkFile,"utf-8");
+                  let Export = null;
+                  console.log(p.Sections[si].Compiled)
+                  if(fs.existsSync(p.Sections[si].Compiled))
+                    Export = fs.readFileSync(p.Sections[si].Compiled,"utf-8");
                   else
-                    console.log("No Framework File!");
-                  console.log(Framework);
+                    console.log("No Compiled HTML File!");
+                  console.log(Export);
                   const s = p.Sections[si];
                   if(s.Name == page.section){
                     var prev = null;
@@ -210,7 +210,7 @@ const createWindow = () => {
                       Actions.Implement(s.Output.Pre,function(response){
                         //labWindow.webContents.openDevTools();
                         const ejse = require('ejs-electron')
-                        .data({meta:{Creative:Labs.Creative,Procedural:Labs.Procedural,Direct:Labs.Direct},section:s,part:p,page:{lab:page.lab,part:page.part,section:page.section,prev:prev,next:next},preload:preload,Framework:Framework})
+                        .data({build:{export:Export},page:{prev:prev,next:next}})
                         .options('debug', false)
                         labWindow.loadFile(path.join(__dirname, 'views/lab.ejs'));
                         labWindow.show();
@@ -345,8 +345,7 @@ ws.use(cors())
 const port = 3001
 
 ws.get('/labs.json', (req, res) => {
-  fs.writeFile("C:\\Elec2133New\\labs.json",JSON.stringify(Labs.Courses))
-  res.send("Done!");
+  res.send(Labs.Courses);
 })
 
 ws.get('/implement', (req, res) => {

@@ -169,15 +169,15 @@ var Labs = {
                             Framework:Framework
                         }
                         let EJSFile = "src"+Labs.DIRSLASH+"views"+Labs.DIRSLASH+"compile.ejs";
-                        let CompilationOutput = "compiledHTML"+Labs.DIRSLASH+
+                        let CompilationOutput = "HTML"+Labs.DIRSLASH+
                             Labs.Courses[c].Name+Labs.DIRSLASH+
                             Labs.Courses[c].Labs[l].Name+Labs.DIRSLASH+
                             Labs.Courses[c].Labs[l].Parts[p].Name+Labs.DIRSLASH;
-                        console.log(CompilationOutput);
-                            if (err) throw err;
+                            console.log(CompilationOutput);
                             ejs.renderFile(EJSFile, preload, null, function(err, html) {
                                 console.log(err);
                                 fs.writeFileSync(CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html",html);
+                                Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled.push(CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html");
                             })  
                 }
             }

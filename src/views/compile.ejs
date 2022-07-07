@@ -1,136 +1,20 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
-    <meta name="circuit" 
-    data-page='<%-JSON.stringify(page)%>' 
-    data-output='<%-JSON.stringify(section.Output)%>' 
-    data-simulation='<%-JSON.stringify(section.Simulation)%>' 
-    data-multimeter='<%-JSON.stringify(section.Multimeter[0])%>' 
-    data-simulationparams='<%-JSON.stringify(section.SimulationParams)%>' 
-    data-subcircuit='<%=section.Subcircuit%>'
-    data-models='<%-JSON.stringify(section.Models)%>'
-    data-components='<%-JSON.stringify(section.Components)%>'
-    data-bench='<%-JSON.stringify(section.Bench)%>'
-    data-alt='<%-JSON.stringify(part.Alts)%>'
-    data-mapping='<%-JSON.stringify(part.Mapping)%>'
-    data-nodes='<%-JSON.stringify(part.Nodes)%>'
-    data-framework='true'
-    data-solution='<%=section.Solution%>'>
-    <title>ELI - UNSW ELEC2133</title>
-    <link rel="stylesheet" href="../../node_modules/bulma/css/bulma.min.css">
-    <link rel="stylesheet" href="../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
-    <script src="../../node_modules/bulma-extensions/dist/js/bulma-extensions.min.js"></script>
-    <link rel="stylesheet" href="../../node_modules/@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css">
-    <script src="../public/javascripts/math.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
-    <link href="../public/stylesheets/custom.css"rel="stylesheet">
-
-<script src="../public/javascripts/jquery.min.js"></script>
-<script src="../public/javascripts/jquery-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-esm-min.js"></script>
-<script type="text/javascript" src="../public/javascripts/generalFunctions.js"></script>
-<script type="text/javascript" src="../public/javascripts/ui.js" defer></script>
-<script type="text/javascript" src="../public/javascripts/check.js" defer></script>
-<script type="text/javascript" src="../public/javascripts/spice.js" defer></script>
-    <!-- Bootstrap core CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
-
-<script src="../../node_modules/html2canvas/dist/html2canvas.min.js"></script>
-
-<meta name="theme-color" content="#000000">
-<link rel="stylesheet" href="../public/stylesheets/jquery-ui.min.css">
-</head>
-<body>
-  <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="#">
-        <h1>UNSW ELI</h1>
-      </a>
-  
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-  
-    <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start">
-        <a class="navbar-item <%if(!page.prev){%>disabled-icon<%}%>" data-action="changelab" <%if(page.prev){%>data-page='<%-JSON.stringify(page.prev)%>'<%}else{%>disabled<%}%>>
-          <span class="material-icons">arrow_back</span>
-        </a>
-        <a class="navbar-item <%if(!page.next){%>disabled-icon<%}%>" data-action="changelab" <%if(page.next){%>data-page='<%-JSON.stringify(page.next)%>'<%}else{%>disabled<%}%>>
-          <span class="material-icons">arrow_forward</span>
-        </a>
-        <a class="navbar-item" onclick="$('#Override').addClass('is-active');">
-          <span class="material-icons">
-            key
-            </span>
-          </a>
-        <a class="navbar-item" onclick='$("#Instructions").addClass("is-active");'>
-        <span class="material-icons">
-          info
-          </span>
-          </a>
-            <a class="navbar-item" href="#">
-              <span class="material-icons">
-                edit
-                </span>
-              </a>
-                <a class="navbar-item" onclick="//download('save.json',generatePreload())//Check.Validate();$('#SaveLocal').addClass('is-active');" data-action="download" data-page='<%-JSON.stringify(page)%>'>
-                  <span class="material-icons">
-                    save
-                    </span>
-                  </a>
-                  <a class="navbar-item" onclick="Check.Validate();$('#SyncGlobal').addClass('is-active');">
-                    <span class="material-icons">
-                      cloud_sync
-                      </span>
-                    </a>
-                    <a class="navbar-item" onclick="Simulate();" data-action="simulate">
-                      <span class="material-icons">
-                        play_circle
-                        </span>
-                        </a>  
-                        <a class="navbar-item" onclick="Check.Validate();" data-action="check">
-                        <span class="material-icons">
-                          check_circle
-                          </span>  
-                          </a>                        
-                          <button class="navbar-item" data-action="implement" data-analog='[0.0,0.0]' data-token="ELEC2133" disabled style="background-color: #363636;color:#aaa;border: none;">
-                      <span class="material-icons">
-                        run_circle
-                        </span>
-                      </button> 
-                      <a class="navbar-item" data-action="clear" data-token="ELEC2133">
-                        <span class="material-icons">
-                          clear_all
-                          </span>  
-                          </a>   
-    </div>
-  </nav>
-</head>
-  <body> 
-    <div id="Notifications"></div>
 <main id='main'>
+  <meta name="circuit" 
+  data-page='<%-JSON.stringify(page)%>' 
+  data-output='<%-JSON.stringify(section.Output)%>' 
+  data-simulation='<%-JSON.stringify(section.Simulation)%>' 
+  data-multimeter='<%-JSON.stringify(section.Multimeter[0])%>' 
+  data-simulationparams='<%-JSON.stringify(section.SimulationParams)%>' 
+  data-subcircuit='<%=section.Subcircuit%>'
+  data-models='<%-JSON.stringify(section.Models)%>'
+  data-components='<%-JSON.stringify(section.Components)%>'
+  data-bench='<%-JSON.stringify(section.Bench)%>'
+  data-alt='<%-JSON.stringify(part.Alts)%>'
+  data-mapping='<%-JSON.stringify(part.Mapping)%>'
+  data-nodes='<%-JSON.stringify(part.Nodes)%>'
+  data-framework='true'
+  data-solution='<%=section.Solution%>'>
 <%
-var preloadset = false;
-if(preload) if(preload.board){%>
-<%-preload.board%>
-<%preloadset = true
-}if(!preloadset){
-var top = 100;
-var left = 50;
 if(Framework){%><%-Framework%><%}%>
   <ground style="position:absolute;left:0px;top: 200px;">
     <div class='InterPortSpace'></div>
@@ -172,7 +56,6 @@ top = top+200;
 <%}%>
 <%}%>
 </main>
-<%- include ('partial/modals.ejs') %>
 <connectors>
 <port data-spice-node="999" style='position: absolute;top:650px;left:75px;background: red;height:300px;width:6px;z-index:0;' name="powersupply-1-positive" data-spice-bench="PowerSupply 1" <%if(section.Bench.powersupply[0].hasOwnProperty('altnodes')) if(section.Bench.powersupply[0].altnodes.hasOwnProperty('positive')){%>data-spice-target-nodes='<%-JSON.stringify(section.Bench.powersupply[0].altnodes.positive)%>'<%}%> >
   <label style="position: relative;left:10px;">Power Supply 1+</label>
@@ -208,42 +91,3 @@ top = top+200;
 <div style="position: absolute;height:0px;width:100%;border-top:2px dashed #777;left:0px;top:700px;"></div>
 <div style="position: absolute;height: 200px;width:0px;border-left:2px dashed #777;left:900px;top:700px;"></div>
 </connectors>
-
-<footer class="main-footer" data-html2canvas-ignore>
-  <div class="container content has-text-centered">
-    <div class="columns">
-      <powersupply class="column is-4 text-center" id="powersupply">
-        <button type="button" class="button is-dark" onclick="$('#Source').addClass('is-active');">Power Supply</button>
-      </powersupply>
-      <signalgenerator class="column is-4  text-center" id="signalgenerator">
-        <button type="button" class="button is-dark" onclick="$('#SignalGenerator').addClass('is-active');">Signal Generator</button>
-      </signalgenerator>
-      <oscilloscope class="column is-4  text-center" id="oscilloscope">
-        <button type="button" class="button is-dark" onclick="$('#Oscilloscope').addClass('is-active');">Oscilloscope</button>
-      </oscilloscope>
-    </div>
-  </div>
-</footer>
-<div id="loading"></div>
-<script type="text/javascript">
-  $(document).ready(function(){
-    UI.SET();
-    Check.Validate();
-    $("#loading").click(function(){
-      $(this).hide();
-    })
-    $("a[data-action='download']").click(function(){
-      download("save.json",JSON.stringify({
-        meta:$("meta[name='circuit']").data(),
-        voltage1:null,
-        voltage2:null,
-        siggen_frequency:null,
-        siggen_voltage:null,
-        board:$("#main").html(),
-        connectors:$("connectors").html()
-      }));
-    });
-  })
-</script>
-  </body>
-</html>
