@@ -3,12 +3,10 @@ body{
   background-image:
   linear-gradient(to right, #ddd 1px, transparent 1px),
   linear-gradient(to bottom, #ddd 1px, transparent 1px);
-  width: 1400px;
   height: 950px;
   min-height: 950px;
   min-width: 1400px;
   overflow: clip!important;
-  max-width: 1400px;
   max-height: 950px;
 }
 #loading{

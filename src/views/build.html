@@ -1,3 +1,4 @@
+<% var BASE = "/" %>
 <!doctype html>
 <html lang="en">
   <head>
@@ -7,7 +8,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
     <title>ELI - UNSW ELEC2133</title>
-    <link rel="stylesheet" href="../../node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="<%=BASE%>node_modules/bulma/css/bulma.min.css">
     <link rel="stylesheet" href="../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css">
     <script src="../../node_modules/bulma-extensions/dist/js/bulma-extensions.min.js"></script>
     <link rel="stylesheet" href="../../node_modules/@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css">
@@ -155,7 +156,7 @@ function generatePreload(){
         voltage2:null,
         siggen_frequency:null,
         siggen_voltage:null,
-        board:$("#main").html()
+        export:$("export").html()
       }
       return preload
     }
@@ -178,8 +179,8 @@ $("html").on("drop", function(ev) {
     var file = ev.originalEvent.dataTransfer.files[0];
     reader = new FileReader();
     reader.onload = function(event) {
-        console.log(event.target);
-        $("main").html(JSON.parse(event.target.result).export);
+      console.log(JSON.parse(event.target.result));
+        $("export").html(JSON.parse(event.target.result).export);
           UI.SET();
           $("#LoadFile").removeClass("is-active");
     };

@@ -32,7 +32,7 @@ document.onreadystatechange = function () {
         voltage2:$("#Source input[name='voltage2']").val(),
         siggen_frequency:$("#SignalGenerator td[name='frequency']").html(),
         siggen_voltage:$("#SignalGenerator td[name='voltage']").html(),
-        board:$("#main").html()
+        export:$("export").html()
       }
       return preload;
     }
@@ -237,9 +237,9 @@ The simulation could not be performed<br>
       var file = ev.originalEvent.dataTransfer.files[0];
       reader = new FileReader();
       reader.onload = function(event) {
-          console.log(event.target);
-          ipcRenderer.send('load',{page:$("meta[name='circuit']").data("page"),file:null,data:JSON.parse(event.target.result)});
-          //$("main").html(event.target.result);
+          console.log(JSON.parse(event.target.result));
+          //ipcRenderer.send('load',{page:$("meta[name='circuit']").data("page"),file:null,data:JSON.parse(event.target.result)});
+          $("export").html(JSON.parse(event.target.result).export);
       };
       var txt = reader.readAsText(file);
       //if($("#SaveLocal").hasClass("is-active"))

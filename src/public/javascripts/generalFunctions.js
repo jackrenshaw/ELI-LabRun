@@ -39,8 +39,54 @@ const CheckContinuity = function(wirespans){
     return true;
 }
 
+setMultimeter = function(arg){
+  const multimeter = $("meta[name='circuit']").data("multimeter");
+  console.log(multimeter);
+  var expectedAmmeterCurrents = {};
+  for(var a of multimeter)
+    if(/v\([0-9]+(,[0-9+])?\) = .+/.test(a)){
+      var node = a.split(" = ")[0].replace(/[^0-9]/g,'')
+      var voltage = parseFloat(a.split(" = ")[1]);
+    }
+    else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
+      var nodes = a.split(" = ")[0].replace(/[^0-9,]/g,'').split(",");
+      var current = parseFloat(a.split(" = ")[1])*1000;
+    }
+  console.log("Multimeter Response:");
+  console.log(arg);
+  var nodeVoltages = {};
+  var ammeterCurrents = {};
+  for(var a of arg)
+    if(/v\([0-9]+(,[0-9+])?\) = .+/.test(a)){
+      var node = parseInt(a.split(" = ")[0].replace(/[^0-9]/g,''))
+      var voltage = parseFloat(a.split(" = ")[1]);
+      nodeVoltages[node] = voltage;
+    }
+    else if(/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)){
+      const nodes = a.split(" = ")[0].replace('/1m','').replace(/[^0-9,]/g,'').split(",");
+      const current = Math.round(parseFloat(a.split(" = ")[1])*100000)/100;
+      $("component[data-spice-type='Ammeter']").each(function(){
+        console.log(nodes);
+        console.log(parseInt($(this).find("port[name='+']").attr("data-spice-node")));
+        console.log(parseInt($(this).find("port[name='-']").attr("data-spice-node")));
+        if(parseInt($(this).find("port[name='+']").attr("data-spice-node")) == parseInt(nodes[0]))
+          if(parseInt($(this).find("port[name='-']").attr("data-spice-node")) == parseInt(nodes[1])){
+            console.log("Found the Ammeter we're interested in")
+            $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+            $(this).attr("data-tooltip",("Ammeter:"+$(this).attr("data-spice-name")+"\nSimulated:"+current+"mA\nMeasured:N/A"));
+          }
+      })
+    }
+  console.log(nodeVoltages)
+  console.log(ammeterCurrents);
+  $("wire").each(function(){
+    $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+    if(nodeVoltages.hasOwnProperty(parseInt($(this).attr("data-spice-node"))))
+      $(this).attr("data-tooltip",("Node:"+$(this).attr("data-spice-node")+"\nSimulated:"+nodeVoltages[$(this).attr("data-spice-node")]+"V\nMeasured:N/A"));
+  });
+}
+
 Simulate = function(){
-  Check.SetComponents();
   $("wire").each(function(){
     $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
     $(this).attr("data-tooltip","Node:"+$(this).attr("data-spice-node"));
@@ -51,11 +97,10 @@ Simulate = function(){
   });
   $("#sidebar .container div[name='SPICE']").html("");
   //$("#sidebar").show();
-  html2canvas(document.querySelector("body")).then(canvas1 => {
+
     //$("#sidebar .container div[name='SPICE']").append("<br><h2>Circuit Image</h2><p>You can right click on this image to save it</p>");
     //$("#sidebar .container div[name='SPICE']").append(canvas1);
     //$("#sidebar .container div[name='SPICE']").append("<hr>");
-
     $("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");
   $("#sidebar .container div[name='SPICE']").append("<br><h2 class='subtitle'>Conversion Output</h2>");
   UI.makeSPICE("simulation",function(error){
@@ -69,7 +114,16 @@ There was an error simulating the circuit. Please check your circuit<br>
     $("#sidebar .container div[name='SPICE']").append(input+"<br>");
   },function(netlist,normalised){
     console.log("Simualting and Validating Circuit");
-    window.electronAPI.SimulateCircuit(netlist);
+      $.get("http://127.0.0.1:3001/simulate",{
+        circuit:netlist
+      }).done(function(data){
+        console.log(data);
+        setMultimeter(data.multimeter);
+        $("#Simulation p.sim-result").html(data.simulate);
+        $("#Simulation").addClass("is-active");
+      }).fail(function(error){
+        console.log(error)
+      })
     console.log(netlist)
     $("body #Notifications").append(`<div class="notification is-info  is-light">
     <button class="delete" onclick='$(this).parent().remove()'></button>
@@ -86,8 +140,6 @@ The circuit is below
       //$("#sidebar .container div[name='SPICE'] canvas").css("width","25%").css("height","25%").css("margin-bottom","-100px");;
       UI.hideNodes()
     });
-  });
-
 }
 
 function download(filename, text) {

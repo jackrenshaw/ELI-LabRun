@@ -15,45 +15,51 @@
   data-framework='true'
   data-solution='<%=section.Solution%>'>
 <%
+var top = 100;
+ var left = 50;
 if(Framework){%><%-Framework%><%}%>
   <ground style="position:absolute;left:0px;top: 200px;">
     <div class='InterPortSpace'></div>
     <port data-bind-position='{"top":-3,"left":20}' data-spice-node="0" style="display: none;"></port>
     </ground>
-<%if(section) if(section.hasOwnProperty("Components")) for(var c of section.Components)
-if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
-<component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:1;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>ondblclick="UI.VariableResistorChange(this);"<%}%> class="rotated-0">
-<% if(c.Value && c.Name){ %>
-<label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
-<%}else if(c.Value){ %>
-<label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %></label>
-<%}else if(c.Class){ %>
-<label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Class %></label>
-<%}%>
-<% if(c.hasOwnProperty('InterPortSpace')) for(var n of c.InterPortSpace)
- if(n.hasOwnProperty("top") && n.hasOwnProperty("left") && n.hasOwnProperty("width") && n.hasOwnProperty("height")){ %>
-<div class='InterPortSpace' style='position:absolute;top:<%=n.top%>px;left:<%=n.left%>px;height:<%=n.height%>px;width:<%=n.width%>px;'></div>
-<%}%>
-<% for(var p of c.Ports){%>
-<port name="<%=p.id%>" 
-  <%if(p.hasOwnProperty('bindPosition')){%>data-bind-position='<%-JSON.stringify(p.bindPosition)%>'<%}%> 
-  data-spice-node='999' 
-  <%if(p.hasOwnProperty('altnodes')){%>data-spice-target-nodes='<%-JSON.stringify(p.altnodes)%>'<%}%> 
-  data-spice-position="<%=p.position%>" 
-  style='top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px;<%if(p.hasOwnProperty('CSS')){%><%=p.CSS%><%}else{%>position:absolute;background:red;<%}%>'>
-  <% if(p.hasOwnProperty('labelPosition')) if(p.labelPosition) if(p.labelPosition.hasOwnProperty('top') && p.labelPosition.hasOwnProperty('left')){%>
-    <label style='position:relative;left:<%=p.labelPosition.left;%>px;top:<%=p.labelPosition.top;%>px'>
-      <%=p.id%>
-    </label>
-    <%}%></port>
-<%}%>
-</component>
-<%left = left + c.Width;%>
-<%if (left>800){
-left = 50;
-top = top+200;
-}%>
-<%}%>
+<%if(section) 
+if(section.hasOwnProperty("Components")) 
+  for(var c of section.Components)
+    if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
+      <component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:1;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>ondblclick="UI.VariableResistorChange(this);"<%}%> class="rotated-0">
+      <% if(c.Value && c.Name){ %>
+        <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
+      <%}else if(c.Value){ %>
+        <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %></label>
+      <%}else if(c.Class){ %>
+        <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Class %></label>
+      <%}%>
+      <% if(c.hasOwnProperty('InterPortSpace')) 
+        for(var n of c.InterPortSpace)
+          if(n.hasOwnProperty("top") && n.hasOwnProperty("left") && n.hasOwnProperty("width") && n.hasOwnProperty("height")){ %>
+            <div class='InterPortSpace' style='position:absolute;top:<%=n.top%>px;left:<%=n.left%>px;height:<%=n.height%>px;width:<%=n.width%>px;'></div>
+          <%}%>
+      <% for(var p of c.Ports){%>
+        <port name="<%=p.id%>" 
+        <%if(p.hasOwnProperty('bindPosition')){%>data-bind-position='<%-JSON.stringify(p.bindPosition)%>'<%}%> 
+        data-spice-node='999' 
+        <%if(p.hasOwnProperty('altnodes')){%>data-spice-target-nodes='<%-JSON.stringify(p.altnodes)%>'<%}%> 
+        data-spice-position="<%=p.position%>" 
+        style='top:<%=p.top%>px;left:<%=p.left%>px;height:<%=p.height%>px;width:<%=p.width%>px;<%if(p.hasOwnProperty('CSS')){%><%=p.CSS%><%}else{%>position:absolute;background:red;<%}%>'>
+        <% if(p.hasOwnProperty('labelPosition')) 
+          if(p.labelPosition) 
+            if(p.labelPosition.hasOwnProperty('top') && p.labelPosition.hasOwnProperty('left')){%>
+              <label style='position:relative;left:<%=p.labelPosition.left;%>px;top:<%=p.labelPosition.top;%>px'>
+                <%=p.id%>
+              </label>
+            <%}%></port>
+        <%}%>
+        </component>
+        <%left = left + c.Width;%>
+        <%if (left>800){
+          left = 50;
+          top = top+200;
+        }%>
 <%}%>
 </main>
 <connectors>
@@ -91,3 +97,20 @@ top = top+200;
 <div style="position: absolute;height:0px;width:100%;border-top:2px dashed #777;left:0px;top:700px;"></div>
 <div style="position: absolute;height: 200px;width:0px;border-left:2px dashed #777;left:900px;top:700px;"></div>
 </connectors>
+<div class="modal" id="Instructions">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Instructions and Simulation Notes</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <p><% if(section.Instructions){%><%= section.Instructions %><%}%></p>
+        <p><b><% if(section.ImplementationNotes){%><%= section.ImplementationNotes %><%}%></b></p>
+        <p><%- SimulationImage %></p>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-info">Close</button>
+      </footer>
+    </div>
+</div>

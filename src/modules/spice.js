@@ -29,8 +29,8 @@ var Spice = {
     simple:{
         R:{
             Name:'Resistor',
-            Image:'../public/images/resistor-physical.svg',
-            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(../public/images/resistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Image:'/images/resistor-physical.svg',
+            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(/images/resistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             Directional:false,
@@ -73,8 +73,8 @@ var Spice = {
             },
         C:{
             Name:'Capacitor',
-            Image:'../public/Images/cap-physical.svg',
-            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/cap-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            Image:'/images/cap-physical.svg',
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(/images/cap-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             Fungible:true,
@@ -175,8 +175,8 @@ var Spice = {
                     left:34,
                     width:18
                 }],
-                Image:'../public/images/transistor-physical.svg',
-                CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/transistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+                Image:'/images/transistor-physical.svg',
+                CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(/images/transistor-physical.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
                 Height:100,
                 Width:100,
                 Class:{
@@ -196,9 +196,9 @@ var Spice = {
         },
         D:{
             Name:'Diode',
-            Image:'../public/Images/smd-diode.svg',
+            Image:'/Images/smd-diode.svg',
             Fungible:true,
-            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/smd-diode.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(/images/smd-diode.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             Directional:false,
@@ -252,9 +252,9 @@ var Spice = {
         },
         VariableResistor:{
             Name:'VariableResistor',
-            Image:'../public/images/vres.svg',
+            Image:'/images/vres.svg',
             Fungible:true,
-            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(../public/images/vres.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(/images/vres.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{
@@ -304,9 +304,9 @@ var Spice = {
         },
         Ammeter:{
             Name:'Ammeter',
-            Image:'../public/images/ammeter.svg',
+            Image:'/images/ammeter.svg',
             Fungible:true,
-            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(../public/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            CSS:'position:absolute;background-size:50px;background-repeat:no-repeat;background-image:url(/images/ammeter.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{
@@ -408,8 +408,8 @@ var Spice = {
         },
         X:[{
                 Name:'LT1008',
-                CSS:`position:absolute;background-size:200px;background-image:url(../public/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
-                Image:'../public/images/8pin-DIP.svg',
+                CSS:`position:absolute;background-size:200px;background-image:url(/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
+                Image:'/images/8pin-DIP.svg',
                 Height:200,
                 Fungible:true,
                 Width:200,
@@ -477,8 +477,8 @@ var Spice = {
             },{
                 Name:'LM741',
                 Fungible:true,
-                CSS:`position:absolute;background-size:200px;background-image:url(../public/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
-                Image:'../public/images/8pin-DIP.svg',
+                CSS:`position:absolute;background-size:200px;background-image:url(/images/8pin-DIP.svg);width:200px;height:200px;background-position-x:center;background-position-y:center;`,
+                Image:'/images/8pin-DIP.svg',
                 Height:200,
                 Width:200,
                 InterPortSpace:[{
@@ -530,8 +530,8 @@ var Spice = {
                 },
             },{
                 Name: "CA3083",
-                CSS:`position:absolute;background-size:150px;background-image:url(../public/images/16pinDIP.svg);width:300px;height:300px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
-                Image:'../public/images/12pinDIP.svg',
+                CSS:`position:absolute;background-size:150px;background-image:url(/images/16pinDIP.svg);width:300px;height:300px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
+                Image:'/images/12pinDIP.svg',
                 Height:200,
                 Fungible:true,
                 InternalFungibility:false,
@@ -696,8 +696,8 @@ var Spice = {
                 },
             },{
                 Name: "LM348N",
-                CSS:`position:absolute;background-size:300px;background-image:url(../public/images/14Pin.svg);width:300px;height:300px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
-                Image:'../public/images/14Pin.svg',
+                CSS:`position:absolute;background-size:300px;background-image:url(/images/14Pin.svg);width:300px;height:300px;background-position-x:center;background-position-y:center;background-repeat:no-repeat;`,
+                Image:'/images/14Pin.svg',
                 Height:200,
                 Fungible:true,
                 InternalFungibility:false,
@@ -844,9 +844,9 @@ var Spice = {
                 },
             },{
             Name:'POTENTIOMETER',
-            Image:'../public/images/vres.svg',
+            Image:'/images/vres.svg',
             Fungible:true,
-            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(../public/images/vres.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
+            CSS:'position:absolute;background-size:100px;background-repeat:no-repeat;background-image:url(/images/vres.svg);width:100px;height:100px;background-position-x:center;background-position-y:center;',
             Height:100,
             Width:100,
             InterPortSpace:[{

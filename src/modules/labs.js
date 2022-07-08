@@ -6,6 +6,7 @@ const ejs = require('ejs');
 
 var Labs = {
     DIRSLASH: "\\",
+    PreSimulate:true,
     Creative: true,
     Procedural: false,
     Direct: false,
@@ -107,16 +108,6 @@ var Labs = {
                                             Section.Solution = fs.readFileSync((inp + this.DIRSLASH + c.course + this.DIRSLASH + l + this.DIRSLASH + p + this.DIRSLASH + s), "utf-8").replace(/\x00/g, "");
                                             var code = s.split(".");
                                             code.pop();
-                                            Spice.ImageSimulate(
-                                                fs.readFileSync(inp + this.DIRSLASH + c.course + this.DIRSLASH + l + this.DIRSLASH + p + this.DIRSLASH + s, 'utf-8'),
-                                                function (svg, data) {
-                                                    Section.Simulation.push(data); Section.SimulationImage.push(svg);
-                                                }, function (rawScopeData) { },
-                                                function (DC) {
-                                                    Section.Multimeter.push(DC);
-                                                },
-                                                console.log
-                                            );
                                             Section.Components = Spice.SPICE_to_Components(Section.Solution, Part.Alts);
                                             Section.Bench = Spice.SPICE_to_Bench(Section.Solution, Part.Alts);
                                             Section.Instructions = Spice.SPICE_to_Instructions(Section.Solution);
@@ -126,7 +117,7 @@ var Labs = {
                                             Section.SimulationParams = Spice.SPICE_SimulationParameters(Section.Solution);
                                             Section.Subcircuit = Spice.SPICE_Subcircuit(Section.Solution);
                                             Section.Models = Spice.SPICE_Models(Section.Solution);
-                                            Section.Compiled = [];
+                                            Section.Compiled = null;
                                             Part.Sections.push(Section);
                                         }
                                     for (var s of sections)
@@ -148,7 +139,7 @@ var Labs = {
                 for(var p=0;p<Labs.Courses[c].Labs[l].Parts.length;p++){
                     for(var s=0;s<Labs.Courses[c].Labs[l].Parts[p].Sections.length;s++){
                         console.log("Attempting to Compile!");
-                        let Framework = fs.readFileSync(Labs.Courses[c].Labs[l].Parts[p].FrameworkFile);
+                        let Framework = fs.readFileSync(Labs.Courses[c].Labs[l].Parts[p].FrameworkFile,"utf-8");
                         let preload = 
                         {
                             meta:{
@@ -157,6 +148,7 @@ var Labs = {
                                 Direct:Labs.Direct
                             },
                             section:Labs.Courses[c].Labs[l].Parts[p].Sections[s],
+                            SimulationImage:"",
                             part:Labs.Courses[c].Labs[l].Parts[p],
                             page:{
                                 lab:Labs.Courses[c].Labs[l],
@@ -169,16 +161,38 @@ var Labs = {
                             Framework:Framework
                         }
                         let EJSFile = "src"+Labs.DIRSLASH+"views"+Labs.DIRSLASH+"compile.ejs";
+                        let SPICEFile = inp+Labs.DIRSLASH+
+                            Labs.Courses[c].Name+Labs.DIRSLASH+
+                            Labs.Courses[c].Labs[l].Name+Labs.DIRSLASH+
+                            Labs.Courses[c].Labs[l].Parts[p].Name+Labs.DIRSLASH+
+                            Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+'.cir';
                         let CompilationOutput = "HTML"+Labs.DIRSLASH+
                             Labs.Courses[c].Name+Labs.DIRSLASH+
                             Labs.Courses[c].Labs[l].Name+Labs.DIRSLASH+
-                            Labs.Courses[c].Labs[l].Parts[p].Name+Labs.DIRSLASH;
-                            console.log(CompilationOutput);
-                            ejs.renderFile(EJSFile, preload, null, function(err, html) {
-                                console.log(err);
-                                fs.writeFileSync(CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html",html);
-                                Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled.push(CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html");
-                            })  
+                            Labs.Courses[c].Labs[l].Parts[p].Name+Labs.DIRSLASH+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html";
+                        Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = CompilationOutput;
+                        if(Labs.PreSimulate){
+                                let _Labs = Labs
+                                Spice.ImageSimulate(
+                                    fs.readFileSync(SPICEFile, 'utf-8'),
+                                    function (svg, data) {
+                                        preload.SimulationImage = svg;
+                                        ejs.renderFile(EJSFile, preload, null, function(err, html) {
+                                            console.log(err);
+                                            fs.writeFileSync(CompilationOutput,html);
+                                        })
+                                    }, function (rawScopeData) { },
+                                    function (DC) {},
+                                    console.log
+                                );
+                        }else{
+                                ejs.renderFile(EJSFile, preload, null, function(err, html) {
+                                    console.log(err);
+                                    fs.writeFileSync(CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html",html);
+                                    Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = (CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html");
+                                    console.log(Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled);
+                                })
+                        }
                 }
             }
         }

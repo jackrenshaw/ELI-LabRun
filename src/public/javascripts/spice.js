@@ -43,7 +43,7 @@ class SPICE{
     this.ammeters = [];
     this.dbg = debugFunction;
     this.vbs = verboseFunction;
-
+    console.log(this);
     this.SPICE = "Test Circuit\n";
     if(parameters.subcircuits)
       this.SPICE += parameters.subcircuits+'\n';
