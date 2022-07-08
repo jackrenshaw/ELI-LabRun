@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/66773e54-1cb5-4175-9174-2584593fdd4d/microsoft.web/sites/subscriptions/66773e54-1cb5-4175-9174-2584593fdd4d/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ELI-WebView-Beta",
+  "appService.deploySubpath": "."
+}
