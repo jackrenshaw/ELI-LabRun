@@ -179,7 +179,7 @@ ws.get('/implement', (req, res) => {
 
 ws.post("/simulate", (req,res) =>{
   console.log("Simulating Circuit")
-  console.log(req.query.circuit)
+  console.log(req.body.circuit)
   let response = {
     rawData:null,
     multimeter:null,
@@ -187,7 +187,7 @@ ws.post("/simulate", (req,res) =>{
   }
   let ErrorSent = false;
   SPICE.ImageSimulate(
-    req.query.circuit,
+    req.body.circuit,
     function(svg,data){
       console.log("returning simuation image");
       response.simulate = svg;

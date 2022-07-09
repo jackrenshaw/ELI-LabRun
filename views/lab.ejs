@@ -203,23 +203,6 @@
     })
   })
   
-  $("button[data-action='simulate']").click(function(){
-    console.log("SIiualting Circuit");
-    console.log($(this).data());
-    let _button = this;
-    $.get("http://127.0.0.1:3001/simulate",{
-      token:$(_button).data("token"),
-      output:{
-        "Digital":$(_button).data("digital"),
-        "Analog":$(_button).data("analog"),
-      }
-    }).done(function(data){
-      console.log(data);
-    }).fail(function(error){
-      console.log(error)
-    })
-  })
-  
   
   function download(filename, text) {
     var element = document.createElement('a');
