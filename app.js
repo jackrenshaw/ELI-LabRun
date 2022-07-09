@@ -177,7 +177,7 @@ ws.get('/implement', (req, res) => {
   });
 })
 
-ws.get("/simulate", (req,res) =>{
+ws.post("/simulate", (req,res) =>{
   console.log("Simulating Circuit")
   console.log(req.query.circuit)
   let response = {

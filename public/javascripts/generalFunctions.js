@@ -114,7 +114,7 @@ There was an error simulating the circuit. Please check your circuit<br>
     $("#sidebar .container div[name='SPICE']").append(input+"<br>");
   },function(netlist,normalised){
     console.log("Simualting and Validating Circuit");
-      $.get("http://127.0.0.1:3001/simulate",{
+      $.post("http://127.0.0.1:3001/simulate",{
         circuit:netlist
       }).done(function(data){
         console.log(data);
