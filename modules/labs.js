@@ -3,10 +3,12 @@ var path = require("path");
 var functions = require("./functions");
 var Spice = require("./spice");
 const ejs = require('ejs');
-
+/*
+LABS Object
+*/
 var Labs = {
     DIRSLASH: "\\",
-    PreSimulate:true,
+    PreSimulate: true,
     Creative: true,
     Procedural: false,
     Direct: false,
@@ -121,7 +123,7 @@ var Labs = {
                                             Part.Sections.push(Section);
                                         }
                                     for (var s of sections)
-                                        if (fs.lstatSync(inp + this.DIRSLASH + c.course +this.DIRSLASH + l + this.DIRSLASH + p + this.DIRSLASH + s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)) {
+                                        if (fs.lstatSync(inp + this.DIRSLASH + c.course + this.DIRSLASH + l + this.DIRSLASH + p + this.DIRSLASH + s).isFile() && /[\.\- A-z0-9]{1,20}.(cir)/g.test(s)) {
                                             const Section = {};
                                             Section.Solution = fs.readFileSync((inp + this.DIRSLASH + c.course + this.DIRSLASH + l + this.DIRSLASH + p + this.DIRSLASH + s), "utf-8").replace(/\x00/g, "");
                                             Section.Output = Spice.SPICE_to_OUTPUT(Section.Solution);
@@ -131,72 +133,72 @@ var Labs = {
                                 }
                             CourseLabs.push(Lab)
                         }
-                    Labs.Courses.push({Name:c.course,Labs:CourseLabs});
+                Labs.Courses.push({ Name: c.course, Labs: CourseLabs });
             }
-            console.log(Labs.Courses);
-        for(var c=0;c<Labs.Courses.length;c++){
-            for(var l=0;l<Labs.Courses[c].Labs.length;l++){
-                for(var p=0;p<Labs.Courses[c].Labs[l].Parts.length;p++){
-                    for(var s=0;s<Labs.Courses[c].Labs[l].Parts[p].Sections.length;s++){
+        console.log(Labs.Courses);
+        for (var c = 0; c < Labs.Courses.length; c++) {
+            for (var l = 0; l < Labs.Courses[c].Labs.length; l++) {
+                for (var p = 0; p < Labs.Courses[c].Labs[l].Parts.length; p++) {
+                    for (var s = 0; s < Labs.Courses[c].Labs[l].Parts[p].Sections.length; s++) {
                         console.log("Attempting to Compile!");
-                        let Framework = fs.readFileSync(Labs.Courses[c].Labs[l].Parts[p].FrameworkFile,"utf-8");
-                        let preload = 
+                        let Framework = fs.readFileSync(Labs.Courses[c].Labs[l].Parts[p].FrameworkFile, "utf-8");
+                        let preload =
                         {
-                            meta:{
-                                Creative:Labs.Creative,
-                                Procedural:Labs.Procedural,
-                                Direct:Labs.Direct
+                            meta: {
+                                Creative: Labs.Creative,
+                                Procedural: Labs.Procedural,
+                                Direct: Labs.Direct
                             },
-                            section:Labs.Courses[c].Labs[l].Parts[p].Sections[s],
-                            SimulationImage:"",
-                            part:Labs.Courses[c].Labs[l].Parts[p],
-                            page:{
-                                lab:Labs.Courses[c].Labs[l],
-                                part:Labs.Courses[c].Labs[l].Parts[p],
-                                section:Labs.Courses[c].Labs[l],
-                                prev:null,
-                                next:null
+                            section: Labs.Courses[c].Labs[l].Parts[p].Sections[s],
+                            SimulationImage: "",
+                            part: Labs.Courses[c].Labs[l].Parts[p],
+                            page: {
+                                lab: Labs.Courses[c].Labs[l],
+                                part: Labs.Courses[c].Labs[l].Parts[p],
+                                section: Labs.Courses[c].Labs[l],
+                                prev: null,
+                                next: null
                             },
-                            preload:null,
-                            Framework:Framework
+                            preload: null,
+                            Framework: Framework
                         }
-                        let EJSFile = "views"+Labs.DIRSLASH+"compile.ejs";
-                        let SPICEFile = inp+Labs.DIRSLASH+
-                            Labs.Courses[c].Name+Labs.DIRSLASH+
-                            Labs.Courses[c].Labs[l].Name+Labs.DIRSLASH+
-                            Labs.Courses[c].Labs[l].Parts[p].Name+Labs.DIRSLASH+
-                            Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+'.cir';
-                        let CompilationOutput = "HTML"+Labs.DIRSLASH+
-                            Labs.Courses[c].Name+Labs.DIRSLASH+
-                            Labs.Courses[c].Labs[l].Name+Labs.DIRSLASH+
-                            Labs.Courses[c].Labs[l].Parts[p].Name+Labs.DIRSLASH+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html";
+                        let EJSFile = "views" + Labs.DIRSLASH + "compile.ejs";
+                        let SPICEFile = inp + Labs.DIRSLASH +
+                            Labs.Courses[c].Name + Labs.DIRSLASH +
+                            Labs.Courses[c].Labs[l].Name + Labs.DIRSLASH +
+                            Labs.Courses[c].Labs[l].Parts[p].Name + Labs.DIRSLASH +
+                            Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + '.cir';
+                        let CompilationOutput = "HTML" + Labs.DIRSLASH +
+                            Labs.Courses[c].Name + Labs.DIRSLASH +
+                            Labs.Courses[c].Labs[l].Name + Labs.DIRSLASH +
+                            Labs.Courses[c].Labs[l].Parts[p].Name + Labs.DIRSLASH + Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + ".html";
                         Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = CompilationOutput;
-                        if(Labs.PreSimulate){
-                                let _Labs = Labs
-                                Spice.ImageSimulate(
-                                    fs.readFileSync(SPICEFile, 'utf-8'),
-                                    function (svg, data) {
-                                        preload.SimulationImage = svg;
-                                        ejs.renderFile(EJSFile, preload, null, function(err, html) {
-                                            console.log(err);
-                                            fs.writeFileSync(CompilationOutput,html);
-                                        })
-                                    }, function (rawScopeData) { },
-                                    function (DC) {},
-                                    console.log
-                                );
-                        }else{
-                                ejs.renderFile(EJSFile, preload, null, function(err, html) {
-                                    console.log(err);
-                                    fs.writeFileSync(CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html",html);
-                                    Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = (CompilationOutput+Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name+".html");
-                                    console.log(Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled);
-                                })
+                        if (Labs.PreSimulate) {
+                            let _Labs = Labs
+                            Spice.ImageSimulate(
+                                fs.readFileSync(SPICEFile, 'utf-8'),
+                                function (svg, data) {
+                                    preload.SimulationImage = svg;
+                                    ejs.renderFile(EJSFile, preload, null, function (err, html) {
+                                        console.log(err);
+                                        fs.writeFileSync(CompilationOutput, html);
+                                    })
+                                }, function (rawScopeData) { },
+                                function (DC) { },
+                                console.log
+                            );
+                        } else {
+                            ejs.renderFile(EJSFile, preload, null, function (err, html) {
+                                console.log(err);
+                                fs.writeFileSync(CompilationOutput + Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + ".html", html);
+                                Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = (CompilationOutput + Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + ".html");
+                                console.log(Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled);
+                            })
                         }
+                    }
                 }
             }
         }
-    }
     }
 }
 

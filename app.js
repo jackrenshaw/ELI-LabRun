@@ -4,25 +4,25 @@ const axios = require('axios')
 const ejs = require('ejs');
 var fs = require("fs");
 const { post } = require('jquery');
+const { eventNames } = require('process');
+const express = require('express')
+var cors = require('cors');
+const { start } = require('repl');
 
+//Import Modules
 const SPICE = require("./modules/spice");
 const Graph = require("./modules/graph");
 const Labs = require("./modules/labs");
 const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
-const { eventNames } = require('process');
 
-const express = require('express')
-var cors = require('cors');
-const { start } = require('repl');
+
 const ws = express()
 ws.use(cors())
 const port = 3001
 var bodyParser = require('body-parser');
 ws.use(bodyParser.json({limit: "50mb"}));
 ws.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
-
-// view engine setup
 ws.set('views', path.join(__dirname, 'views'));
 ws.set('view engine', 'ejs');
 ws.use(express.static(path.join(__dirname, 'public')));
@@ -221,7 +221,7 @@ SPICE.test(async function(){
     console.log("SPICE is locally available. Assume we are running on a Lab Machine");
     SPICEEnabled = true;
     console.log(debugLine);
-    open("http://localhost:3001/l/")
+    open("https://elec2133-unsw-eli.azurewebsites.net/l/")
   },function(error){
     StartupErrors.push("There was an error Compiling the Laboratories")
   })
@@ -230,7 +230,7 @@ SPICE.test(async function(){
   Labs.PreSimulate = false;
   Labs.setLabs(LABDIR,function(debugLine){
     console.log(debugLine);
-    open("http://localhost:3001/l/")
+    open("https://elec2133-unsw-eli.azurewebsites.net/l/")
   },function(error){
     StartupErrors.push("There was an error Compiling the Laboratories")
   })
