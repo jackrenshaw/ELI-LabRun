@@ -99,7 +99,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $("a[data-action='open-lab']").click(function(){
-      $('<form action="http://localhost:3001/b/'+new Date().getTime()+'" method="POST"><input type="hidden" name="page" value=\''+JSON.stringify($(this).data())+'\'></form>').appendTo('body').submit();
+      $('<form action="/b/'+new Date().getTime()+'" method="POST"><input type="hidden" name="page" value=\''+JSON.stringify($(this).data())+'\'></form>').appendTo('body').submit();
     })
   })
 </script>
