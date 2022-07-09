@@ -160,7 +160,7 @@ var Labs = {
                             preload:null,
                             Framework:Framework
                         }
-                        let EJSFile = "src"+Labs.DIRSLASH+"views"+Labs.DIRSLASH+"compile.ejs";
+                        let EJSFile = "views"+Labs.DIRSLASH+"compile.ejs";
                         let SPICEFile = inp+Labs.DIRSLASH+
                             Labs.Courses[c].Name+Labs.DIRSLASH+
                             Labs.Courses[c].Labs[l].Name+Labs.DIRSLASH+

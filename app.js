@@ -26,7 +26,7 @@ ws.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:5000
 ws.set('views', path.join(__dirname, 'views'));
 ws.set('view engine', 'ejs');
 ws.use(express.static(path.join(__dirname, 'public')));
-ws.use(express.static(path.join(__dirname, '../node_modules')));
+ws.use(express.static(path.join(__dirname, 'node_modules')));
 
 /* UNCOMMENT FOR MAC*/
 const ENVIRONMENT = "Mac";
@@ -235,6 +235,8 @@ SPICE.test(async function(){
     StartupErrors.push("There was an error Compiling the Laboratories")
   })
 });
+
+module.exports = ws;
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
