@@ -33,7 +33,7 @@ const ENVIRONMENT = "Mac";
 const DIRSLASH="/"
 const LABDIR="Labs"
 const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved"
-/**/
+/* */
 /* UNCOMMENT FOR PRODUCTION
 const ENVIRONMENT = "Prod";
 const DIRSLASH="\\"
