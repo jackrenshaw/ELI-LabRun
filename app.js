@@ -28,18 +28,18 @@ ws.set('view engine', 'ejs');
 ws.use(express.static(path.join(__dirname, 'public')));
 ws.use(express.static(path.join(__dirname, 'node_modules')));
 
-/* UNCOMMENT FOR MAC*/
+/* UNCOMMENT FOR MAC
 const ENVIRONMENT = "Mac";
 const DIRSLASH="/"
 const LABDIR="Labs"
 const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved"
-/* */
-/* UNCOMMENT FOR PRODUCTION
+ */
+/* UNCOMMENT FOR PRODUCTION */
 const ENVIRONMENT = "Prod";
 const DIRSLASH="\\"
 const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
 const SAVEDIR="C:\\Elec2133New\\Saved"
-*/
+/* */
 
 let CourseIndex = 0;
 
@@ -213,8 +213,6 @@ ws.post("/simulate", (req,res) =>{
 ws.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
-
-SPICE.SpiceCommand = "ngspice"
 
 SPICE.test(async function(){
   Labs.setLabs(LABDIR,function(debugLine){
