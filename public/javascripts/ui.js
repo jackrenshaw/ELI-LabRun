@@ -18,38 +18,6 @@ var UI = {
     });
     $("component[disabled!='disabled']").draggable({ containment: "body" });
     $("component[disabled!='disabled']").css("cursor", "pointer");
-    $("component").bind('click', function (event) {
-      if (event.altKey && $(this).attr("disabled") != "disabled") {
-        if ($(this).hasClass("rotated-90")) {
-          $(this).removeClass("rotated-90");
-          $(this).removeClass("rotated-270");
-          $(this).removeClass("rotated-0");
-          $(this).addClass("rotated-180");
-        }
-        else if ($(this).hasClass("rotated-180")) {
-          $(this).removeClass("rotated-90");
-          $(this).removeClass("rotated-180");
-          $(this).removeClass("rotated-0");
-          $(this).addClass("rotated-270");
-        }
-        else if ($(this).hasClass("rotated-270")) {
-          $(this).removeClass("rotated-180");
-          $(this).removeClass("rotated-270");
-          $(this).removeClass("rotated-90");
-          $(this).addClass("rotated-0");
-        } else if ($(this).hasClass("rotated-0")) {
-          $(this).removeClass("rotated-180");
-          $(this).removeClass("rotated-270");
-          $(this).removeClass("rotated-0");
-          $(this).addClass("rotated-90");
-        } else {
-          $(this).removeClass("rotated-180");
-          $(this).removeClass("rotated-270");
-          $(this).removeClass("rotated-90");
-          $(this).addClass("rotated-0");
-        }
-      }
-    });
     UI.ComponentDrop();
     UI.wire();
     //UI.FillSavedAlts();

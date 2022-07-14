@@ -26,7 +26,36 @@ if(Framework){%><%-Framework%><%}%>
 if(section.hasOwnProperty("Components")) 
   for(var c of section.Components)
     if(c.hasOwnProperty('CSS') && c.hasOwnProperty('Height') && c.hasOwnProperty('Width') && c.hasOwnProperty('Label') && c.hasOwnProperty('Value')){%>
-      <component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:1;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>ondblclick="UI.VariableResistorChange(this);"<%}%> class="rotated-0">
+      <component data-spice-directional="<%=c.Directional%>" data-spice-fungible="<%=c.fungible%>" data-spice-name="<%=c.Name%>" data-spice-class="<%=c.Class%>" data-spice-type="<%=c.Type%>" data-spice-value="<%=c.Value%>" style="<%=c.CSS%>;z-index:1;top:<%=top%>px;left:<%=left%>px;" <%if(c.Type == 'VariableResistor'){%>ondblclick="UI.VariableResistorChange(this);"<%}%> class="rotated-0" onclick='    if (event.altKey && $(this).attr("disabled") != "disabled") {
+        if ($(this).hasClass("rotated-90")) {
+          $(this).removeClass("rotated-90");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-0");
+          $(this).addClass("rotated-180");
+        }
+        else if ($(this).hasClass("rotated-180")) {
+          $(this).removeClass("rotated-90");
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-0");
+          $(this).addClass("rotated-270");
+        }
+        else if ($(this).hasClass("rotated-270")) {
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-0");
+        } else if ($(this).hasClass("rotated-0")) {
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-0");
+          $(this).addClass("rotated-90");
+        } else {
+          $(this).removeClass("rotated-180");
+          $(this).removeClass("rotated-270");
+          $(this).removeClass("rotated-90");
+          $(this).addClass("rotated-0");
+        }
+      }'>
       <% if(c.Value && c.Name){ %>
         <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
       <%}else if(c.Value){ %>
