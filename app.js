@@ -219,7 +219,7 @@ SPICE.test(async function(){
     console.log("SPICE is locally available. Assume we are running on a Lab Machine");
     SPICEEnabled = true;
     console.log(debugLine);
-    open("https://elec2133-unsw-eli.azurewebsites.net/l/")
+    //open("https://elec2133-unsw-eli.azurewebsites.net/l/")
   },function(error){
     StartupErrors.push("There was an error Compiling the Laboratories")
   })
@@ -228,7 +228,7 @@ SPICE.test(async function(){
   Labs.PreSimulate = false;
   Labs.setLabs(LABDIR,function(debugLine){
     console.log(debugLine);
-    open("https://elec2133-unsw-eli.azurewebsites.net/l/")
+    //open("https://elec2133-unsw-eli.azurewebsites.net/l/")
   },function(error){
     StartupErrors.push("There was an error Compiling the Laboratories")
   })
