@@ -77,7 +77,7 @@ var UI = {
           if ($(this).data("candelete") != false)
             $(this).css("display", "none").css("width", "0px").css("height", "0px").remove();
         } else {
-          var spiceNode = " data-spice-node=\"" + $(this).attr("data-spice-node") + "\"";
+          var spiceNode = " data-spice-node=\"" + $(this).attr("data-spice-node") + "\" data-tooltip=\""+ $(this).attr("data-spice-node") +"\"";
           if ($(this).attr("data-spice-collapse-node"))
             spiceNode += " data-spice-collapse-node=\"" + $(this).attr("data-spice-collapse-node") + "\"";
           if ($(this).attr("data-spice-revert-node"))
@@ -161,7 +161,7 @@ var UI = {
     });
   },
   ComponentDrop: function () {
-    $("component").mouseup(function (event) {
+    $("export component").mouseup(function (event) {
       const _comp = this;
       $("wire").each(function () {
         if ($(this).is(":visible") && $(this).width() > 0 && $(this).height() > 0) {
@@ -296,7 +296,7 @@ var UI = {
         if (!UI.nodes.hasOwnProperty(node))
           UI.nodes[node] = { name: node, span: [] }
       });
-      $("component").each(function () {
+      $("export component").each(function () {
         var component = {
           name: $(this).data("spice-name"),
           type: $(this).data("spice-type"),

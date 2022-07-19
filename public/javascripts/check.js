@@ -103,7 +103,7 @@ var Check = {
     }
     for (var a = 0; a < results.altresults.length; a++)
       results.altresults[a] = [];
-    $("component").each(function () {
+    $("export component").each(function () {
       const _comp = this;
       const COMPONENT = $(this).attr('data-spice-name');
       const DIRECTIONAL = $(this).attr("data-spice-directional");

@@ -324,6 +324,248 @@
         </footer>
       </div>
   </div>
+  <div class="modal" id="WalkThrough">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Electronics Lab Interface Interactive Tutorial</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+    <table width="100%">
+      <tr>
+        <td style="vertical-align: middle;text-align: left;padding:10px;"><a href='#' onclick="$(this).parent().next().find('div').hide();console.log($(this).parent().next().data('pageshown'));var currentPage = parseInt($(this).parent().next().attr('data-pageshown'))>1 ? parseInt($(this).parent().next().attr('data-pageshown'))-1 : 1;console.log(currentPage);$(this).parent().next().attr('data-pageshown',currentPage);$(this).parent().next().find('div:nth-child('+currentPage+')').show();"><span class="material-icons">arrow_back</span></a></td>
+          <td data-pageshown="1">
+          <div data-page="1">
+            <h1 class="title">Welcome to UNSW ELI</h1>
+            <hr>
+            <p style="text-align:left">You can work on your circuit on the UNSW Lab Computer, or from your home computer</p>
+            <p style="text-align: left">Your circuit is associated with your current URL. Make sure to "check" your circuit often to save the most recent version</p>
+            <hr>
+            <p style="text-align: center;">1</p>
+          </div>
+          <div data-page="2">
+            <h2 class="subtitle">Component Values</h2>
+            <hr>
+            <p style="text-align: left;">You can double click component labels (the text) to change their visual and simulation values</p><br><br>
+            <component data-spice-directional="false" data-spice-fungible="" data-spice-name="Ri" data-spice-class="" data-spice-type="Resistor" data-spice-value="1k" style="position: absolute; top:180px; left:220px; background-size: 100px; background-repeat: no-repeat; background-image: url('/images/resistor-physical.svg'); width: 100px; height: 100px; background-position: 50% 50%; z-index: 1;cursor: pointer;" class="rotated-0 ui-draggable ui-draggable-handle" onclick="    if (event.altKey && $(this).attr('disabled') != 'disabled') {
+              if ($(this).hasClass('rotated-90')) {
+                $(this).removeClass('rotated-90');
+                $(this).removeClass('rotated-270');
+                $(this).removeClass('rotated-0');
+                $(this).addClass('rotated-180');
+              }
+              else if ($(this).hasClass('rotated-180')) {
+                $(this).removeClass('rotated-90');
+                $(this).removeClass('rotated-180');
+                $(this).removeClass('rotated-0');
+                $(this).addClass('rotated-270');
+              }
+              else if ($(this).hasClass('rotated-270')) {
+                $(this).removeClass('rotated-180');
+                $(this).removeClass('rotated-270');
+                $(this).removeClass('rotated-90');
+                $(this).addClass('rotated-0');
+              } else if ($(this).hasClass('rotated-0')) {
+                $(this).removeClass('rotated-180');
+                $(this).removeClass('rotated-270');
+                $(this).removeClass('rotated-0');
+                $(this).addClass('rotated-90');
+              } else {
+                $(this).removeClass('rotated-180');
+                $(this).removeClass('rotated-270');
+                $(this).removeClass('rotated-90');
+                $(this).addClass('rotated-0');
+              }
+            }"><label style="position:relative;left:40px;top:15px;" ondblclick="let newValue = prompt('Enter a Component Value');$(this).parent().attr('data-spice-value',newValue);$(this).text(newValue+'('+$(this).parent().attr('data-spice-name')+')')">1k(Ri)</label><div class="InterPortSpace" style="position:absolute;top:47px;left:30px;height:6px;width:35px;"></div><port name="1" data-bind-position="{'left':-3,'top':0}" data-spice-node="999" data-spice-target-nodes="['6','6','6','6','6','6','6','6']" data-spice-position="1" style="top: 47px; left: 2px; height: 6px; width: 28px; position: absolute; background: red; cursor: crosshair;" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Name:1
+      Node:999"></port><port name="2" data-bind-position="{'left':29,'top':0}" data-spice-node="999" data-spice-target-nodes="['5','5','5','5','5','5','5','5']" data-spice-position="2" style="top: 47px; left: 65px; height: 6px; width: 32px; position: absolute; background: red; cursor: crosshair;" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Name:2
+      Node:999"></port></component>
+            <hr>
+            <p style="text-align: center;">2</p>
+          </div>
+          <div data-page="3">
+            <h2 class="subtitle">Power Supply</h2>
+            <hr>
+            <p style="text-align: left;">You must wire your power supply in order to generate the required voltage </p><br>
+            <p style="text-align: left;">You aren't required to configure the output, only do this if you wish to simulate your circuit</p>
+            <hr>
+            <p style="text-align: center;">3</p>
+          </div>
+          <div data-page="4">
+            <h2 class="subtitle">Signal Generator</h2>
+            <hr>
+            <p style="text-align: left;">You are required to wire your signal generator to match your circuit design</p><br>
+            <p style="text-align: left;">You aren't required to configure the output, only do this if you wish to simulate your circuit</p>
+            <hr>
+            <p style="text-align: center;">4</p>
+          </div>
+          <div data-page="5">
+            <h2 class="subtitle">Oscilloscope</h2>
+            <hr>
+            <p style="text-align: left;">You aren't required to wire or configure the oscilloscope unless you would like to simulate your circuit</p><br>
+            <p style="text-align: left;">Clicking the "Oscilloscope" button will allow you to change simulation parameters</p>
+            <hr>
+            <p style="text-align: center;">5</p>
+          </div>
+          <div data-page="6">
+            <h2 class="subtitle">Checking a Circuit</h1>
+            <hr>
+            <p style="text-align: left;">Press the "Check" button to validate a circuit before attempting to implement it</p>
+            <p style="text-align: center;"><span class="material-icons">check_circle</span></p>
+            <p style="text-align: left;">You will be provided with a notification like below:</p>
+              <div class="notification is-warning is-light"><button class="delete" onclick="$(this).parent().remove()"></button><strong>Warning</strong><p>Node X is not connected properly</p></div>
+            </p>
+            <hr>
+            <p style="text-align: center;">6</p>
+          </div>
+          <div data-page="7">
+            <h2 class="subtitle">Implementing your Circuit on Hardware</h1>
+            <hr>
+            <p style="text-align: left;">Press the "Implement" button to enact your checked circuit on the PCB</p>
+            <p style="text-align: center;"><span class="material-icons">run_circle</span></p>
+            <hr>
+            <p style="text-align: center;">7</p>
+          </div>
+          <div data-page="8">
+            <h2 class="subtitle">Simulating your Circuit</h1>
+              <hr>
+              <p style="text-align: left;">Press the "Simulate" button to simulate your circuit, and display the results of the oscilloscope</p>
+              <p style="text-align: center;"><span class="material-icons">play_circle</span></p>
+              <hr>
+              <p style="text-align: center;">8</p>
+          </div>
+          <div data-page="9">
+            <h2 class="subtitle">Creating Wires</h1>
+              <hr>
+              <p style="text-align: left;">Clicking a wire will allow your to create a new wire that extends the node of that wire</p>
+              <p style="text-align: left;">Nodes are assigned a number, you can see the node a wire is on by hovering over it</p>
+              <br>
+              <wiref id="wire9999" data-candelete="false" data-spice-collapse-node="false" style="display: inline-block; background: rgb(51, 51, 51); height: 6px; width: 60px; cursor: crosshair;" data-spice-node="1" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Node:xxx"></wiref>
+              <br>
+              <hr>
+              <p style="text-align: center;">9</p>
+          </div>
+          <div data-page="10">
+            <h2 class="subtitle">Deleting Wires</h1>
+              <hr>
+              <p style="text-align: left;">Holding ALT while clicking a wire will delete the wire</p>
+              <p style="text-align: left;">You will NOT be able to delete wires that are preprovided to you</p>
+              <wiref onclick="console.log(this);if(this.altKey) $(this).remove();" id="wire9999" data-candelete="false" data-spice-collapse-node="false" style="display: inline-block; background: rgb(51, 51, 51); height: 6px; width: 60px; cursor: crosshair;" data-spice-node="1" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Node:xxx"></wiref>
+              <hr>
+              <p style="text-align: center;">10</p>
+          </div>
+          <div data-page="11">
+            <h2 class="subtitle">Moving Components</h1>
+              <hr>
+              <p style="text-align: left;">Simply drag components around and place them onto wires you've created</p>
+              <p style="text-align: left;"><b>Careful:</b>Ensure that component ports are overlapping the wires that you intend</p>
+              <br><br>
+              <component data-spice-directional="false" data-spice-fungible="" data-spice-name="Ri" data-spice-class="" data-spice-type="Resistor" data-spice-value="1k" style="position: absolute; top:240px; left:200px; background-size: 100px; background-repeat: no-repeat; background-image: url('/images/resistor-physical.svg'); width: 100px; height: 100px; background-position: 50% 50%; z-index: 1;cursor: pointer;" class="rotated-0 ui-draggable ui-draggable-handle" onclick="    if (event.altKey && $(this).attr('disabled') != 'disabled') {
+                if ($(this).hasClass('rotated-90')) {
+                  $(this).removeClass('rotated-90');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-0');
+                  $(this).addClass('rotated-180');
+                }
+                else if ($(this).hasClass('rotated-180')) {
+                  $(this).removeClass('rotated-90');
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-0');
+                  $(this).addClass('rotated-270');
+                }
+                else if ($(this).hasClass('rotated-270')) {
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-90');
+                  $(this).addClass('rotated-0');
+                } else if ($(this).hasClass('rotated-0')) {
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-0');
+                  $(this).addClass('rotated-90');
+                } else {
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-90');
+                  $(this).addClass('rotated-0');
+                }
+              }"><label style="position:relative;left:40px;top:15px;" ondblclick="let newValue = prompt('Enter a Component Value');$(this).parent().attr('data-spice-value',newValue);$(this).text(newValue+'('+$(this).parent().attr('data-spice-name')+')')">1k(Ri)</label><div class="InterPortSpace" style="position:absolute;top:47px;left:30px;height:6px;width:35px;"></div><port name="1" data-bind-position="{'left':-3,'top':0}" data-spice-node="999" data-spice-target-nodes="['6','6','6','6','6','6','6','6']" data-spice-position="1" style="top: 47px; left: 2px; height: 6px; width: 28px; position: absolute; background: red; cursor: crosshair;" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Name:1
+        Node:999"></port><port name="2" data-bind-position="{'left':29,'top':0}" data-spice-node="999" data-spice-target-nodes="['5','5','5','5','5','5','5','5']" data-spice-position="2" style="top: 47px; left: 65px; height: 6px; width: 32px; position: absolute; background: red; cursor: crosshair;" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Name:2
+        Node:999"></port></component>
+                <hr>
+              <p style="text-align: center;">11</p>
+          </div>
+          <div data-page="12">
+            <h2 class="subtitle">Rotating Components</h1>
+              <hr>
+              <p style="text-align: left;">To rotate a component, click the component while holding ALT</p>
+              <br><br>
+              <component data-spice-directional="false" data-spice-fungible="" data-spice-name="Ri" data-spice-class="" data-spice-type="Resistor" data-spice-value="1k" style="position: absolute; top:200px; left:220px; background-size: 100px; background-repeat: no-repeat; background-image: url('/images/resistor-physical.svg'); width: 100px; height: 100px; background-position: 50% 50%; z-index: 1;cursor: pointer;" class="rotated-0 ui-draggable ui-draggable-handle rotated-90" onclick="    if (event.altKey && $(this).attr('disabled') != 'disabled') {
+                if ($(this).hasClass('rotated-90')) {
+                  $(this).removeClass('rotated-90');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-0');
+                  $(this).addClass('rotated-180');
+                }
+                else if ($(this).hasClass('rotated-180')) {
+                  $(this).removeClass('rotated-90');
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-0');
+                  $(this).addClass('rotated-270');
+                }
+                else if ($(this).hasClass('rotated-270')) {
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-90');
+                  $(this).addClass('rotated-0');
+                } else if ($(this).hasClass('rotated-0')) {
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-0');
+                  $(this).addClass('rotated-90');
+                } else {
+                  $(this).removeClass('rotated-180');
+                  $(this).removeClass('rotated-270');
+                  $(this).removeClass('rotated-90');
+                  $(this).addClass('rotated-0');
+                }
+              }"><label style="position:relative;left:40px;top:15px;" ondblclick="let newValue = prompt('Enter a Component Value');$(this).parent().attr('data-spice-value',newValue);$(this).text(newValue+'('+$(this).parent().attr('data-spice-name')+')')">1k(Ri)</label><div class="InterPortSpace" style="position:absolute;top:47px;left:30px;height:6px;width:35px;"></div><port name="1" data-bind-position="{'left':-3,'top':0}" data-spice-node="999" data-spice-target-nodes="['6','6','6','6','6','6','6','6']" data-spice-position="1" style="top: 47px; left: 2px; height: 6px; width: 28px; position: absolute; background: red; cursor: crosshair;" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Name:1
+        Node:999"></port><port name="2" data-bind-position="{'left':29,'top':0}" data-spice-node="999" data-spice-target-nodes="['5','5','5','5','5','5','5','5']" data-spice-position="2" style="top: 47px; left: 65px; height: 6px; width: 32px; position: absolute; background: red; cursor: crosshair;" class="has-tooltip-arrow has-tooltipl-multiline" data-tooltip="Name:2
+        Node:999"></port></component>
+              <hr>
+              <p style="text-align: center;">12</p>
+          </div>
+          <div data-page="13">
+            <p style="text-align: center;">13</p>
+          </div>
+          <div data-page="14">
+            <h1 class="title">End of Tutorial</h1>
+            <p>Click anywhere to exit this screen</p>
+            <p style="text-align: center;">14</p>
+          </div>
+        </td>
+        <td style="vertical-align: middle;text-align: right;padding: 10px;"><a href='#' onclick="$(this).parent().prev().find('div').hide();console.log($(this).parent().prev().data('pageshown'));var currentPage = parseInt($(this).parent().prev().attr('data-pageshown'))<14 ? parseInt($(this).parent().prev().attr('data-pageshown'))+1 : 14;console.log(currentPage);$(this).parent().prev().attr('data-pageshown',currentPage);$(this).parent().prev().find('div:nth-child('+currentPage+')').show();"><span class="material-icons">arrow_forward</span></a></td>
+      </tr>
+    </table>
+    </section>
+    </div>
+    </div>
+  </div>
+  <div class="modal" id="HoverOver">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Action Tooltip</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+        <section class="modal-card-body">
+          
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-info">Close</button>
+        </footer>
+      </div>
+  </div>
   <script type="text/javascript">
     $(document).ready(function(){
       $("#Instructions").addClass('is-active');

@@ -57,9 +57,9 @@ if(section.hasOwnProperty("Components"))
         }
       }'>
       <% if(c.Value && c.Name){ %>
-        <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %>(<%=c.Name%>)</label>
+        <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;" ondblclick="let newValue = prompt('Enter a Component Value');$(this).parent().attr('data-spice-value',newValue);$(this).text(newValue+'('+$(this).parent().attr('data-spice-name')+')')"><%= c.Value %>(<%=c.Name%>)</label>
       <%}else if(c.Value){ %>
-        <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Value %></label>
+        <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;" ondblclick="let newValue = prompt('Enter a Component Value');$(this).parent().attr('data-spice-value',newValue);$(this).text(newValue)"><%= c.Value %></label>
       <%}else if(c.Class){ %>
         <label style="position:relative;left:<%=c.Label.left%>px;top:<%= c.Label.top %>px;"><%= c.Class %></label>
       <%}%>

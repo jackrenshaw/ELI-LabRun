@@ -82,12 +82,12 @@
                       cloud_sync
                       </span>
                     </a>
-                    <a class="navbar-item" onclick="upSync();Check.Validate();Simulate();" data-action="simulate">
+                    <a class="navbar-item" onclick="upSync();Check.Validate();Simulate();" data-action="simulate" data-tooltip="Simulate Circuit and Display Results">
                       <span class="material-icons">
                         play_circle
                         </span>
                         </a>  
-                        <a class="navbar-item" onclick="Check.Validate();" data-action="check">
+                        <a class="navbar-item" data-action="check" data-tooltip="Check Circuit for Validity">
                         <span class="material-icons">
                           check_circle
                           </span>  
@@ -96,12 +96,7 @@
                       <span class="material-icons">
                         run_circle
                         </span>
-                      </button> 
-                      <a class="navbar-item" data-action="clear" data-token="ELEC2133">
-                        <span class="material-icons">
-                          clear_all
-                          </span>  
-                          </a>   
+                      </button>  
     </div>
   </nav>
 </head>
@@ -113,13 +108,13 @@
   <div class="container content has-text-centered">
     <div class="columns">
       <powersupply class="column is-4 text-center" id="powersupply">
-        <button type="button" class="button is-dark" onclick="$('#Source').addClass('is-active');">Power Supply</button>
+        <button type="button" class="button is-dark" onclick="$('#Source').addClass('is-active');" data-tooltip="Configure Power Supply (This is not required in order to implement the circuit)">Power Supply</button>
       </powersupply>
       <signalgenerator class="column is-4  text-center" id="signalgenerator">
-        <button type="button" class="button is-dark" onclick="$('#SignalGenerator').addClass('is-active');">Signal Generator</button>
+        <button type="button" class="button is-dark" onclick="$('#SignalGenerator').addClass('is-active');" data-tooltip="Configure Signal Generator (This is not required in order to implement the circuit)">Signal Generator</button>
       </signalgenerator>
       <oscilloscope class="column is-4  text-center" id="oscilloscope">
-        <button type="button" class="button is-dark" onclick="$('#Oscilloscope').addClass('is-active');">Oscilloscope</button>
+        <button type="button" class="button is-dark" onclick="$('#Oscilloscope').addClass('is-active');" data-tooltip="Configure Oscillscope (This is not required in order to implement the circuit)">Oscilloscope</button>
       </oscilloscope>
     </div>
   </div>
@@ -131,7 +126,31 @@
 </div>
 
 <script type="text/javascript">
+
+  function WalkThrough(){
+    $("#WalkThrough").addClass("is-active");
+    $("#WalkThrough table div").hide();
+    $("#WalkThrough table").find("div").first().show();
+  }
+
   $(document).ready(function(){
+    WalkThrough();
+    $(".navbar-start a").mouseenter(function(){
+      console.log($(this).data("action"));
+      if(!$(this).data("action")) return
+      $("nav").css("z-index","41");
+      $("#HoverOver").addClass("is-active");
+      if($(this).data("action") == "check"){
+        console.log("Fill in words for check")
+      }else if($(this).data("action") == "simulate"){
+        console.log("Fill in words for simulate")
+      }else if($(this).data("action") == "implement"){
+        console.log("Fill in words for implement")
+      }
+    }).mouseleave(function(){
+      $("#HoverOver").removeClass("is-active");
+      $("nav").css("z-index","30");
+    })
     UI.SET();
     Check.Validate();
     $("#loading").click(function(){
@@ -156,6 +175,7 @@
   })
   
   $("a[data-action='check']").click(function(){
+    console.log("Checking Circuit");
     upSync();
     Check.Validate();
   })
@@ -268,9 +288,7 @@
   function upSync(){
     console.log("Syncing up to server");
     let build = JSON.stringify(generatePreload());
-    console.log(JSON.parse(build));
       $.post("/api/"+code,{build:build}).done(function(data){
-        console.log(data)
       })
   }
   </script>
