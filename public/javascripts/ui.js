@@ -22,6 +22,9 @@ var UI = {
     UI.wire();
     //UI.FillSavedAlts();
   },
+  newWire(wire){
+    console.log(wire)
+  },
   Notification(type, message, details) {
     var ctype = 'is-info'
     if (type == 'Success')
@@ -53,6 +56,7 @@ var UI = {
   },
   wire: function () {
     $("wire,port").css("cursor", "crosshair");
+    $("body").off("click","wire");
     //To start wiring, the student must click on a port or a wire
     $("body").on('click', 'wire', function (event) {
       console.log("clicked wire"); if ($(this).attr("data-spice-node") || $(this).attr("data-spice-node") == '0') {
@@ -131,7 +135,7 @@ var UI = {
           })
         }
       }
-    });
+    })
     $("body").dblclick(function (event) {
       $("wire,port").css("cursor", "crosshair");
       $("body").css("cursor", "default");
@@ -158,7 +162,7 @@ var UI = {
         $(event.target.id).attr("data-spice-node", $("#wire" + wireid).attr("data-spice-node"));
       }
       $(document).off("mousemove");
-    });
+    })
   },
   ComponentDrop: function () {
     $("export component").mouseup(function (event) {

@@ -42,6 +42,7 @@ var Check = {
     console.log(inSpan(WireSpan, PortSpan));
   },
   SetComponents: function () {
+    console.time();
     $("connectors port").each(function () {
       const _port = this;
       const PortSpan = [{
@@ -92,9 +93,11 @@ var Check = {
         //$(_port).attr("data-spice-node",'-1');
       }
     })
+    console.timeEnd();
     return true;
   },
   CheckComponents: function () {
+    console.time();
     var results = {
       matching: [],
       notmatching: [],
@@ -114,7 +117,7 @@ var Check = {
           const TARGET_NODES = JSON.parse($(this).attr("data-spice-target-nodes"));
           for (var a = 0; a < results.altresults.length; a++)
             if (TARGET_NODES[a] != CURRENT_NODE)
-              results.altresults[a].push(COMPONENT + " " + PORT + " Should Be Connectioned to: " + TARGET_NODES[a] + " but it is actually on node: " + CURRENT_NODE);
+              results.altresults[a].push(COMPONENT + " " + PORT + " Should Be Connected to: " + TARGET_NODES[a] + " but it is actually on node: " + CURRENT_NODE);
         })
       } else {
         var reqports = new Array($("meta[name='circuit']").data("alt").length);
@@ -177,6 +180,7 @@ var Check = {
         UI.Notification("Error", "Your circuit matches multiple possible implementations. Please report this to your lab demonstrator", "")
       }
     }
+    console.timeEnd();
     return results;
   }
 }

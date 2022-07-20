@@ -92,7 +92,7 @@
                           check_circle
                           </span>  
                           </a>                        
-                          <button class="navbar-item" data-action="implement" data-analog='[0.0,0.0]' data-token="ELEC2133" disabled style="background-color: #363636;color:#aaa;border: none;">
+                          <button class="navbar-item" data-action="implement" data-token="ELEC2133" <% if(build.analog && build.alt){ %>style="background-color: #363636;color:#fff;border: none;" data-originallycorrect="true" data-analog="<%- JSON.stringify(build.analog)%>" data-alt="<%-build.alt%>"<%}else{%>data-analog="[0.0,0.0]" data-alt="0"  disabled style="background-color: #363636;color:#aaa;border: none;"<%}%>>
                       <span class="material-icons">
                         run_circle
                         </span>
@@ -141,18 +141,22 @@
       $("nav").css("z-index","41");
       $("#HoverOver").addClass("is-active");
       if($(this).data("action") == "check"){
-        console.log("Fill in words for check")
+        $("#HoverOver .modal-card-title").text("Check your Circuit");
+        $("#HoverOver .modal-card-body").text("Use this button to check the validity of your circuit before implementing");
       }else if($(this).data("action") == "simulate"){
-        console.log("Fill in words for simulate")
+        $("#HoverOver .modal-card-title").text("Simulate your Circuit");
+        $("#HoverOver .modal-card-body").text("Use this simulate your circuit. Remember to connect your oscilloscope to get scope readings");
       }else if($(this).data("action") == "implement"){
-        console.log("Fill in words for implement")
+        $("#HoverOver .modal-card-title").text("Simulate your Circuit");
+        $("#HoverOver .modal-card-body").text("Use this implement your circuit on the Lab PCB. You must check your circuit first");
       }
     }).mouseleave(function(){
       $("#HoverOver").removeClass("is-active");
       $("nav").css("z-index","30");
     })
     UI.SET();
-    Check.Validate();
+    if($("button[data-action='implement']").prop("disabled") == true)
+      Check.Validate();
     $("#loading").click(function(){
       $(this).hide();
     })
@@ -247,7 +251,9 @@
           voltage2:null,
           siggen_frequency:null,
           siggen_voltage:null,
-          export:$("export").html()
+          export:$("export").html(),
+          alt: $("button[data-action='implement']").prop("disabled") == true ? null : $("button[data-action='implement']").attr("data-alt"),
+          analog: $("button[data-action='implement']").prop("disabled") == true ? null : JSON.parse($("button[data-action='implement']").attr("data-analog"))
         }
         return preload
       }
