@@ -18,7 +18,7 @@ R31 2 6 1k
 R32 2 6 1k
 V1 4 0 15
 V2 0 11 15
-V3 999 999 0
+V3 999 0 0
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0

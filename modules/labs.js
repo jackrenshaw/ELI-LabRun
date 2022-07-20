@@ -190,8 +190,8 @@ var Labs = {
                         } else {
                             ejs.renderFile(EJSFile, preload, null, function (err, html) {
                                 console.log(err);
-                                fs.writeFileSync(CompilationOutput + Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + ".html", html);
-                                Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = (CompilationOutput + Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + ".html");
+                                fs.writeFileSync(CompilationOutput, html);
+                                Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = (CompilationOutput);
                                 console.log(Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled);
                             })
                         }

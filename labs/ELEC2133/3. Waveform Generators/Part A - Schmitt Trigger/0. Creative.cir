@@ -1,6 +1,8 @@
 *
 .SUBCKT LM348N  1 2 3 4 5 6 7 8 9 10 11 12 13 14
-* Dummy subcircuit, can someone please develop?!
+Rz1 1 2 1k 
+Rz2 3 4 1k 
+Rz3 5 6 1k
 .ENDS LM348N
 .MODEL d1 D(IS=18.8n RS=0 BV=400 IBV=5u CJO=30 M=0.333 N=2)
 XA 1 999 999 4 5 7 7 8 0 10 11 0 13 14 LM348N
@@ -16,7 +18,7 @@ Rx16 7 10 1k
 R21 10 8 1k
 V1 4 0 15
 V2 0 11 15
-V3 999 999 0
+V3 999 0 0
 * INSTRUCTIONS: Creative mode allows you to construct, simulate and implement a circuit in any way within the constraints of the hardware. You have been provided with every node necessary for constructing the circuit. Joining nodes will produce an error.
 * IMPLEMENTATION NOTES: When this lab is opened, the relay controlling the power supply (Power - Port 1 Line 3 - ON) will switch ON. Once your circuit has been constructed, it will be checked against a set of possible valid implementations. If your circuit matches, it will be implemented on the hardware
 * DIGOUTPUT0_PRE = 0 0 0 0 0 0 0 0
