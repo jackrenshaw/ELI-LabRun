@@ -54,6 +54,7 @@ function implementCircuit(params,callback,errorCallback){
     errorCallback("invalid token")
 }
 
+SPICE.simple = JSON.parse(fs.readFileSync("components.json"));
 
 if(ENVIRONMENT == "Prod"){
   Actions.ImplementCommand.BINDIR = "C:\\ELEC2133New\\ELI-LabRun\\bin"
