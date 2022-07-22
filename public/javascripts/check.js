@@ -41,30 +41,32 @@ var Check = {
     }];
     console.log(inSpan(WireSpan, PortSpan));
   },
-  SetComponents: function () {
+  SetComponents: function (hard) {
     console.time();
-    $("connectors port").each(function () {
-      const _port = this;
+    $("connectors port").each(function(){
+      var _port = this;
+      var portWidth = $(_port).width();
+      var portHeight = $(_port).height();
       const PortSpan = [{
-        horizontal: [$(_port).offset().left, ($(_port).offset().left + $(_port).width())],
-        vertical: [$(_port).offset().top, ($(_port).offset().top + $(_port).height())]
+        horizontal: [$(_port).offset().left, ($(_port).offset().left + portWidth)],
+        vertical: [$(_port).offset().top, ($(_port).offset().top + portHeight)]
       }];
-      $(_port).attr("data-spice-node", "999")
-      $("wire").each(function () {
-        const _wire = this;
+      $("wire").each(function(){
+        var _wire = this;
+        if($(_wire).prop("preset")) return;
         const WireSpan = [{
           horizontal: [$(_wire).offset().left, ($(_wire).offset().left + $(_wire).width())],
           vertical: [$(_wire).offset().top, ($(_wire).offset().top + $(_wire).height())]
         }];
-        if (inSpan(WireSpan, PortSpan))
-          $(_port).attr("data-spice-node", "999")
+        if (inSpan(PortSpan, WireSpan) && $(_port).width() > 0 && $(_port).height() > 0) {
+          $(_port).attr("data-spice-node", $(_wire).attr("data-spice-node"));
+        }
       })
     })
     $("port").each(function () {
       var _port = this;
       var portWidth = $(_port).width();
       var portHeight = $(_port).height();
-      $(_port).attr("data-spice-node", 999);
       if ($(this).parent("component").hasClass("rotated-270") || $(this).parent("component").hasClass("rotated-90")) {
         portWidth = $(_port).height();
         portHeight = $(_port).width();
@@ -76,6 +78,7 @@ var Check = {
       match = false;
       $("wire").each(function () {
         var _wire = this;
+        if(!hard && $(_wire).prop("preset") && $(_port).prop("preset")) return
         if ($(_wire).width() == 0 || $(_wire).height() == 0) $(_wire).hide();
         const WireSpan = [{
           horizontal: [$(_wire).offset().left, ($(_wire).offset().left + $(_wire).width())],
@@ -87,12 +90,13 @@ var Check = {
           //console.log($(_wire).attr("data-spice-node"));
           $(_port).attr("data-spice-node", $(_wire).attr("data-spice-node"));
         }
+        $(_wire).prop("preset",true);
       });
-      if (!match) {
-        //console.log($(_port).parent("component").attr("data-spice-name")+" isn't on a node");
-        //$(_port).attr("data-spice-node",'-1');
-      }
+      if(!match & $(!$(_port).prop("preset")))
+        $(_port).attr("data-spice-node", 999);
     })
+    $("wire").prop("preset",true);
+    $("port").prop("preset",true);
     console.timeEnd();
     return true;
   },

@@ -30,6 +30,7 @@ The procedure, in the broadest terms, is:
 */
 class SPICE{
   constructor(type,parameters,debugFunction,verboseFunction,complete){
+  console.time();
   if(type == "Framework"){
       verboseFunction("WireFrame provided (no need to manually identify nodes)");
     this.nodes = parameters.nodes;
@@ -54,6 +55,7 @@ class SPICE{
     this.spiceConvert_ammeters();
     this.spiceConvert_simulation();
     this.vbs("Complete!");
+    console.timeEnd();
     complete(this.SPICE);
   }else
     this.vbs("No WireFrame - this mode is not supported at this stage");

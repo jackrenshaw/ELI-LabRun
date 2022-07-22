@@ -167,6 +167,10 @@ var UI = {
   ComponentDrop: function () {
     $("export component").mouseup(function (event) {
       const _comp = this;
+      $(_comp).find("port").each(function(){
+        console.log("removing preset")
+        $(this).removeProp("preset");
+      });
       $("wire").each(function () {
         if ($(this).is(":visible") && $(this).width() > 0 && $(this).height() > 0) {
           const _wire = this;
