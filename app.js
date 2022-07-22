@@ -13,7 +13,6 @@ const { start } = require('repl');
 const SPICE = require("./modules/spice");
 const Graph = require("./modules/graph");
 const Labs = require("./modules/labs");
-const Functions = require("./modules/functions")
 const Actions = require("./actions.js");
 
 

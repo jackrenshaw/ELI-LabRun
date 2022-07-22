@@ -4,7 +4,7 @@ var exec = require('child_process').exec,child;
 var ImplementCommand = {
   BINDIR:"",
   Digital:"digitalWrite.exe",
-  Analog:"analogWriteNew.exe",
+  Analog:"analogWrite.exe",
   DIRSLASH:"\\"
 };
 

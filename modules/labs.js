@@ -1,6 +1,5 @@
 var fs = require("fs");
 var path = require("path");
-var functions = require("./functions");
 var Spice = require("./spice");
 const ejs = require('ejs');
 /*

@@ -1,4 +1,3 @@
-// START vega-demo.js
 var vega = require('vega')
 var fs = require('fs');
 const { render } = require('pug');
