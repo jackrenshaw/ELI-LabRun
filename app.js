@@ -12,8 +12,10 @@ const { start } = require('repl');
 //Import Modules
 const SPICE = require("./modules/spice");
 const Graph = require("./modules/graph");
-const Labs = require("./modules/labs");
-const Actions = require("./actions.js");
+const Specification = require("./modules/specification");
+const Actions = require("./modules/actions");
+const Check = require("./modules/check");
+const UI = require("./modules/ui");
 
 
 const ws = express()
@@ -30,13 +32,13 @@ ws.use(express.static(path.join(__dirname, 'node_modules')));
 /* UNCOMMENT FOR MAC*/
 const ENVIRONMENT = "Mac";
 const DIRSLASH="/"
-const LABDIR="Labs"
+const LABDIR="Specification"
 const SAVEDIR="/Users/jackrenshaw/Desktop/ELI-Saved"
 /* */
 /* UNCOMMENT FOR PRODUCTION 
 const ENVIRONMENT = "Prod";
 const DIRSLASH="\\"
-const LABDIR="C:\\Elec2133New\\ELI-LabRun\\labs"
+const LABDIR="C:\\Elec2133New\\ELI-LabRun\\Specification"
 const SAVEDIR="C:\\Elec2133New\\Saved"
 */
 
@@ -53,7 +55,7 @@ function implementCircuit(params,callback,errorCallback){
     errorCallback("invalid token")
 }
 
-SPICE.simple = JSON.parse(fs.readFileSync("components.json"));
+SPICE.ComponentSet = JSON.parse(fs.readFileSync("Specification/components.json"));
 
 if(ENVIRONMENT == "Prod"){
   Actions.ImplementCommand.BINDIR = "C:\\ELEC2133New\\ELI-LabRun\\bin"
@@ -63,7 +65,7 @@ if(ENVIRONMENT == "Prod"){
   Actions.ImplementCommand.BINDIR = "C:\\Users\\Optiplex7090\\Desktop\\ELEC2133\\ELI-LabRun\\bin"
   SPICE.SpiceCommand = Actions.ImplementCommand.BINDIR+DIRSLASH+"ngspice_con.exe";
 }else{
-  Labs.DIRSLASH = DIRSLASH;
+  Specification.DIRSLASH = DIRSLASH;
   Actions.ImplementCommand.BINDIR = ""
   Actions.ImplementCommand.DIRSLASH = ""
   SPICE.SpiceCommand = "ngspice";
@@ -71,10 +73,10 @@ if(ENVIRONMENT == "Prod"){
   Actions.ImplementCommand.Digital = "echo";
 }
 
-Labs.Creative = true;
-Labs.Procedural = false;
-Labs.Direct = true;
-Labs.Framework = true;
+Specification.Creative = true;
+Specification.Procedural = false;
+Specification.Direct = true;
+Specification.Framework = true;
 const PANETOKEN = "ELEC2133";
 const ACTIONTOKEN = "ELEC2133";
 
@@ -84,7 +86,28 @@ let builds = [];
 let StartupErrors = [];
 
 ws.get("/l/",(req,res) =>{
-  res.render("select",{labs:Labs.Courses[CourseIndex].Labs,actions:Actions.Actions})
+  res.render("select",{labs:Specification.Courses[CourseIndex].Labs,actions:Actions.Actions})
+})
+
+ws.get("/javascripts/spice.js",(req,res) =>{
+  res.setHeader('content-type', 'text/javascript');
+  res.send(SPICE.client.toString());
+})
+
+
+ws.get("/javascripts/check.js",(req,res) =>{
+  var options = {
+    root: path.join(__dirname)
+};
+  res.sendFile("modules/check.js",options)
+})
+
+
+ws.get("/javascripts/ui.js",(req,res) =>{
+  var options = {
+    root: path.join(__dirname)
+  };
+  res.sendFile("modules/ui.js",options)
 })
 
 ws.get("/api/:c",function(req,res,next){
@@ -122,7 +145,7 @@ ws.post("/b/:code",(req,res) =>{
   var found = false;
   console.log(page);
   if(page.hasOwnProperty('lab') && page.hasOwnProperty('part') && page.hasOwnProperty('section'))
-    for(const l of Labs.Courses[CourseIndex].Labs)
+    for(const l of Specification.Courses[CourseIndex].Labs)
       if(l.Name == page.lab)
         for(const p of l.Parts)
           if(p.Name == page.part)
@@ -155,8 +178,8 @@ ws.post("/b/:code",(req,res) =>{
               }
 })
 
-ws.get('/labs.json', (req, res) => {
-  res.send(Labs.Courses);
+ws.get('/specification.json', (req, res) => {
+  res.send(Specification.Courses);
 })
 
 ws.get('/implement', (req, res) => {
@@ -215,7 +238,7 @@ ws.listen(port, () => {
 })
 
 SPICE.test(async function(){
-  Labs.setLabs(LABDIR,function(debugLine){
+  Specification.setLabs(LABDIR,function(debugLine){
     console.log("SPICE is locally available. Assume we are running on a Lab Machine");
     SPICEEnabled = true;
     console.log(debugLine);
@@ -225,8 +248,8 @@ SPICE.test(async function(){
   })
 },function(){
   console.log("SPICE is not locally available. We will assume we are not running on a lab machine");
-  Labs.PreSimulate = false;
-  Labs.setLabs(LABDIR,function(debugLine){
+  Specification.PreSimulate = false;
+  Specification.setLabs(LABDIR,function(debugLine){
     console.log(debugLine);
     //open("https://elec2133-unsw-eli.azurewebsites.net/l/")
   },function(error){

@@ -3,6 +3,29 @@ Check Object
 ------------
 */
 var Check = {
+  rectanglesIntersect : function (minAx, minAy, maxAx, maxAy, minBx, minBy, maxBx, maxBy) {
+    var aLeftOfB = maxAx < minBx;
+    var aRightOfB = minAx > maxBx;
+    var aAboveB = minAy > maxBy;
+    var aBelowB = maxAy < minBy;
+    return !(aLeftOfB || aRightOfB || aAboveB || aBelowB);
+  },
+  inSpan : function (spans1, spans2) {
+    if (spans1) for (var s1 of spans1)
+      if (spans2) for (var s2 of spans2)
+        //Horizontally aligned
+        if (Check.rectanglesIntersect(
+          s1.horizontal[0],
+          s1.vertical[0],
+          s1.horizontal[1],
+          s1.vertical[1],
+          s2.horizontal[0],
+          s2.vertical[0],
+          s2.horizontal[1],
+          s2.vertical[1])
+        ) return true;
+    return false;
+  },
   Validate: function () {
     $("wire").each(function () {
       $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
@@ -39,7 +62,7 @@ var Check = {
       horizontal: [$(_port).offset().left, ($(_port).offset().left + portWidth)],
       vertical: [$(_port).offset().top, ($(_port).offset().top + portHeight)]
     }];
-    console.log(inSpan(WireSpan, PortSpan));
+    console.log(Check.inSpan(WireSpan, PortSpan));
   },
   SetComponents: function (hard) {
     console.time();
@@ -58,7 +81,7 @@ var Check = {
           horizontal: [$(_wire).offset().left, ($(_wire).offset().left + $(_wire).width())],
           vertical: [$(_wire).offset().top, ($(_wire).offset().top + $(_wire).height())]
         }];
-        if (inSpan(PortSpan, WireSpan) && $(_port).width() > 0 && $(_port).height() > 0) {
+        if (Check.inSpan(PortSpan, WireSpan) && $(_port).width() > 0 && $(_port).height() > 0) {
           $(_port).attr("data-spice-node", $(_wire).attr("data-spice-node"));
         }
       })
@@ -84,7 +107,7 @@ var Check = {
           horizontal: [$(_wire).offset().left, ($(_wire).offset().left + $(_wire).width())],
           vertical: [$(_wire).offset().top, ($(_wire).offset().top + $(_wire).height())]
         }];
-        if (inSpan(PortSpan, WireSpan) && $(_port).width() > 0 && $(_port).height() > 0) {
+        if (Check.inSpan(PortSpan, WireSpan) && $(_port).width() > 0 && $(_port).height() > 0) {
           //console.log("found a match for"+$(_port).parent("component").attr("data-spice-name")+" port:"+$(_port).attr("id"));
           match = true;
           //console.log($(_wire).attr("data-spice-node"));

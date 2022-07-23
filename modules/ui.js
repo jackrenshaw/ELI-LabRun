@@ -22,9 +22,6 @@ var UI = {
     UI.wire();
     //UI.FillSavedAlts();
   },
-  newWire(wire){
-    console.log(wire)
-  },
   Notification(type, message, details) {
     var ctype = 'is-info'
     if (type == 'Success')
@@ -33,7 +30,7 @@ var UI = {
       ctype = 'is-warning'
     else if (type == 'Error')
       ctype = 'is-danger'
-    $("body #Notifications").append(`<div class="notification ` + ctype + ` is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>`+ type + `</strong><br>`+ message + `<br><strong>Details:</strong><br>`+ details + `</div>`);
+    $("body #Notifications").append(`<div class="notification ` + ctype + ` is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>` + type + `</strong><br>` + message + `<br><strong>Details:</strong><br>` + details + `</div>`);
   },
   VariableResistorChange(_vresist) {
     $("input[name='vresistance']").slider();
@@ -56,7 +53,7 @@ var UI = {
   },
   wire: function () {
     $("wire,port").css("cursor", "crosshair");
-    $("body").off("click","wire");
+    $("body").off("click", "wire");
     //To start wiring, the student must click on a port or a wire
     $("body").on('click', 'wire', function (event) {
       console.log("clicked wire"); if ($(this).attr("data-spice-node") || $(this).attr("data-spice-node") == '0') {
@@ -75,13 +72,13 @@ var UI = {
               horizontal: [$(_port).offset().left, ($(_port).offset().left + $(_port).width())],
               vertical: [$(_port).offset().top, ($(_port).offset().top + $(_port).height())]
             }];
-            if (inSpan(WireSpan, PortSpan))
+            if (Check.inSpan(WireSpan, PortSpan))
               $(_port).attr("data-spice-node", "999")
           })
           if ($(this).data("candelete") != false)
             $(this).css("display", "none").css("width", "0px").css("height", "0px").remove();
         } else {
-          var spiceNode = " data-spice-node=\"" + $(this).attr("data-spice-node") + "\" data-tooltip=\""+ $(this).attr("data-spice-node") +"\"";
+          var spiceNode = " data-spice-node=\"" + $(this).attr("data-spice-node") + "\" data-tooltip=\"" + $(this).attr("data-spice-node") + "\"";
           if ($(this).attr("data-spice-collapse-node"))
             spiceNode += " data-spice-collapse-node=\"" + $(this).attr("data-spice-collapse-node") + "\"";
           if ($(this).attr("data-spice-revert-node"))
@@ -167,7 +164,7 @@ var UI = {
   ComponentDrop: function () {
     $("export component").mouseup(function (event) {
       const _comp = this;
-      $(_comp).find("port").each(function(){
+      $(_comp).find("port").each(function () {
         console.log("removing preset")
         $(this).removeProp("preset");
       });
@@ -214,7 +211,7 @@ var UI = {
               horizontal: [$(_wire).offset().left, ($(_wire).offset().left + $(_wire).width())],
               vertical: [$(_wire).offset().top, ($(_wire).offset().top + $(_wire).height())]
             }];
-            if (inSpan(Port, wirespan) && !wired) {
+            if (Check.inSpan(Port, wirespan) && !wired) {
               console.log("Dropping Component on a wire");
               wired = true;
               $(_port).attr("data-spice-node", $(_wire).attr("data-spice-node"));
@@ -235,13 +232,51 @@ var UI = {
       })
     })
   },
-  saveBoard: function () {
-    localStorage.setItem("board", $("#main").html())
-  },
-  loadBoard: function () {
-    $("#main").html(localStorage.getItem("board"));
-    $("component[disabled!='disabled']").draggable({ containment: "parent" });
-    UI.select();
+  setMultimeter: function (arg) {
+    const multimeter = $("meta[name='circuit']").data("multimeter");
+    console.log(multimeter);
+    var expectedAmmeterCurrents = {};
+    for (var a of multimeter)
+      if (/v\([0-9]+(,[0-9+])?\) = .+/.test(a)) {
+        var node = a.split(" = ")[0].replace(/[^0-9]/g, '')
+        var voltage = parseFloat(a.split(" = ")[1]);
+      }
+      else if (/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)) {
+        var nodes = a.split(" = ")[0].replace(/[^0-9,]/g, '').split(",");
+        var current = parseFloat(a.split(" = ")[1]) * 1000;
+      }
+    console.log("Multimeter Response:");
+    console.log(arg);
+    var nodeVoltages = {};
+    var ammeterCurrents = {};
+    for (var a of arg)
+      if (/v\([0-9]+(,[0-9+])?\) = .+/.test(a)) {
+        var node = parseInt(a.split(" = ")[0].replace(/[^0-9]/g, ''))
+        var voltage = parseFloat(a.split(" = ")[1]);
+        nodeVoltages[node] = voltage;
+      }
+      else if (/v\([0-9]+,[0-9+]?\)\/1m = .+/.test(a)) {
+        const nodes = a.split(" = ")[0].replace('/1m', '').replace(/[^0-9,]/g, '').split(",");
+        const current = Math.round(parseFloat(a.split(" = ")[1]) * 100000) / 100;
+        $("component[data-spice-type='Ammeter']").each(function () {
+          console.log(nodes);
+          console.log(parseInt($(this).find("port[name='+']").attr("data-spice-node")));
+          console.log(parseInt($(this).find("port[name='-']").attr("data-spice-node")));
+          if (parseInt($(this).find("port[name='+']").attr("data-spice-node")) == parseInt(nodes[0]))
+            if (parseInt($(this).find("port[name='-']").attr("data-spice-node")) == parseInt(nodes[1])) {
+              console.log("Found the Ammeter we're interested in")
+              $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+              $(this).attr("data-tooltip", ("Ammeter:" + $(this).attr("data-spice-name") + "\nSimulated:" + current + "mA\nMeasured:N/A"));
+            }
+        })
+      }
+    console.log(nodeVoltages)
+    console.log(ammeterCurrents);
+    $("wire").each(function () {
+      $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+      if (nodeVoltages.hasOwnProperty(parseInt($(this).attr("data-spice-node"))))
+        $(this).attr("data-tooltip", ("Node:" + $(this).attr("data-spice-node") + "\nSimulated:" + nodeVoltages[$(this).attr("data-spice-node")] + "V\nMeasured:N/A"));
+    });
   },
   makeSPICE: function (type, debugFunction, verboseFunction, callback) {
     UI.nodes = [];
@@ -336,5 +371,31 @@ var UI = {
         verboseFunction,
         callback);
     }
+  },
+  Simulate: function () {
+    $("wire").each(function () {
+      $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+      $(this).attr("data-tooltip", "Node:" + $(this).attr("data-spice-node"));
+    });
+    $("port").each(function () {
+      $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
+      $(this).attr("data-tooltip", "Node:" + $(this).attr("data-spice-node"));
+    });
+    UI.makeSPICE("simulation", function (error) {
+      $("body #Notifications").append(`<div class="notification is-danger  is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>Error</strong><br>There was an error simulating the circuit. Please check your circuit<br><strong>Details:</strong><br>` + error + `</div>`);
+    }, console.log, function (netlist, normalised) {
+      $.post("http://127.0.0.1:3001/simulate", {
+        circuit: netlist
+      }).done(function (data) {
+        console.log(data);
+        UI.setMultimeter(data.multimeter);
+        $("#Simulation p.sim-result").html(data.simulate);
+        $("#Simulation").addClass("is-active");
+      }).fail(function (error) {
+        console.log(error)
+      })
+      console.log(netlist)
+      $("body #Notifications").append(`<div class="notification is-info  is-light"><button class="delete" onclick='$(this).parent().remove()'></button><strong>SPICE Circuit</strong><br>The circuit is below<strong>Details:</strong><br>` + netlist.replace(/\n/g, '<br>') + `</div>`);
+    });
   }
 }

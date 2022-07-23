@@ -3,9 +3,9 @@ var path = require("path");
 var Spice = require("./spice");
 const ejs = require('ejs');
 /*
-LABS Object
+SPECIFICATION Object
 */
-var Labs = {
+var Specification = {
     DIRSLASH: "\\",
     PreSimulate: true,
     Creative: true,
@@ -27,7 +27,7 @@ var Labs = {
     },
     setLabs: async function (inp, verbose, error) {
         verbose("Parsing Lab Files")
-        Labs.Courses = [];
+        Specification.Courses = [];
         var clist = null;
         var courses = [];
         var labs = [];
@@ -132,48 +132,48 @@ var Labs = {
                                 }
                             CourseLabs.push(Lab)
                         }
-                Labs.Courses.push({ Name: c.course, Labs: CourseLabs });
+                    Specification.Courses.push({ Name: c.course, Labs: CourseLabs });
             }
-        console.log(Labs.Courses);
-        for (var c = 0; c < Labs.Courses.length; c++) {
-            for (var l = 0; l < Labs.Courses[c].Labs.length; l++) {
-                for (var p = 0; p < Labs.Courses[c].Labs[l].Parts.length; p++) {
-                    for (var s = 0; s < Labs.Courses[c].Labs[l].Parts[p].Sections.length; s++) {
+        console.log(Specification.Courses);
+        for (var c = 0; c < Specification.Courses.length; c++) {
+            for (var l = 0; l < Specification.Courses[c].Labs.length; l++) {
+                for (var p = 0; p < Specification.Courses[c].Labs[l].Parts.length; p++) {
+                    for (var s = 0; s < Specification.Courses[c].Labs[l].Parts[p].Sections.length; s++) {
                         console.log("Attempting to Compile!");
-                        let Framework = fs.readFileSync(Labs.Courses[c].Labs[l].Parts[p].FrameworkFile, "utf-8");
+                        let Framework = fs.readFileSync(Specification.Courses[c].Labs[l].Parts[p].FrameworkFile, "utf-8");
                         let preload =
                         {
                             meta: {
-                                Creative: Labs.Creative,
-                                Procedural: Labs.Procedural,
-                                Direct: Labs.Direct
+                                Creative: Specification.Creative,
+                                Procedural: Specification.Procedural,
+                                Direct: Specification.Direct
                             },
-                            section: Labs.Courses[c].Labs[l].Parts[p].Sections[s],
+                            section: Specification.Courses[c].Labs[l].Parts[p].Sections[s],
                             SimulationImage: "",
-                            part: Labs.Courses[c].Labs[l].Parts[p],
+                            part: Specification.Courses[c].Labs[l].Parts[p],
                             page: {
-                                lab: Labs.Courses[c].Labs[l],
-                                part: Labs.Courses[c].Labs[l].Parts[p],
-                                section: Labs.Courses[c].Labs[l],
+                                lab: Specification.Courses[c].Labs[l],
+                                part: Specification.Courses[c].Labs[l].Parts[p],
+                                section: Specification.Courses[c].Labs[l],
                                 prev: null,
                                 next: null
                             },
                             preload: null,
                             Framework: Framework
                         }
-                        let EJSFile = "views" + Labs.DIRSLASH + "compile.ejs";
-                        let SPICEFile = inp + Labs.DIRSLASH +
-                            Labs.Courses[c].Name + Labs.DIRSLASH +
-                            Labs.Courses[c].Labs[l].Name + Labs.DIRSLASH +
-                            Labs.Courses[c].Labs[l].Parts[p].Name + Labs.DIRSLASH +
-                            Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + '.cir';
-                        let CompilationOutput = "HTML" + Labs.DIRSLASH +
-                            Labs.Courses[c].Name + Labs.DIRSLASH +
-                            Labs.Courses[c].Labs[l].Name + Labs.DIRSLASH +
-                            Labs.Courses[c].Labs[l].Parts[p].Name + Labs.DIRSLASH + Labs.Courses[c].Labs[l].Parts[p].Sections[s].Name + ".html";
-                        Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = CompilationOutput;
-                        if (Labs.PreSimulate) {
-                            let _Labs = Labs
+                        let EJSFile = "views" + Specification.DIRSLASH + "compile.ejs";
+                        let SPICEFile = inp + Specification.DIRSLASH +
+                            Specification.Courses[c].Name + Specification.DIRSLASH +
+                            Specification.Courses[c].Labs[l].Name + Specification.DIRSLASH +
+                            Specification.Courses[c].Labs[l].Parts[p].Name + Specification.DIRSLASH +
+                            Specification.Courses[c].Labs[l].Parts[p].Sections[s].Name + '.cir';
+                        let CompilationOutput = "HTML" + Specification.DIRSLASH +
+                            Specification.Courses[c].Name + Specification.DIRSLASH +
+                            Specification.Courses[c].Labs[l].Name + Specification.DIRSLASH +
+                            Specification.Courses[c].Labs[l].Parts[p].Name + Specification.DIRSLASH + Specification.Courses[c].Labs[l].Parts[p].Sections[s].Name + ".html";
+                            Specification.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = CompilationOutput;
+                        if (Specification.PreSimulate) {
+                            let _Specification = Specification
                             Spice.ImageSimulate(
                                 fs.readFileSync(SPICEFile, 'utf-8'),
                                 function (svg, data) {
@@ -190,8 +190,8 @@ var Labs = {
                             ejs.renderFile(EJSFile, preload, null, function (err, html) {
                                 console.log(err);
                                 fs.writeFileSync(CompilationOutput, html);
-                                Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = (CompilationOutput);
-                                console.log(Labs.Courses[c].Labs[l].Parts[p].Sections[s].Compiled);
+                                Specification.Courses[c].Labs[l].Parts[p].Sections[s].Compiled = (CompilationOutput);
+                                console.log(Specification.Courses[c].Labs[l].Parts[p].Sections[s].Compiled);
                             })
                         }
                     }
@@ -201,4 +201,4 @@ var Labs = {
     }
 }
 
-module.exports = Labs
+module.exports = Specification
