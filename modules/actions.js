@@ -1,6 +1,10 @@
 const axios = require('axios')
 var exec = require('child_process').exec,child;
 
+/*Actions Module
+
+*/
+
 var ImplementCommand = {
   BINDIR:"",
   Digital:"digitalWrite.exe",

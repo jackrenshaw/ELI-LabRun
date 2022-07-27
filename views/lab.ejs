@@ -23,7 +23,7 @@
   <script src="<%=BASE%>/javascripts/jquery-ui.min.js"></script>
   <script type="text/javascript" src="<%=BASE%>/javascripts/ui.js" defer></script>
   <script type="text/javascript" src="<%=BASE%>/javascripts/check.js" defer></script>
-  <script type="text/javascript" src="<%=BASE%>/javascripts/spicey.js" defer></script>
+  <script type="text/javascript" src="<%=BASE%>/javascripts/spice.js" defer></script>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
 
@@ -171,7 +171,14 @@
           })
           UI.SET();
           if ($("button[data-action='implement']").prop("disabled") == true)
-            Check.Validate();
+            Check.Validate(
+              $("wire"),
+              $("port"),
+              $("export component"),
+              $("connectors port"),
+              function(matchedResult){
+                $("button[data-action='implement']").data("digital", $("meta[name='circuit']").data("alt")[matchedResult].Output.Post.Digital);
+              });
           $("#loading").click(function () {
             $(this).hide();
           })
@@ -196,7 +203,14 @@
         $("a[data-action='check']").click(function () {
           console.log("Checking Circuit");
           upSync();
-          Check.Validate();
+          Check.Validate(
+            $("wire"),
+            $("port"),
+            $("export component"),
+            $("connectors port"),
+            function(matchedResult){
+              $("button[data-action='implement']").data("digital", $("meta[name='circuit']").data("alt")[matchedResult].Output.Post.Digital);
+            });
         })
 
         $("a[data-action='upsync']").click(function () {
@@ -297,7 +311,14 @@
             const savedBoard = JSON.parse(event.target.result);
             $("export").html(JSON.parse(event.target.result.replaceAll("../public/images/", "../images/")).export);
             UI.SET();
-            Check.Validate();
+            Check.Validate(
+              $("wire"),
+              $("port"),
+              $("export component"),
+              $("connectors port"),
+              function(matchedResult){
+                $("button[data-action='implement']").data("digital", $("meta[name='circuit']").data("alt")[matchedResult].Output.Post.Digital);
+              });
             $("#LoadFile").removeClass("is-active");
           };
           var txt = reader.readAsText(file);

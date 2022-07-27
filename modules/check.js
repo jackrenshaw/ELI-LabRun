@@ -1,6 +1,16 @@
 /*
 Check Object
 ------------
+The CHECK Object is responsible for validating a circuit
+
+Concepts:
+
+
+Functions:
+ - rectanglesIntersect: Function takes the coordinates of the corners of two rectangles and determines whether the 
+ rectangles intersect/overlap
+ - inSpan: The Function takes 2 spans, which are a set of rectangles (represented by the corner coordinates)
+ - Validate: The Function takes 
 */
 var Check = {
   rectanglesIntersect : function (minAx, minAy, maxAx, maxAy, minBx, minBy, maxBx, maxBy) {
@@ -26,25 +36,21 @@ var Check = {
         ) return true;
     return false;
   },
-  Validate: function () {
-    $("wire").each(function () {
+  Validate: function (wires,ports,components,connectorPorts,successCallback) {
+    wires.each(function () {
       $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
       $(this).attr("data-tooltip", "Node:" + $(this).attr("data-spice-node"));
     });
-    $("port").each(function () {
+    ports.each(function () {
       $(this).addClass("has-tooltip-arrow").addClass("has-tooltipl-multiline");
       $(this).attr("data-tooltip", "Name:" + $(this).attr("name") + "\nNode:" + $(this).attr("data-spice-node"));
     });
     console.log("Continuity Check passed!");
-    Check.SetComponents();
-    var checkResult = Check.CheckComponents();
+    Check.SetComponents(wires,ports,connectorPorts);
+    var checkResult = Check.CheckComponents(components,connectorPorts);
     console.log(checkResult);
-    if (checkResult.matchedALT) {
-      console.log("Circuit Matched!");
-      console.log(checkResult.matchedALT);
-      $("meta[name='match']").data("alt", checkResult.matchedALT);
-      $("button[data-action='implement']").data("digital", $("meta[name='circuit']").data("alt")[checkResult.matchedALT].Output.Post.Digital);
-    }
+    if (checkResult.matchedALT) 
+      successCallback(checkResult.matchedALT);
   },
   checkConnected: function (_wire, _port) {
     console
@@ -64,9 +70,9 @@ var Check = {
     }];
     console.log(Check.inSpan(WireSpan, PortSpan));
   },
-  SetComponents: function (hard) {
+  SetComponents: function (wires,ports,connectorPorts,hard) {
     console.time();
-    $("connectors port").each(function(){
+    connectorPorts.each(function(){
       var _port = this;
       var portWidth = $(_port).width();
       var portHeight = $(_port).height();
@@ -74,7 +80,7 @@ var Check = {
         horizontal: [$(_port).offset().left, ($(_port).offset().left + portWidth)],
         vertical: [$(_port).offset().top, ($(_port).offset().top + portHeight)]
       }];
-      $("wire").each(function(){
+      wires.each(function(){
         var _wire = this;
         if($(_wire).prop("preset")) return;
         const WireSpan = [{
@@ -86,7 +92,7 @@ var Check = {
         }
       })
     })
-    $("port").each(function () {
+    ports.each(function () {
       var _port = this;
       var portWidth = $(_port).width();
       var portHeight = $(_port).height();
@@ -99,7 +105,7 @@ var Check = {
         vertical: [$(_port).offset().top, ($(_port).offset().top + portHeight)]
       }];
       match = false;
-      $("wire").each(function () {
+      wires.each(function () {
         var _wire = this;
         if(!hard && $(_wire).prop("preset") && $(_port).prop("preset")) return
         if ($(_wire).width() == 0 || $(_wire).height() == 0) $(_wire).hide();
@@ -118,12 +124,12 @@ var Check = {
       if(!match & $(!$(_port).prop("preset")))
         $(_port).attr("data-spice-node", 999);
     })
-    $("wire").prop("preset",true);
-    $("port").prop("preset",true);
+    wires.prop("preset",true);
+    ports.prop("preset",true);
     console.timeEnd();
     return true;
   },
-  CheckComponents: function () {
+  CheckComponents: function (components,connectorPorts) {
     console.time();
     var results = {
       matching: [],
@@ -133,7 +139,7 @@ var Check = {
     }
     for (var a = 0; a < results.altresults.length; a++)
       results.altresults[a] = [];
-    $("export component").each(function () {
+      components.each(function () {
       const _comp = this;
       const COMPONENT = $(this).attr('data-spice-name');
       const DIRECTIONAL = $(this).attr("data-spice-directional");
@@ -163,7 +169,7 @@ var Check = {
             results.altresults[a].push(COMPONENT + " Should Have Node Connections: " + reqports[a].sort().join(" ") + " but it is actually on node: " + conports.sort().join(" "))
       }
     })
-    $("connectors port").each(function () {
+    connectorPorts.each(function () {
       if ($(this).attr("data-spice-target-nodes")) {
         const TARGET_NODES = JSON.parse($(this).attr("data-spice-target-nodes"));
         const CURRENT_NODE = parseInt($(this).attr("data-spice-node"));
