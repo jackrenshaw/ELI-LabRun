@@ -783,14 +783,21 @@ var Spice = {
         spiceConvert_components(){
           this.vbs("Creating a SPICE line entry for each component");
           for(var c of this.components){
-            var spiceLine = c.name+" ";
-            for(var p in c.ports)
-              if(c.ports[p].nodes.length == 1)
-                spiceLine += c.ports[p].nodes[0]+" ";
-              else
-                spiceLine += "0 ";
-            spiceLine += c.value;
-            this.SPICE += spiceLine+"\n";
+            let connectedPorts = []
+            for(var p in c.ports){
+              if(!connectedPorts.includes(c.ports[p].nodes[0]))
+                connectedPorts.push(c.ports[p].nodes[0])
+            }
+            if(connectedPorts.length > 1){
+              var spiceLine = c.name+" ";
+              for(var p in c.ports)
+                if(c.ports[p].nodes.length == 1)
+                  spiceLine += c.ports[p].nodes[0]+" ";
+                else
+                  spiceLine += "0 ";
+              spiceLine += c.value;
+              this.SPICE += spiceLine+"\n";
+            }
           }
         }
       

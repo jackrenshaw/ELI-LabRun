@@ -90,8 +90,8 @@ var UI = {
           while ($("#bind" + bindid).length)
             bindid++;
           var endbind = bindid + 1;
-          var left = Math.round(event.clientX / 1) * 1;
-          var top = Math.round(event.clientY / 1) * 1;
+          var left = Math.round(event.pageX / 1) * 1;
+          var top = Math.round(event.pageY / 1) * 1;
           if (["PORT", "WIRE"].includes($(event.currentTarget).prop("nodeName")))
             if ($(event.currentTarget).width() == 6)
               left = $(event.currentTarget).offset().left;
@@ -104,10 +104,10 @@ var UI = {
           $("#main").append("<wire id='wire" + wireid + "' style='display:inline-block;background:#333;position:absolute;'" + spiceNode + "></wire>");
           $("#wire" + wireid).show().offset({ top: top, left: left });
           $(document).mousemove(function (event) {
-            var cardinalOffset = [(top - event.clientY), (left - event.clientX), (event.clientY - top), (event.clientX - left)];
+            var cardinalOffset = [(top - event.pageY), (left - event.pageX), (event.pageY - top), (event.pageX - left)];
             peakDirection = cardinalOffset.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-            var clientY = Math.round(event.clientY / 1) * 1;
-            var clientX = Math.round(event.clientX / 1) * 1;
+            var clientY = Math.round(event.pageY / 1) * 1;
+            var clientX = Math.round(event.pageX / 1) * 1;
             switch (peakDirection) {
               case 0://cursor trending up
                 $("#wire" + wireid + "").css("width", "6px").css("height", (top - clientY)).css("top", (clientY)).css("left", left);
