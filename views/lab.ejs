@@ -212,6 +212,18 @@
               $("button[data-action='implement']").data("digital", $("meta[name='circuit']").data("alt")[matchedResult].Output.Post.Digital);
             });
         })
+        $("a[data-action='check']").dblclick(function () {
+          console.log("Hard Checking Circuit");
+          upSync();
+          Check.Validate(
+            $("wire"),
+            $("port"),
+            $("export component"),
+            $("connectors port"),
+            function(matchedResult){
+              $("button[data-action='implement']").data("digital", $("meta[name='circuit']").data("alt")[matchedResult].Output.Post.Digital);
+            },true);
+        })
 
         $("a[data-action='upsync']").click(function () {
           upSync();

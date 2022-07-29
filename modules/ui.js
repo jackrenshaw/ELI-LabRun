@@ -106,25 +106,25 @@ var UI = {
           $(document).mousemove(function (event) {
             var cardinalOffset = [(top - event.pageY), (left - event.pageX), (event.pageY - top), (event.pageX - left)];
             peakDirection = cardinalOffset.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-            var clientY = Math.round(event.pageY / 1) * 1;
-            var clientX = Math.round(event.pageX / 1) * 1;
+            var pageY = Math.round(event.pageY / 1) * 1;
+            var pageX = Math.round(event.pageX / 1) * 1;
             switch (peakDirection) {
               case 0://cursor trending up
-                $("#wire" + wireid + "").css("width", "6px").css("height", (top - clientY)).css("top", (clientY)).css("left", left);
-                $("#bind" + endbind + "").css("top", clientY - 4).css("left", clientX - 4);
+                $("#wire" + wireid + "").css("width", "6px").css("height", (top - pageY)).css("top", (pageY)).css("left", left);
+                $("#bind" + endbind + "").css("top", pageY - 4).css("left", pageX - 4);
                 break;
               case 1://cursor trending left
-                $("#wire" + wireid + "").css("height", "6px").css("width", (left - clientX)).css("top", (top)).css("left", clientX);
-                $("#bind" + endbind + "").css("top", clientY - 4).css("left", clientX - 4);
+                $("#wire" + wireid + "").css("height", "6px").css("width", (left - pageX)).css("top", (top)).css("left", pageX);
+                $("#bind" + endbind + "").css("top", pageY - 4).css("left", pageX - 4);
                 break;
               case 2://cursor trending down
-                $("#wire" + wireid + "").css("width", "6px").css("height", (clientY - top)).css("top", top).css("left", left);
-                $("#wire" + wireid + "").css("width", "6px").css("height", (clientY - top)).css("top", top).css("left", left);
-                $("#bind" + endbind + "").css("top", clientY - 4).css("left", clientX - 4);
+                $("#wire" + wireid + "").css("width", "6px").css("height", (pageY - top)).css("top", top).css("left", left);
+                $("#wire" + wireid + "").css("width", "6px").css("height", (pageY - top)).css("top", top).css("left", left);
+                $("#bind" + endbind + "").css("top", pageY - 4).css("left", pageX - 4);
                 break;
               case 3://cursor trending right
-                $("#wire" + wireid + "").css("height", "6px").css("width", (clientX - left)).css("top", top).css("left", left);
-                $("#bind" + endbind + "").css("top", clientY - 4).css("left", clientX - 4);
+                $("#wire" + wireid + "").css("height", "6px").css("width", (pageX - left)).css("top", top).css("left", left);
+                $("#bind" + endbind + "").css("top", pageY - 4).css("left", pageX - 4);
                 break;
               default:
                 void (0);
